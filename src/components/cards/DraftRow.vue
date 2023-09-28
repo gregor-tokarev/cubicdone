@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import {Draft} from "../../models/draft.model.ts";
 import * as dayjs from "dayjs";
-import {useDraftsStore} from "../../store/drafts.ts";
 
 const props = defineProps<{
   draft: Draft
 }>()
 
-const draftStore = useDraftsStore()
+const emit = defineEmits<{
+  (e: "update:title", value: string): void
+}>()
 
 function onEditDraft(event: Event) {
   const target = event.currentTarget as HTMLElement
   const value = target.textContent
 
-  draftStore.edit(props.draft.id, value)
+  value && emit("update:title", value)
 }
 </script>
 

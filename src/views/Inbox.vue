@@ -12,6 +12,10 @@ const prompt = ref("")
 function onCreateDraft() {
   draftStore.create(prompt.value)
 }
+
+function onEditDraft(id: string, newTitle: string) {
+  draftStore.edit(id, newTitle)
+}
 </script>
 
 <template>
@@ -19,7 +23,8 @@ function onCreateDraft() {
     <DraftInput placeholder="todo text" v-model="prompt" @enter="onCreateDraft()"></DraftInput>
     <!--  drafts list-->
     <div class="mt-5">
-      <DraftRow :draft="d" v-for="d in draftStore.sortedDrafts"></DraftRow>
+      <DraftRow :draft="d" v-for="d in draftStore.sortedDrafts" :key="d.id"
+                @update:title="onEditDraft(d.id, $event)"></DraftRow>
     </div>
   </div>
 </template>
