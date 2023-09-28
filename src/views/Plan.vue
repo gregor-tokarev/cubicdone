@@ -3,14 +3,12 @@
 import Icon from "../components/Icon.vue";
 import {useDraftsStore} from "../store/drafts.ts";
 import DraftCard from "../components/cards/DraftCard.vue";
-import {computed, getCurrentInstance, onMounted} from "vue";
+import {computed, onMounted} from "vue";
 import {Sortable} from "@shopify/draggable"
 import dayjs from "dayjs";
 import {useTaskStore} from "../store/task.ts";
 import TaskCard from "../components/cards/TaskCard.vue";
 import {Task} from "../models/task.model.ts";
-
-const instance = getCurrentInstance()
 
 const draftStore = useDraftsStore()
 const taskStore = useTaskStore()
