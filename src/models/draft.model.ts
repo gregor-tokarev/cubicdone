@@ -1,6 +1,6 @@
 export interface Draft {
     id: string
     title: string
-    dateCreated: string
-    dateUpdated: string
+    dateCreated: number
+    dateUpdated: number
 }

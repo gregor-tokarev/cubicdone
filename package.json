@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@shopify/draggable": "^1.1.1",
     "@vueuse/core": "^10.4.1",
     "dayjs": "^1.11.10",
     "hotkeys-js": "^3.12.0",

@@ -21,7 +21,7 @@ function onEditDraft(id: string, newTitle: string) {
 </script>
 
 <template>
-  <div class="">
+  <div class="pt-8">
     <DraftInput placeholder="todo text" v-model="prompt" @enter="onCreateDraft()"></DraftInput>
     <!--  drafts list-->
     <div class="mt-5">

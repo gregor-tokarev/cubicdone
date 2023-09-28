@@ -2,7 +2,6 @@ import {defineStore} from "pinia";
 import {useLocalStorage} from "@vueuse/core";
 import {Draft} from "../models/draft.model.ts";
 import {nanoid} from "nanoid";
-import * as dayjs from "dayjs";
 
 export const useDraftsStore = defineStore("drafts", {
     state: () => ({
@@ -12,8 +11,8 @@ export const useDraftsStore = defineStore("drafts", {
         create(title: string): Draft {
             const draft: Draft = {
                 id: nanoid(3),
-                dateCreated: dayjs().format(),
-                dateUpdated: dayjs().format(),
+                dateCreated: Date.now(),
+                dateUpdated: Date.now(),
                 title
             }
 
@@ -26,18 +25,22 @@ export const useDraftsStore = defineStore("drafts", {
             if (!draft) return
 
             draft.title = title
-            draft.dateUpdated = dayjs().format()
+            draft.dateUpdated = Date.now()
+        },
+        remove(id: string): void {
+            const draftIdx = this.drafts.findIndex(d => d.id === id)
+            this.drafts.splice(draftIdx, 1)
         }
     },
 
     getters: {
         getOne(state) {
-            return (id: string) => {
+            return (id: string): Draft | undefined => {
                 return state.drafts.find(d => d.id === id)
             }
         },
         sortedDrafts(state) {
-            return state.drafts.sort((prev, next) => dayjs(next.dateCreated).unix() - dayjs(prev.dateCreated).unix())
+            return state.drafts.sort((prev, next) => next.dateCreated - prev.dateCreated)
         }
     }
 })
