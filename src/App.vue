@@ -7,6 +7,22 @@ import {useRouter} from "vue-router";
 const router = useRouter()
 
 onMounted(() => {
+  hotkeys.filter = function (event) {
+    return true;
+  }
+  //How to add the filter to edit labels. <div contentEditable="true"></div>
+  //"contentEditable" Older browsers that do not support drops
+  hotkeys.filter = function (event) {
+    const tagName = (event.target || event.srcElement).tagName;
+    return !(tagName.isContentEditable || tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+  }
+
+  hotkeys.filter = function (event) {
+    const tagName = (event.target || event.srcElement).tagName;
+    hotkeys.setScope(/^(INPUT|TEXTAREA|SELECT)$/.test(tagName) ? 'input' : 'other');
+    return true;
+  }
+
   // go to inbox page hotkey
   hotkeys("cmd+i", evt => {
     evt.preventDefault()

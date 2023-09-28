@@ -23,6 +23,8 @@ const inputField = ref(null)
 onMounted(() => {
   const el = inputField.value as unknown as HTMLElement
   el.focus()
+
+  // document.addEventListener("keyup", console.log)
 })
 </script>
 
