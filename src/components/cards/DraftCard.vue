@@ -1,0 +1,19 @@
+<script setup lang="ts">
+import {Draft} from "../../models/draft.model.ts";
+import * as dayjs from "dayjs";
+
+defineProps<{
+  draft: Draft
+}>()
+</script>
+
+<template>
+<div class="px-4 py-2.5 rounded-lg bg-gray-400">
+  <p class="">{{draft.title}}</p>
+  <span class="text-xs text-gray-350">{{dayjs(draft.dateCreated).format("DD MM")}}</span>
+</div>
+</template>
+
+<style scoped>
+
+</style>
