@@ -7,7 +7,7 @@ import {useRouter} from "vue-router";
 const router = useRouter()
 
 onMounted(() => {
-  hotkeys.filter = function (event) {
+  hotkeys.filter = function () {
     return true;
   }
   //How to add the filter to edit labels. <div contentEditable="true"></div>

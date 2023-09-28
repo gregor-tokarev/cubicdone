@@ -10,7 +10,7 @@ const navItems = ref([
 </script>
 
 <template>
-  <div class="bg-black px-2.5 py-4 rounded-tr-3xl rounded-br-3xl space-y-8">
+  <div class="bg-black px-2.5 py-4 rounded-tr-2xl rounded-br-2xl space-y-8">
     <!--    title block-->
     <div class="flex items-center pb-2.5 border-b border-[#333333]">
       <img src="../assets/img/gregor.png" alt="gregor tokarev" class="w-[60px] h-[60px] rounded-full overflow-hidden">
