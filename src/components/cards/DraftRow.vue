@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Draft} from "../../models/draft.model.ts";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 defineProps<{
   draft: Draft

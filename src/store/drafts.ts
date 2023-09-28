@@ -9,14 +9,17 @@ export const useDraftsStore = defineStore("drafts", {
     }),
     actions: {
         create(title: string): Draft {
+            console.log("some 1")
             const draft: Draft = {
                 id: nanoid(3),
                 dateCreated: Date.now(),
                 dateUpdated: Date.now(),
                 title
             }
+            console.log("some 2")
 
             this.drafts.push(draft)
+            console.log("some 3")
 
             return draft
         },

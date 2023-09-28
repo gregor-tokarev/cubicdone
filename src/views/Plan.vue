@@ -5,7 +5,7 @@ import {useDraftsStore} from "../store/drafts.ts";
 import DraftCard from "../components/cards/DraftCard.vue";
 import {computed, getCurrentInstance, onMounted} from "vue";
 import {Sortable} from "@shopify/draggable"
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import {useTaskStore} from "../store/task.ts";
 import TaskCard from "../components/cards/TaskCard.vue";
 import {Task} from "../models/task.model.ts";
@@ -32,10 +32,6 @@ onMounted(() => {
     mirror: {
       constrainDimensions: true
     },
-    // plugins: [Plugins.SortAnimation],
-    // swapAnimation: {
-    //   duration: 100
-    // }
   })
 
   sortable.on("sortable:stop", onSort)

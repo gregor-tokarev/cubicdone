@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useLocalStorage} from "@vueuse/core";
 import {Task} from "../models/task.model.ts";
 import {useDraftsStore} from "./drafts.ts";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import {nanoid} from "nanoid";
 
 
