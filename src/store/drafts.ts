@@ -37,7 +37,7 @@ export const useDraftsStore = defineStore("drafts", {
             }
         },
         sortedDrafts(state) {
-            return state.drafts.sort((prev, next) => dayjs(prev.dateCreated).unix() - dayjs(next.dateCreated).unix())
+            return state.drafts.sort((prev, next) => dayjs(next.dateCreated).unix() - dayjs(prev.dateCreated).unix())
         }
     }
 })
