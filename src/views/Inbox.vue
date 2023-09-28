@@ -11,6 +11,8 @@ const prompt = ref("")
 
 function onCreateDraft() {
   draftStore.create(prompt.value)
+
+  prompt.value = ""
 }
 
 function onEditDraft(id: string, newTitle: string) {
