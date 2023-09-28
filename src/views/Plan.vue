@@ -3,8 +3,8 @@
 import Icon from "../components/Icon.vue";
 import {useDraftsStore} from "../store/drafts.ts";
 import DraftCard from "../components/cards/DraftCard.vue";
-import {computed, getCurrentInstance, onMounted, ref} from "vue";
-import {Plugins, Sortable} from "@shopify/draggable"
+import {computed, getCurrentInstance, onMounted} from "vue";
+import {Sortable} from "@shopify/draggable"
 import * as dayjs from "dayjs";
 import {useTaskStore} from "../store/task.ts";
 import TaskCard from "../components/cards/TaskCard.vue";
@@ -26,25 +26,22 @@ const dateColumns = computed(() => {
   return res
 })
 
-const draftList = ref(null)
 onMounted(() => {
-  if (draftList.value) {
-    const sortable = new Sortable([draftList.value, ...document.querySelectorAll("[data-todo]")], {
-      draggable: "[data-drag]",
-      mirror: {
-        constrainDimensions: true
-      },
-      // plugins: [Plugins.SortAnimation],
-      // swapAnimation: {
-      //   duration: 100
-      // }
-    })
+  const sortable = new Sortable(document.querySelectorAll("[data-drag-list]"), {
+    draggable: "[data-drag]",
+    mirror: {
+      constrainDimensions: true
+    },
+    // plugins: [Plugins.SortAnimation],
+    // swapAnimation: {
+    //   duration: 100
+    // }
+  })
 
-    sortable.on("sortable:stop", onSort)
-  }
+  sortable.on("sortable:stop", onSort)
 })
 
-function onSort(evt) {
+function onSort(evt: any) {
   const newDate = evt.newContainer.dataset.todo
   const itemId = evt.data.dragEvent.originalSource.dataset.id
   if (!newDate || !itemId) return
@@ -71,7 +68,7 @@ function onUpdateStatus(id: string, status: Task['status']) {
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
-      <div ref="draftList" class="flex overflow-auto space-x-2.5 pb-2.5" data-drafts>
+      <div data-drag-list class="flex overflow-auto space-x-2.5 pb-2.5" data-drafts>
         <DraftCard class="grow min-w-[25%] cursor-pointer" v-for="d in draftStore.sortedDrafts" :key="d.id"
                    :data-id="d.id"
                    data-drag
@@ -87,8 +84,9 @@ function onUpdateStatus(id: string, status: Task['status']) {
           <template v-else-if="idx === 1">Tomorrow,</template>
           {{ dayjs(c).format("DD MMM") }}
         </div>
-        <div class="grow space-y-2.5" :data-todo="c">
-          <TaskCard v-for="t in taskStore.getByDate(c)" :task="t" data-drag :data-id="t.id" @update:status="onUpdateStatus(t.id, $event)"></TaskCard>
+        <div class="grow space-y-2.5" :data-todo="c" data-drag-list>
+          <TaskCard v-for="t in taskStore.getByDate(c.toString())" :task="t" data-drag :data-id="t.id"
+                    @update:status="onUpdateStatus(t.id, $event)"></TaskCard>
         </div>
       </div>
     </div>

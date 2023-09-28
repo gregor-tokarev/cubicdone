@@ -7,7 +7,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: "update:status", value: string): void
+  (e: "update:status", value: Task['status']): void
 }>()
 </script>
 

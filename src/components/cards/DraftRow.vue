@@ -2,7 +2,7 @@
 import {Draft} from "../../models/draft.model.ts";
 import * as dayjs from "dayjs";
 
-const props = defineProps<{
+defineProps<{
   draft: Draft
 }>()
 
