@@ -10,7 +10,7 @@ defineProps<{
 <template>
 <div class="px-4 py-2.5 rounded-lg bg-gray-400">
   <p class="">{{draft.title}}</p>
-  <span class="text-xs text-gray-350">{{dayjs(draft.dateCreated).format("DD MM")}}</span>
+  <span class="text-xs text-gray-350">{{dayjs(draft.dateCreated).format("DD MMM, HH:MM")}}</span>
 </div>
 </template>
 

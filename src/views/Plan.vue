@@ -10,7 +10,7 @@ const draftStore = useDraftsStore()
 <template>
   <div class="">
     <!--  Inbox section-->
-    <div>
+    <div class="space-y-2.5">
       <div class="flex items-center space-x-2 text-black text-base">
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
