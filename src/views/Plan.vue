@@ -29,26 +29,29 @@ const dateColumns = computed(() => {
 onMounted(() => {
   const sortable = new Sortable(document.querySelectorAll("[data-drag-list]"), {
     draggable: "[data-drag]",
-    mirror: {
-      constrainDimensions: true
-    },
+    // mirror: {
+    //   constrainDimensions: true
+    // },
   })
 
   sortable.on("sortable:stop", onSort)
 })
 
 function onSort(evt: any) {
-  const newDate = evt.newContainer.dataset.todo
   const itemId = evt.data.dragEvent.originalSource.dataset.id
-  if (!newDate || !itemId) return
+  if (!itemId) return
 
+  const newDate = evt.newContainer.dataset.todo
   if ('drafts' in evt.oldContainer.dataset) {
     taskStore.commitDraft(itemId, newDate)
-  } else {
+  } else if ('drafts' in evt.newContainer.dataset) {
+    draftStore.revertFromTask(itemId)
+  }
+  else {
     taskStore.changeTodoDate(itemId, newDate)
   }
 
-  instance?.proxy?.$forceUpdate()
+  // instance?.proxy?.$forceUpdate()
 }
 
 function onUpdateStatus(id: string, status: Task['status']) {
@@ -64,11 +67,18 @@ function onUpdateStatus(id: string, status: Task['status']) {
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
-      <div data-drag-list class="flex overflow-auto space-x-2.5 pb-2.5" data-drafts>
+      <div data-drag-list class="flex overflow-auto space-x-2.5 pb-2.5 min-h-[78px]" data-drafts>
         <DraftCard class="grow min-w-[25%] cursor-pointer" v-for="d in draftStore.sortedDrafts" :key="d.id"
                    :data-id="d.id"
                    data-drag
                    :draft="d"></DraftCard>
+        <div v-if="!draftStore.sortedDrafts.length"
+             class="flex items-center justify-center grow h-full text-sm text-gray-350">
+          <span>
+            You plan all your Inbox Tasks. Start working or
+            <router-link tag="span" class="text-black underline" to="/inbox">create new drafts</router-link>
+          </span>
+        </div>
       </div>
     </div>
     <!--    Date columns-->

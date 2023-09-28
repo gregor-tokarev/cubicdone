@@ -43,6 +43,10 @@ export const useTaskStore = defineStore("task", {
             this.tasks.splice(taskIdx, 1, {...this.tasks[taskIdx], ...newTask})
 
             return this.tasks[taskIdx]
+        },
+        remove(taskId: string): void {
+            const taskIdx = this.tasks.findIndex(t => t.id === taskId)
+            this.tasks.splice(taskIdx, 1)
         }
     },
     getters: {

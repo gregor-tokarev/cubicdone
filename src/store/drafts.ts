@@ -2,24 +2,39 @@ import {defineStore} from "pinia";
 import {useLocalStorage} from "@vueuse/core";
 import {Draft} from "../models/draft.model.ts";
 import {nanoid} from "nanoid";
+import {useTaskStore} from "./task.ts";
 
 export const useDraftsStore = defineStore("drafts", {
     state: () => ({
         drafts: useLocalStorage<Draft[]>("drafts", []),
     }),
     actions: {
+        revertFromTask(taskId: string) {
+            const taskStore = useTaskStore()
+
+            const task = taskStore.getOne(taskId)
+            if (!task) return
+
+            const draft: Draft = {
+                id: nanoid(3),
+                dateCreated: task.dateCreated,
+                dateUpdated: task.dateUpdated,
+                title: task.title
+            }
+
+            this.drafts.push(draft)
+
+            taskStore.remove(taskId)
+        },
         create(title: string): Draft {
-            console.log("some 1")
             const draft: Draft = {
                 id: nanoid(3),
                 dateCreated: Date.now(),
                 dateUpdated: Date.now(),
                 title
             }
-            console.log("some 2")
 
             this.drafts.push(draft)
-            console.log("some 3")
 
             return draft
         },
