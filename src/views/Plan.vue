@@ -3,12 +3,13 @@
 import Icon from "../components/Icon.vue";
 import {useDraftsStore} from "../store/drafts.ts";
 import DraftCard from "../components/cards/DraftCard.vue";
-import {computed, onMounted} from "vue";
-import {Sortable} from "@shopify/draggable"
-import dayjs from "dayjs";
+import {computed} from "vue";
+import dayjs, {Dayjs} from "dayjs";
 import {useTaskStore} from "../store/task.ts";
 import TaskCard from "../components/cards/TaskCard.vue";
 import {Task} from "../models/task.model.ts";
+import {VueDraggableNext} from "vue-draggable-next"
+import {Draft} from "../models/draft.model.ts";
 
 const draftStore = useDraftsStore()
 const taskStore = useTaskStore()
@@ -24,36 +25,22 @@ const dateColumns = computed(() => {
   return res
 })
 
-onMounted(() => {
-  const sortable = new Sortable(document.querySelectorAll("[data-drag-list]"), {
-    draggable: "[data-drag]",
-    // mirror: {
-    //   constrainDimensions: true
-    // },
-  })
-
-  sortable.on("sortable:stop", onSort)
-})
-
-function onSort(evt: any) {
-  const itemId = evt.data.dragEvent.originalSource.dataset.id
-  if (!itemId) return
-
-  const newDate = evt.newContainer.dataset.todo
-  if ('drafts' in evt.oldContainer.dataset) {
-    taskStore.commitDraft(itemId, newDate)
-  } else if ('drafts' in evt.newContainer.dataset) {
-    draftStore.revertFromTask(itemId)
-  }
-  else {
-    taskStore.changeTodoDate(itemId, newDate)
-  }
-
-  // instance?.proxy?.$forceUpdate()
-}
-
 function onUpdateStatus(id: string, status: Task['status']) {
   taskStore.update(id, {status})
+}
+
+function onMove(date: Dayjs, evt) {
+  if ('added' in evt) {
+    const item = evt['added'].element
+
+    if ('dateTodo' in item) {
+      const task = item as Task
+      taskStore.changeTodoDate(task.id, date.toISOString())
+    } else {
+      const draft = item as Draft
+      taskStore.commitDraft(draft.id, date.toISOString())
+    }
+  }
 }
 </script>
 
@@ -65,10 +52,10 @@ function onUpdateStatus(id: string, status: Task['status']) {
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
-      <div data-drag-list class="flex overflow-auto space-x-2.5 pb-2.5 min-h-[78px]" data-drafts>
+      <VueDraggableNext class="flex overflow-auto space-x-2.5 pb-2.5 min-h-[78px]" :list="draftStore.sortedDrafts"
+                        :group="{name: 'tasks', put: false, pull: 'clone'}">
         <DraftCard class="grow min-w-[25%] cursor-pointer" v-for="d in draftStore.sortedDrafts" :key="d.id"
                    :data-id="d.id"
-                   data-drag
                    :draft="d"></DraftCard>
         <div v-if="!draftStore.sortedDrafts.length"
              class="flex items-center justify-center grow h-full text-sm text-gray-350">
@@ -77,7 +64,7 @@ function onUpdateStatus(id: string, status: Task['status']) {
             <router-link tag="span" class="text-black underline" to="/inbox">create new drafts</router-link>
           </span>
         </div>
-      </div>
+      </VueDraggableNext>
     </div>
     <!--    Date columns-->
     <div class="flex grow space-x-5 mt-5">
@@ -88,10 +75,11 @@ function onUpdateStatus(id: string, status: Task['status']) {
           <template v-else-if="idx === 1">Tomorrow,</template>
           {{ dayjs(c).format("DD MMM") }}
         </div>
-        <div class="grow space-y-2.5" :data-todo="c" data-drag-list>
-          <TaskCard v-for="t in taskStore.getByDate(c.toString())" :task="t" data-drag :data-id="t.id"
+        <VueDraggableNext class="grow space-y-2.5" @change="onMove(c, $event)" :list="taskStore.getByDate(c.toString())"
+                          :group="{name: 'tasks'}">
+          <TaskCard v-for="t in taskStore.getByDate(c.toString())" :key="t.id" :task="t" data-drag :data-id="t.id"
                     @update:status="onUpdateStatus(t.id, $event)"></TaskCard>
-        </div>
+        </VueDraggableNext>
       </div>
     </div>
   </div>

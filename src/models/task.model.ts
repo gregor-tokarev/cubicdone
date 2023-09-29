@@ -2,9 +2,9 @@ export interface Task {
     id: string
     title: string
     status: 'todo' | 'done'
-    dateCreated: number
-    dateUpdated: number
-    dateCommitted: number
-    dateCompleted: number | null
-    dateTodo: number
+    dateCreated: string
+    dateUpdated: string
+    dateCommitted: string
+    dateCompleted: string | null
+    dateTodo: string
 }

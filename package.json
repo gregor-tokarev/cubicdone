@@ -9,13 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@shopify/draggable": "^1.1.1",
     "@vueuse/core": "^10.4.1",
     "dayjs": "^1.11.10",
     "hotkeys-js": "^3.12.0",
     "nanoid": "^5.0.1",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
+    "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
