@@ -29,7 +29,7 @@ function onUpdateStatus(id: string, status: Task['status']) {
   taskStore.update(id, {status})
 }
 
-function onMove(date: Dayjs, evt) {
+function onMove(date: Dayjs, evt: any) {
   if ('added' in evt) {
     const item = evt['added'].element
 

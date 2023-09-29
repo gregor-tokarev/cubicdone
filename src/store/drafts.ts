@@ -3,6 +3,7 @@ import {useLocalStorage} from "@vueuse/core";
 import {Draft} from "../models/draft.model.ts";
 import {nanoid} from "nanoid";
 import {useTaskStore} from "./task.ts";
+import dayjs from "dayjs";
 
 export const useDraftsStore = defineStore("drafts", {
     state: () => ({
@@ -29,8 +30,8 @@ export const useDraftsStore = defineStore("drafts", {
         create(title: string): Draft {
             const draft: Draft = {
                 id: nanoid(3),
-                dateCreated: Date.now(),
-                dateUpdated: Date.now(),
+                dateCreated: dayjs().toISOString(),
+                dateUpdated: dayjs().toISOString(),
                 title
             }
 
@@ -43,7 +44,7 @@ export const useDraftsStore = defineStore("drafts", {
             if (!draft) return
 
             draft.title = title
-            draft.dateUpdated = Date.now()
+            draft.dateUpdated = dayjs().toISOString()
         },
         remove(id: string): void {
             const draftIdx = this.drafts.findIndex(d => d.id === id)
@@ -58,7 +59,7 @@ export const useDraftsStore = defineStore("drafts", {
             }
         },
         sortedDrafts(state) {
-            return state.drafts.sort((prev, next) => next.dateCreated - prev.dateCreated)
+            return state.drafts
         }
     }
 })
