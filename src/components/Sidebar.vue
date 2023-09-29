@@ -9,7 +9,7 @@ const navItems = ref([
 ])
 
 const compact = ref(window.innerWidth < 1400)
-window.addEventListener("resize", evt => {
+window.addEventListener("resize", _ => {
   compact.value = window.innerWidth < 1400;
 })
 </script>
