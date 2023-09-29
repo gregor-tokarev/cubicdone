@@ -40,7 +40,7 @@ onMounted(() => {
 
 <template>
   <div class="flex items-start">
-    <Sidebar class="h-[100vh] w-[250px]"></Sidebar>
+    <Sidebar class="h-[100vh]"></Sidebar>
     <div class="grow">
       <div class="max-w-[980px] mx-auto">
         <router-view></router-view>
