@@ -10,6 +10,8 @@ const draftStore = useDraftsStore()
 const prompt = ref("")
 
 function onCreateDraft() {
+  if (!prompt.value) return
+
   draftStore.create(prompt.value)
 
   prompt.value = ""
