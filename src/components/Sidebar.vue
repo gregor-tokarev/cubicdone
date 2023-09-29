@@ -4,7 +4,7 @@ import {ref} from "vue";
 import Icon from "./Icon.vue";
 
 const navItems = ref([
-  {title: "Plan", icon: "plan", link: "/plan"},
+  {title: "Plan", icon: "plan", link: "/"},
   {title: "Inbox", icon: "inbox", link: "/inbox"}
 ])
 </script>

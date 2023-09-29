@@ -33,7 +33,7 @@ onMounted(() => {
   // go to plan page hotkey
   hotkeys("cmd+g", evt => {
     evt.preventDefault()
-    router.push("/plan")
+    router.push("/")
   })
 })
 </script>
