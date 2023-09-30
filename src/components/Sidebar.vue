@@ -15,7 +15,7 @@ const navItems = ref([
 </clipPath>
 </defs>
 </svg>
-<span>+ i</span>
+<span>+ G</span>
 `},
   {title: "Inbox", icon: "inbox", link: "/inbox", hint: `
   <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,7 +28,7 @@ const navItems = ref([
 </clipPath>
 </defs>
 </svg>
-<span>+ G</span>
+<span>+ I</span>
 `}
 ])
 
