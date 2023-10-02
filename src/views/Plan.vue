@@ -52,7 +52,7 @@ function onMove(date: Dayjs, evt: any) {
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
-      <VueDraggableNext class="flex overflow-auto space-x-2.5 pb-2.5 min-h-[78px]" :list="draftStore.sortedDrafts"
+      <VueDraggableNext class="flex items-center overflow-auto space-x-2.5 pb-2.5 min-h-[78px]" :list="draftStore.sortedDrafts"
                         :group="{name: 'tasks', put: false, pull: 'clone'}">
         <DraftCard class="grow min-w-[25%] cursor-pointer" v-for="d in draftStore.sortedDrafts" :key="d.id"
                    :data-id="d.id"
