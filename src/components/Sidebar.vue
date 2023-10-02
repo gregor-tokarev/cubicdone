@@ -62,7 +62,7 @@ window.addEventListener("resize", _ => {
         @click="compact = !compact"
     >
       <span v-if="!compact">Hide Sidebar</span>
-      <Icon name="exit" class="text-gray-300 group-hover:text-white transition-colors" :class="{'rotate-180': compact}"></Icon>
+      <Icon name="double-arrow" class="text-gray-300 group-hover:text-white transition-colors" :class="{'rotate-180': compact}"></Icon>
     </div>
   </div>
 </template>
