@@ -60,6 +60,8 @@ export const useTaskStore = defineStore("task", {
             }
 
             task.order = newIdx
+
+            return task
         },
         changeTodoDate(taskId: string, newDate: string, newIdx: number): Task | undefined {
             const taskIdx = this.tasks.findIndex(t => t.id === taskId)

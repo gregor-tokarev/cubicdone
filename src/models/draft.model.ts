@@ -3,4 +3,5 @@ export interface Draft {
     title: string
     dateCreated: string
     dateUpdated: string
+    order: number
 }

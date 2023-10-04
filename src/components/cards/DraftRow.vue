@@ -19,9 +19,9 @@ function onEditDraft(event: Event) {
 </script>
 
 <template>
-  <div class="flex items-baseline p-2.5 border-b border-gray-400">
+  <div class="flex items-baseline p-2.5 border-b border-gray-400 cursor-grab active:cursor-grabbing">
     <!--    Title-->
-    <div contenteditable="true" @input="onEditDraft($event)" class="text-base text-black outline-0">{{draft.title}}</div>
+    <div contenteditable="true" @input="onEditDraft($event)" class="text-base text-black outline-0 cursor-text">{{draft.title}}</div>
     <div class="ml-2.5 text-xs text-gray-300">{{dayjs(draft.dateCreated).format("D MMM, HH:mm")}}</div>
   </div>
 </template>
