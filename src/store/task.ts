@@ -11,7 +11,7 @@ export const useTaskStore = defineStore("task", {
         tasks: useLocalStorage<Task[]>("tasks", [])
     }),
     actions: {
-        commitDraft(draftId: string, dateTodo: string): Task | undefined {
+        commitDraft(draftId: string, dateTodo: string, newIdx: number): Task | undefined {
             const draftStore = useDraftsStore()
 
             const draft = draftStore.getOne(draftId)
@@ -25,16 +25,50 @@ export const useTaskStore = defineStore("task", {
                 dateCreated: draft.dateCreated,
                 dateCommitted: dayjs().toISOString(),
                 dateCompleted: null,
+                order: newIdx,
                 dateTodo
             }
 
             this.tasks.push(task)
+            this.setOrder(task.id, task.dateTodo, newIdx) // needed to change other tasks order
+
             draftStore.remove(draftId)
         },
-        changeTodoDate(taskId: string, newDate: string): Task | undefined {
+        setOrder(taskId: string, date: string, order: number): Task | undefined {
+            const task = this.tasks.find(t => t.id === taskId)
+            if (!task) return
+
+
+            task.order = order
+
+            this.getByDate(date).filter(t => t.order >= order && t.id !== taskId).forEach(t => t.order++)
+
+            return task
+        },
+        changeOrder(taskId: string, oldIdx: number, newIdx: number): Task | undefined {
+            const task = this.tasks.find(t => t.id === taskId)
+            if (!task) return
+
+            const dateTasks = this.getByDate(task.dateTodo)
+
+            if (oldIdx > newIdx) {
+                const targetTasks = dateTasks.filter(t => t.order >= newIdx && t.order < oldIdx && t.id !== taskId)
+                targetTasks.forEach(t => t.order++)
+            } else if (oldIdx < newIdx) {
+                const targetTasks = dateTasks.filter(t => t.order <= newIdx && t.order > oldIdx && t.id !== taskId)
+                targetTasks.forEach(t => t.order--)
+            }
+
+            task.order = newIdx
+        },
+        changeTodoDate(taskId: string, newDate: string, newIdx: number): Task | undefined {
             const taskIdx = this.tasks.findIndex(t => t.id === taskId)
+
+            const oldDateTasks = this.tasks.filter(t => dayjs(t.dateTodo).isSame(this.tasks[taskIdx].dateTodo, "day"))
+            oldDateTasks.filter(t => t.order > this.tasks[taskIdx].order).forEach(t => t.order--)
+
             this.tasks[taskIdx].dateTodo = newDate
-            // this.tasks.splice(taskIdx, 1, {...this.tasks[taskIdx], dateTodo: newDate})
+            this.setOrder(taskId, newDate, newIdx)
 
             return this.tasks[taskIdx]
         },
@@ -57,7 +91,7 @@ export const useTaskStore = defineStore("task", {
                 return state.tasks.filter(t => {
                         return dayjs(t.dateTodo).isSame(searchedDate, "day")
                     }
-                )
+                ).sort((prev, next) => prev.order - next.order)
             }
         },
         // groupByDates(state): { [date: string]: Task[] } {

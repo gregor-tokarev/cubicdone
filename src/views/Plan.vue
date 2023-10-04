@@ -35,11 +35,19 @@ function onMove(date: Dayjs, evt: any) {
 
     if ('dateTodo' in item) {
       const task = item as Task
-      taskStore.changeTodoDate(task.id, date.toISOString())
+      taskStore.changeTodoDate(task.id, date.toISOString(), evt['added'].newIndex)
     } else {
       const draft = item as Draft
-      taskStore.commitDraft(draft.id, date.toISOString())
+      taskStore.commitDraft(draft.id, date.toISOString(), evt['added'].newIndex)
     }
+
+  } else if ('moved' in evt) {
+    const item = evt['moved'].element
+
+    const oldIdx = evt['moved'].oldIndex
+    const newIdx = evt['moved'].newIndex
+
+    taskStore.changeOrder(item.id, oldIdx, newIdx)
   }
 }
 </script>
@@ -52,7 +60,8 @@ function onMove(date: Dayjs, evt: any) {
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
-      <VueDraggableNext class="flex items-center overflow-auto space-x-2.5 pb-2.5 min-h-[78px]" :list="draftStore.sortedDrafts"
+      <VueDraggableNext class="flex items-center overflow-auto space-x-2.5 pb-2.5 min-h-[78px]"
+                        :list="draftStore.sortedDrafts"
                         :group="{name: 'tasks', put: false, pull: 'clone'}">
         <DraftCard class="grow min-w-[25%] cursor-pointer" v-for="d in draftStore.sortedDrafts" :key="d.id"
                    :data-id="d.id"
