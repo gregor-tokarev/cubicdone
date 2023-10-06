@@ -56,10 +56,11 @@ export const useDraftsStore = defineStore("drafts", {
 
             if (oldIdx > newIdx) {
                 const targetDrafts = this.drafts.filter(t => t.order >= newIdx && t.order < oldIdx && t.id !== draftId)
-                console.log(targetDrafts)
+
                 targetDrafts.forEach(t => t.order++)
             } else if (oldIdx < newIdx) {
                 const targetDrafts = this.drafts.filter(t => t.order <= newIdx && t.order > oldIdx && t.id !== draftId)
+
                 targetDrafts.forEach(t => t.order--)
             }
 

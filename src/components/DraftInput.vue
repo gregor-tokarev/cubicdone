@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import Icon from "./Icon.vue";
-import {getCurrentInstance, onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {InputPart} from "../models/input-part.model.ts";
 import {nanoid} from "nanoid";
 import Contenteditable from "./Contenteditable.vue";
+import {useProjectStore} from "../store/project.model.ts";
+import {Project} from "../models/project.model.ts";
+import Fuse from "fuse.js";
+import FuseResult = Fuse.FuseResult;
 
 defineProps<{
   placeholder: string,
@@ -15,7 +19,7 @@ const emit = defineEmits<{
   (e: "enter", value: void): void
 }>()
 
-const instance = getCurrentInstance()
+const projectStore = useProjectStore()
 
 const parts = ref<InputPart[]>([{type: "text", content: "", id: nanoid(3)}])
 const partsContainer = ref<HTMLElement | null>(null)
@@ -41,11 +45,18 @@ function focusOnPart(el: HTMLElement) {
 }
 
 const projectQuery = ref("")
+const projectQueryResult = ref<FuseResult<Project>[]>([])
 const openProjectSearch = ref(false)
 
 watch(currentPartIdx, newValue => {
   const part = parts.value[newValue]
   if (part.type === 'project') openProjectSearch.value = true
+})
+
+watch(projectQuery, newValue => {
+  const searchIndex = projectStore.getIndex
+
+  projectQueryResult.value = searchIndex.search(newValue)
 })
 
 function onUpdate(event: Event) {
@@ -68,7 +79,32 @@ function onUpdate(event: Event) {
 
       focusOnPart(nextNode)
     })
-  } else if (currentPart.type === 'project' && evt.code === "Backspace") {
+  } else if (evt.code === "Backspace" && currentPart.type === 'text') {
+    setTimeout(() => {
+      if (!partsContainer.value) return
+
+      if (currentPart.content === "") {
+        parts.value.splice(currentPartIdx.value, 1)
+
+        const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
+        focusOnPart(focusNode)
+      }
+    })
+  } else if (currentPart.type === 'project') {
+    handleProject(evt)
+  }
+}
+
+const projectOptionSelected = ref(0)
+
+function handleProject(evt: KeyboardEvent) {
+  const currentPart = parts.value[currentPartIdx.value];
+
+  setTimeout(() => {
+    projectQuery.value = currentPart.content.replace(/#/g, "")
+  })
+
+  if (evt.code === "Backspace") {
     setTimeout(() => {
       if (!partsContainer.value) return
 
@@ -82,20 +118,53 @@ function onUpdate(event: Event) {
         openProjectSearch.value = false
       }
     })
-  } else if (currentPart.type === 'project') {
+  } else if (evt.code === "Enter") {
+    evt.preventDefault()
+
+    if (projectOptionSelected.value === projectQueryResult.value.length) {
+      projectStore.create(projectQuery.value)
+    } else {
+      parts.value[currentPartIdx.value].projectId = projectQueryResult.value[projectOptionSelected.value].item.id
+    }
+
+    openProjectSearch.value = false
+    projectQuery.value = ""
+
+    const textPart = {id: nanoid(3), content: "", type: "text"}
+    parts.value.push(textPart)
+
     setTimeout(() => {
-      projectQuery.value = currentPart.content.replace(/#/g, "")
+      parts.value.forEach((p, idx) => {
+        if (p.type === "project" && p.id !== parts.value[currentPartIdx.value].id) {
+          parts.value.splice(idx, 1, {...p, type: "text", projectId: undefined})
+        }
+      })
+
+      if (!partsContainer.value) return
+      const focusElement = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
+      focusOnPart(focusElement)
+
+
     })
+  } else if (evt.code === "ArrowUp") {
+    evt.preventDefault();
+
+    if (projectOptionSelected.value < 1) {
+      projectOptionSelected.value = projectQueryResult.value.length
+    } else {
+      projectOptionSelected.value--
+    }
+
+  } else if (evt.code === "ArrowDown") {
+    evt.preventDefault();
+
+    if (projectOptionSelected.value > projectQueryResult.value.length - 1) {
+      projectOptionSelected.value = 0
+    } else {
+      projectOptionSelected.value++
+    }
   }
 }
-
-const inputField = ref(null)
-onMounted(() => {
-  if (inputField.value) {
-    const el = inputField.value as unknown as HTMLElement
-    el.focus()
-  }
-})
 </script>
 
 <template>
@@ -119,19 +188,26 @@ onMounted(() => {
           </Contenteditable>
         </template>
       </div>
-      <!--    <input type="text" :value="modelValue" :placeholder="placeholder"
-                 ref="inputField"
-                 @input="onUpdate"
-                 @keyup.enter="emit('enter')"
-                 class="bg-transparent placeholder-gray-350 text-base w-full border-0 outline-0">-->
     </div>
     <!--    Project select-->
-    <div v-if="openProjectSearch" class="absolute bottom-0 left-0 right-0 translate-y-[calc(100%+4px)] rounded-lg bg-gray-400 py-1.5">
+    <div v-if="openProjectSearch"
+         class="absolute bottom-0 left-0 right-0 translate-y-[calc(100%+4px)] rounded-lg bg-gray-400 py-1.5">
       <!--      Project item-->
-      <div class="flex items-center py-1.5 px-2.5 space-x-1.5">
-        <!--        Color circle-->
-        <div class="rounded-full w-[11px] h-[11px] bg-amber-400"></div>
-        <span>procollab</span>
+      <template v-if="projectQueryResult">
+        <div v-for="(p, idx) in projectQueryResult"
+             class="flex items-center py-1.5 px-2.5 space-x-1.5"
+             :class="{'bg-gray-450': projectOptionSelected === idx}"
+        >
+          <!--        Color circle-->
+          <div class="rounded-full w-[11px] h-[11px] bg-amber-400" :class="{[`bg-${p.item.color}-400`]: true}"></div>
+          <span>{{ p.item.title }}</span>
+        </div>
+      </template>
+      <div
+          class="flex items-center py-1.5 px-2.5 space-x-1.5"
+          :class="{'bg-gray-450': projectOptionSelected === projectQueryResult.length}"
+      >
+        Create Project "{{ projectQuery }}"
       </div>
     </div>
   </div>
