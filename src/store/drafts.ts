@@ -78,7 +78,7 @@ export const useDraftsStore = defineStore("drafts", {
             return state.drafts.sort((prev, next) => prev.order - next.order)
         },
         maxOrder(state): number {
-            return this.drafts.length ? Math.max(...this.drafts.map(d => d.order)) : -1
+            return state.drafts.length ? Math.max(...state.drafts.map(d => d.order)) : -1
         }
     }
 })
