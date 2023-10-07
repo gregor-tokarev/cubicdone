@@ -33,8 +33,6 @@ function onFocus(event: Event) {
   currentPartIdx.value = Array.from(partsContainer.value.children).indexOf(target)
 }
 
-
-
 watch(currentPartIdx, newValue => {
   const part = parts.value[newValue]
   if (part.type === 'project') openProjectSearch.value = true
@@ -49,31 +47,49 @@ function onUpdate(event: Event) {
   const currentPart = parts.value[currentPartIdx.value];
 
   if (evt.key === '#' && currentPart.type === 'text') {
-    event.preventDefault();
-
-    const projectPart = {type: 'project', projectId: null, id: nanoid(3), content: "#"}
-    parts.value.splice(currentPartIdx.value + 1, 0, projectPart)
-
-    setTimeout(() => {
-      if (!partsContainer.value) return
-      const nextNode = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
-
-      focusOnEditableElement(nextNode)
-    })
+    handleTextHashtag(evt)
   } else if (evt.code === "Backspace" && currentPart.type === 'text') {
-    setTimeout(() => {
-      if (!partsContainer.value || currentPartIdx.value === 0) return
-
-      if (currentPart.content === "") {
-        parts.value.splice(currentPartIdx.value, 1)
-
-        const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
-        focusOnEditableElement(focusNode)
-      }
-    })
+    handleTextBackspace(evt)
   } else if (currentPart.type === 'project') {
     handleProject(evt)
   }
+}
+
+/**
+ * Triggers every time `#` typed in text block
+ * @param evt
+ */
+function handleTextHashtag(evt: KeyboardEvent) {
+  evt.preventDefault();
+
+  const projectPart = {type: 'project', projectId: null, id: nanoid(3), content: "#"}
+  parts.value.splice(currentPartIdx.value + 1, 0, projectPart)
+
+  setTimeout(() => {
+    if (!partsContainer.value) return
+    const nextNode = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
+
+    focusOnEditableElement(nextNode)
+  })
+}
+
+/**
+ * Triggers every time `Backspace` pressed in text block
+ * @param _evt
+ */
+function handleTextBackspace(_evt: KeyboardEvent) {
+  const currentPart = parts.value[currentPartIdx.value];
+
+  setTimeout(() => {
+    if (!partsContainer.value || currentPartIdx.value === 0) return
+
+    if (currentPart.content === "") {
+      parts.value.splice(currentPartIdx.value, 1)
+
+      const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
+      focusOnEditableElement(focusNode)
+    }
+  })
 }
 
 const projectQuery = ref("")
@@ -87,73 +103,103 @@ watch(projectQuery, newValue => {
   projectQueryResult.value = searchIndex.search(newValue)
 })
 
+/**
+ * Triggers every time something typed in project block
+ * @param evt
+ */
 function handleProject(evt: KeyboardEvent) {
   const currentPart = parts.value[currentPartIdx.value];
 
   setTimeout(() => {
     if (evt.code !== "ArrowUp" && evt.code !== "ArrowDown")
-    projectQuery.value = currentPart.content.replace(/#/g, "")
+      projectQuery.value = currentPart.content.replace(/#/g, "")
   })
 
   if (evt.code === "Backspace") {
-    setTimeout(() => {
-      if (!partsContainer.value) return
-
-      if (currentPart.content === "") {
-        parts.value.splice(currentPartIdx.value, 1)
-
-        const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
-        focusOnEditableElement(focusNode)
-
-        projectQuery.value = ""
-        openProjectSearch.value = false
-      }
-    })
+    handleProjectBackspace(evt)
   } else if (evt.code === "Enter") {
-    evt.preventDefault()
-
-    if (projectOptionSelected.value === projectQueryResult.value.length) {
-      projectStore.create(projectQuery.value)
-    } else {
-      parts.value[currentPartIdx.value].projectId = projectQueryResult.value[projectOptionSelected.value].item.id
-    }
-
-    openProjectSearch.value = false
-    projectQuery.value = ""
-
-    const textPart = {id: nanoid(3), content: "", type: "text"}
-    parts.value.push(textPart)
-
-    setTimeout(() => {
-      parts.value.forEach((p, idx) => {
-        if (p.type === "project" && p.id !== parts.value[currentPartIdx.value].id) {
-          parts.value.splice(idx, 1, {...p, type: "text", projectId: undefined})
-        }
-      })
-
-      if (!partsContainer.value) return
-      const focusElement = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
-      focusOnEditableElement(focusElement)
-
-
-    })
+    handleProjectEnter(evt)
   } else if (evt.code === "ArrowUp" || evt.code === "ArrowDown") {
-    evt.preventDefault();
+    handleProjectArrows(evt)
+  }
+}
 
-    if (evt.code === "ArrowUp") {
-      if (projectOptionSelected.value < 1) {
-        projectOptionSelected.value = projectQueryResult.value.length
-      } else {
-        projectOptionSelected.value--
-      }
-    } else if (evt.code === "ArrowDown") {
-      if (projectOptionSelected.value > projectQueryResult.value.length - 1) {
-        projectOptionSelected.value = 0
-      } else {
-        projectOptionSelected.value++
-      }
+/**
+ * Triggers every time `Backspace` pressed in project block
+ * @param _evt
+ */
+function handleProjectBackspace(_evt: KeyboardEvent) {
+  const currentPart = parts.value[currentPartIdx.value];
+
+  setTimeout(() => {
+    if (!partsContainer.value) return
+
+    if (currentPart.content === "") {
+      parts.value.splice(currentPartIdx.value, 1)
+
+      const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
+      focusOnEditableElement(focusNode)
+
+      projectQuery.value = ""
+      openProjectSearch.value = false
     }
+  })
+}
 
+/**
+ * Triggers every time `Enter` pressed in project block
+ * @param evt
+ */
+function handleProjectEnter(evt: KeyboardEvent) {
+  evt.preventDefault()
+
+  if (projectOptionSelected.value === projectQueryResult.value.length) {
+    projectStore.create(projectQuery.value)
+  } else {
+    parts.value[currentPartIdx.value].projectId = projectQueryResult.value[projectOptionSelected.value].item.id
+  }
+
+  openProjectSearch.value = false
+  projectQuery.value = ""
+
+  const textPart = {id: nanoid(3), content: "", type: "text"}
+  parts.value.push(textPart)
+
+  setTimeout(() => {
+    parts.value.forEach((p, idx) => {
+      if (p.type === "project" && p.id !== parts.value[currentPartIdx.value].id) {
+        parts.value.splice(idx, 1, {...p, type: "text", projectId: undefined})
+      }
+    })
+
+    if (!partsContainer.value) return
+    const focusElement = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
+    focusOnEditableElement(focusElement)
+  })
+}
+
+/**
+ * Triggers every time Arrow keys get pressed in project block
+ * @param evt
+ */
+function handleProjectArrows(evt: KeyboardEvent) {
+  evt.preventDefault();
+
+  if (evt.code === "ArrowUp") {
+    if (projectOptionSelected.value < 1) {
+      projectOptionSelected.value = projectQueryResult.value.length
+    } else {
+      projectOptionSelected.value--
+    }
+  } else if (evt.code === "ArrowDown") {
+    if (projectOptionSelected.value > projectQueryResult.value.length - 1) {
+      projectOptionSelected.value = 0
+    } else {
+      projectOptionSelected.value++
+    }
+  }
+
+  if (projectQueryResult.value[projectOptionSelected.value]?.item) {
     parts.value[currentPartIdx.value].content = "#" + projectQueryResult.value[projectOptionSelected.value].item.title
   }
 }
