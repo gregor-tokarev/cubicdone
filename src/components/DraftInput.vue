@@ -8,6 +8,7 @@ import {useProjectStore} from "../store/project.model.ts";
 import {Project} from "../models/project.model.ts";
 import Fuse from "fuse.js";
 import FuseResult = Fuse.FuseResult;
+import {focusOnEditableElement} from "../utils/focus.ts";
 
 defineProps<{
   placeholder: string,
@@ -32,31 +33,11 @@ function onFocus(event: Event) {
   currentPartIdx.value = Array.from(partsContainer.value.children).indexOf(target)
 }
 
-function focusOnPart(el: HTMLElement) {
-  const range = document.createRange()
-  const sel = window.getSelection();
-  if (sel) {
-    sel.removeAllRanges();
-    range.selectNodeContents(el);
-    range.collapse(false)
-    sel.addRange(range);
-    el.focus()
-  }
-}
 
-const projectQuery = ref("")
-const projectQueryResult = ref<FuseResult<Project>[]>([])
-const openProjectSearch = ref(false)
 
 watch(currentPartIdx, newValue => {
   const part = parts.value[newValue]
   if (part.type === 'project') openProjectSearch.value = true
-})
-
-watch(projectQuery, newValue => {
-  const searchIndex = projectStore.getIndex
-
-  projectQueryResult.value = searchIndex.search(newValue)
 })
 
 function onUpdate(event: Event) {
@@ -77,7 +58,7 @@ function onUpdate(event: Event) {
       if (!partsContainer.value) return
       const nextNode = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
 
-      focusOnPart(nextNode)
+      focusOnEditableElement(nextNode)
     })
   } else if (evt.code === "Backspace" && currentPart.type === 'text') {
     setTimeout(() => {
@@ -87,7 +68,7 @@ function onUpdate(event: Event) {
         parts.value.splice(currentPartIdx.value, 1)
 
         const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
-        focusOnPart(focusNode)
+        focusOnEditableElement(focusNode)
       }
     })
   } else if (currentPart.type === 'project') {
@@ -95,12 +76,22 @@ function onUpdate(event: Event) {
   }
 }
 
+const projectQuery = ref("")
+const projectQueryResult = ref<FuseResult<Project>[]>([])
+const openProjectSearch = ref(false)
+
 const projectOptionSelected = ref(0)
+watch(projectQuery, newValue => {
+  const searchIndex = projectStore.getIndex
+
+  projectQueryResult.value = searchIndex.search(newValue)
+})
 
 function handleProject(evt: KeyboardEvent) {
   const currentPart = parts.value[currentPartIdx.value];
 
   setTimeout(() => {
+    if (evt.code !== "ArrowUp" && evt.code !== "ArrowDown")
     projectQuery.value = currentPart.content.replace(/#/g, "")
   })
 
@@ -112,7 +103,7 @@ function handleProject(evt: KeyboardEvent) {
         parts.value.splice(currentPartIdx.value, 1)
 
         const focusNode = partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement
-        focusOnPart(focusNode)
+        focusOnEditableElement(focusNode)
 
         projectQuery.value = ""
         openProjectSearch.value = false
@@ -142,27 +133,28 @@ function handleProject(evt: KeyboardEvent) {
 
       if (!partsContainer.value) return
       const focusElement = partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement
-      focusOnPart(focusElement)
+      focusOnEditableElement(focusElement)
 
 
     })
-  } else if (evt.code === "ArrowUp") {
+  } else if (evt.code === "ArrowUp" || evt.code === "ArrowDown") {
     evt.preventDefault();
 
-    if (projectOptionSelected.value < 1) {
-      projectOptionSelected.value = projectQueryResult.value.length
-    } else {
-      projectOptionSelected.value--
+    if (evt.code === "ArrowUp") {
+      if (projectOptionSelected.value < 1) {
+        projectOptionSelected.value = projectQueryResult.value.length
+      } else {
+        projectOptionSelected.value--
+      }
+    } else if (evt.code === "ArrowDown") {
+      if (projectOptionSelected.value > projectQueryResult.value.length - 1) {
+        projectOptionSelected.value = 0
+      } else {
+        projectOptionSelected.value++
+      }
     }
 
-  } else if (evt.code === "ArrowDown") {
-    evt.preventDefault();
-
-    if (projectOptionSelected.value > projectQueryResult.value.length - 1) {
-      projectOptionSelected.value = 0
-    } else {
-      projectOptionSelected.value++
-    }
+    parts.value[currentPartIdx.value].content = "#" + projectQueryResult.value[projectOptionSelected.value].item.title
   }
 }
 </script>
@@ -175,7 +167,7 @@ function handleProject(evt: KeyboardEvent) {
       <div class="flex items-center grow space-x-1" @keydown="onUpdate($event)"
            ref="partsContainer">
         <template v-for="part in parts" :key="part.id">
-          <Contenteditable class="outline-0" :class="{'grow': parts.length === 1}" v-if="part.type === 'text'"
+          <Contenteditable class="outline-0" tag="p" :class="{'grow': parts.length === 1}" v-if="part.type === 'text'"
                            @focus="onFocus($event)"
                            v-model="part.content"
           >
@@ -185,6 +177,7 @@ function handleProject(evt: KeyboardEvent) {
                             [`!bg-${projectStore.getOne(part.projectId)?.color}-100`]: part.projectId,
                             [`!text-${projectStore.getOne(part.projectId)?.color}-400`]: part.projectId
                           }"
+                           tag="p"
                            v-else-if="part.type === 'project'"
                            v-model="part.content"
                            @focus="onFocus($event)"
