@@ -81,7 +81,7 @@ function onUpdate(event: Event) {
     })
   } else if (evt.code === "Backspace" && currentPart.type === 'text') {
     setTimeout(() => {
-      if (!partsContainer.value) return
+      if (!partsContainer.value || currentPartIdx.value === 0) return
 
       if (currentPart.content === "") {
         parts.value.splice(currentPartIdx.value, 1)
@@ -181,6 +181,10 @@ function handleProject(evt: KeyboardEvent) {
           >
           </Contenteditable>
           <Contenteditable class="py-[2.5px] px-[3px] rounded-lg bg-gray-450 outline-0"
+                           :class="{
+                            [`!bg-${projectStore.getOne(part.projectId)?.color}-100`]: part.projectId,
+                            [`!text-${projectStore.getOne(part.projectId)?.color}-400`]: part.projectId
+                          }"
                            v-else-if="part.type === 'project'"
                            v-model="part.content"
                            @focus="onFocus($event)"

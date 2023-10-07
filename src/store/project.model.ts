@@ -28,6 +28,11 @@ export const useProjectStore = defineStore("project", {
             return new Fuse<Project>(state.projects, {
                 keys: [{name: "title"}]
             })
+        },
+        getOne(state) {
+            return (id: string): Project | undefined => {
+                return state.projects.find(p => p.id === id)
+            }
         }
     }
 })

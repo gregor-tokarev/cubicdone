@@ -18,5 +18,10 @@ export default {
             }
         }
     },
+
+    safelist: [
+        {pattern: /^!?bg-.*-(100|400)$/},
+        {pattern: /^!?text-.*-(100|400)$/}
+    ],
     plugins: []
 }
