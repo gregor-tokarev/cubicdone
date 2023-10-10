@@ -73,7 +73,7 @@ function handleArrows(evt: KeyboardEvent) {
   if (evt.key === "ArrowLeft" && currentPartIdx.value !== 0 && selection.focusOffset === 0) {
     focusOnEditableElement(partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement)
   } else if (evt.key === "ArrowRight" && currentPartIdx.value !== parts.value.length - 1 && selection.focusOffset === selection.focusNode.textContent.length) {
-    focusOnEditableElement(partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement)
+    focusOnEditableElement(partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement, 'start')
   }
 }
 
