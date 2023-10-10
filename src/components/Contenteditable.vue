@@ -17,7 +17,6 @@ const emits = defineEmits<{
 const editable = ref<HTMLElement | null>(null)
 
 watch(() => props.modelValue, value => {
-  // setTimeout(() => {
   if (!editable.value) return
 
   if (value !== editable.value.innerText) {
@@ -25,10 +24,6 @@ watch(() => props.modelValue, value => {
 
     focusOnEditableElement(editable.value)
   }
-  // if (Math.abs(value.length - editable.value.innerText.length) > 1 || value.slice(0, editable.value.innerText.length) !== editable.value.innerText) {
-  //   editable.value.innerText = value
-  // }
-  // })
 })
 
 onMounted(() => {
@@ -41,7 +36,9 @@ async function onInput(event: KeyboardEvent) {
   const target = event.currentTarget as HTMLElement;
   if (!target) return
 
-  emits("update:modelValue", target.innerText)
+  setTimeout(() => {
+    emits("update:modelValue", target.innerText)
+  })
 }
 </script>
 
