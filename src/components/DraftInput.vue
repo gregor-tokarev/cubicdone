@@ -119,7 +119,7 @@ function handleProject(evt: KeyboardEvent) {
     handleProjectBackspace(evt)
   } else if (evt.code === "Enter") {
     handleProjectEnter(evt)
-  } else if (evt.code === "ArrowUp" || evt.code === "ArrowDown") {
+  } else if (evt.code.includes("Arrow")) {
     handleProjectArrows(evt)
   }
 }
@@ -154,7 +154,8 @@ function handleProjectEnter(evt: KeyboardEvent) {
   evt.preventDefault()
 
   if (projectOptionSelected.value === projectQueryResult.value.length) {
-    projectStore.create(projectQuery.value)
+    const project = projectStore.create(projectQuery.value)
+    parts.value[currentPartIdx.value].projectId = project.id
   } else {
     parts.value[currentPartIdx.value].projectId = projectQueryResult.value[projectOptionSelected.value].item.id
   }
