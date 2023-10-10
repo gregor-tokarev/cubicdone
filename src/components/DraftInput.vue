@@ -35,7 +35,14 @@ function onFocus(event: Event) {
 
 watch(currentPartIdx, newValue => {
   const part = parts.value[newValue]
-  if (part.type === 'project') openProjectSearch.value = true
+
+  openProjectSearch.value = part.type === 'project';
+
+  if (part.type !== "project") {
+    projectQuery.value = ""
+    projectQueryResult.value = []
+    projectOptionSelected.value = 0
+  }
 })
 
 function onUpdate(event: Event) {
@@ -46,12 +53,57 @@ function onUpdate(event: Event) {
 
   const currentPart = parts.value[currentPartIdx.value];
 
-  if (evt.key === '#' && currentPart.type === 'text') {
-    handleTextHashtag(evt)
-  } else if (evt.code === "Backspace" && currentPart.type === 'text') {
-    handleTextBackspace(evt)
+  if (evt.key === "ArrowLeft" || evt.key === "ArrowRight") {
+    handleArrows(evt)
+  }
+
+  if (currentPart.type === 'text') {
+    handleText(evt)
   } else if (currentPart.type === 'project') {
     handleProject(evt)
+  }
+}
+
+function handleArrows(evt: KeyboardEvent) {
+  if (!partsContainer.value) return
+
+  const selection = document.getSelection()
+  if (!selection || !selection.focusNode) return
+
+  if (evt.key === "ArrowLeft" && currentPartIdx.value !== 0 && selection.focusOffset === 0) {
+    focusOnEditableElement(partsContainer.value.children[currentPartIdx.value - 1] as HTMLElement)
+  } else if (evt.key === "ArrowRight" && currentPartIdx.value !== parts.value.length - 1 && selection.focusOffset === selection.focusNode.textContent.length) {
+    focusOnEditableElement(partsContainer.value.children[currentPartIdx.value + 1] as HTMLElement)
+  }
+}
+
+function handleText(evt: KeyboardEvent) {
+  if (evt.key === '#') {
+    handleTextHashtag(evt)
+  } else if (evt.key === "Backspace") {
+    handleTextBackspace(evt)
+  }
+}
+
+
+/**
+ * Triggers every time something typed in project block
+ * @param evt
+ */
+function handleProject(evt: KeyboardEvent) {
+  const currentPart = parts.value[currentPartIdx.value];
+
+  setTimeout(() => {
+    if (evt.code !== "ArrowUp" && evt.code !== "ArrowDown")
+      projectQuery.value = currentPart.content.replace(/#/g, "")
+  })
+
+  if (evt.code === "Backspace") {
+    handleProjectBackspace(evt)
+  } else if (evt.code === "Enter") {
+    handleProjectEnter(evt)
+  } else if (evt.code === "ArrowUp" || evt.code === "ArrowDown") {
+    handleProjectArrows(evt)
   }
 }
 
@@ -103,26 +155,6 @@ watch(projectQuery, newValue => {
   projectQueryResult.value = searchIndex.search(newValue)
 })
 
-/**
- * Triggers every time something typed in project block
- * @param evt
- */
-function handleProject(evt: KeyboardEvent) {
-  const currentPart = parts.value[currentPartIdx.value];
-
-  setTimeout(() => {
-    if (evt.code !== "ArrowUp" && evt.code !== "ArrowDown")
-      projectQuery.value = currentPart.content.replace(/#/g, "")
-  })
-
-  if (evt.code === "Backspace") {
-    handleProjectBackspace(evt)
-  } else if (evt.code === "Enter") {
-    handleProjectEnter(evt)
-  } else if (evt.code.includes("Arrow")) {
-    handleProjectArrows(evt)
-  }
-}
 
 /**
  * Triggers every time `Backspace` pressed in project block
