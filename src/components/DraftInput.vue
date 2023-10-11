@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Icon from "./Icon.vue";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { InputGenericPart } from "../models/input-part.model.ts";
 import { nanoid } from "nanoid";
 import Contenteditable from "./Contenteditable.vue";
@@ -22,14 +22,10 @@ const emit = defineEmits<{
 
 const projectStore = useProjectStore();
 
-// const parts = ref<InputPart[]>([{ type: "text", content: "", id: nanoid(3) }]);
-// watch(
-//   parts,
-//   (newValue) => {
-//     emit("update:modelValue", newValue);
-//   },
-//   { deep: true },
-// );
+onMounted(() => {
+  if (!partsContainer.value) return;
+  focusOnEditableElement(partsContainer.value.children[0] as HTMLElement);
+});
 
 const partsContainer = ref<HTMLElement | null>(null);
 const currentPartIdx = ref(0);
