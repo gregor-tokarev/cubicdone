@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Icon from "./Icon.vue";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { InputPart } from "../models/input-part.model.ts";
 import { nanoid } from "nanoid";
 import Contenteditable from "./Contenteditable.vue";
@@ -171,6 +171,12 @@ const projectQuery = ref("");
 const projectQueryResult = ref<FuseResult<Project>[]>([]);
 const openProjectSearch = ref(false);
 
+const projectSelectOptions = computed<Project[]>(() => {
+  return projectQuery.value
+    ? projectQueryResult.value.map((r) => r.item)
+    : projectStore.projects;
+});
+
 const projectOptionSelected = ref(0);
 watch(projectQuery, (newValue) => {
   const searchIndex = projectStore.getIndex;
@@ -209,7 +215,7 @@ function handleProjectBackspace(_evt: KeyboardEvent) {
 function handleProjectEnter(evt: KeyboardEvent) {
   evt.preventDefault();
 
-  if (projectOptionSelected.value === projectQueryResult.value.length) {
+  if (projectOptionSelected.value === projectSelectOptions.value.length) {
     const project = projectStore.create(projectQuery.value);
     parts.value[currentPartIdx.value].projectId = project.id;
   } else {
@@ -259,16 +265,16 @@ function handleProjectArrows(evt: KeyboardEvent) {
       projectOptionSelected.value--;
     }
   } else if (evt.code === "ArrowDown") {
-    if (projectOptionSelected.value > projectQueryResult.value.length - 1) {
+    if (projectOptionSelected.value > projectSelectOptions.value.length - 1) {
       projectOptionSelected.value = 0;
     } else {
       projectOptionSelected.value++;
     }
   }
 
-  if (projectQueryResult.value[projectOptionSelected.value]?.item) {
+  if (projectSelectOptions.value[projectOptionSelected.value]) {
     parts.value[currentPartIdx.value].content =
-      "#" + projectQueryResult.value[projectOptionSelected.value].item.title;
+      "#" + projectSelectOptions.value[projectOptionSelected.value].title;
   }
 }
 </script>
@@ -316,24 +322,25 @@ function handleProjectArrows(evt: KeyboardEvent) {
       class="absolute bottom-0 left-0 right-0 translate-y-[calc(100%+4px)] rounded-lg bg-gray-400 py-1.5"
     >
       <!--      Project item-->
-      <template v-if="projectQueryResult">
+      <template v-if="projectSelectOptions">
         <div
-          v-for="(p, idx) in projectQueryResult"
+          v-for="(p, idx) in projectSelectOptions"
           class="flex items-center space-x-1.5 px-2.5 py-1.5"
           :class="{ 'bg-gray-450': projectOptionSelected === idx }"
         >
           <!--        Color circle-->
           <div
             class="h-[11px] w-[11px] rounded-full bg-amber-400"
-            :class="{ [`bg-${p.item.color}-400`]: true }"
+            :class="{ [`bg-${p.color}-400`]: true }"
           ></div>
-          <span>{{ p.item.title }}</span>
+          <span>{{ p.title }}</span>
         </div>
       </template>
       <div
+        v-if="projectQuery"
         class="flex items-center space-x-1.5 px-2.5 py-1.5"
         :class="{
-          'bg-gray-450': projectOptionSelected === projectQueryResult.length,
+          'bg-gray-450': projectOptionSelected === projectSelectOptions.length,
         }"
       >
         Create Project "{{ projectQuery }}"
