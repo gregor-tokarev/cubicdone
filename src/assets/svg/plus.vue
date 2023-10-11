@@ -1,13 +1,21 @@
 <template>
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_2_34)">
-            <path d="M11.9167 11.9167V5.41666H14.0833V11.9167H20.5833V14.0833H14.0833V20.5833H11.9167V14.0833H5.41666V11.9167H11.9167Z" fill="currentColor"/>
-        </g>
-        <defs>
-            <clipPath id="clip0_2_34">
-                <rect width="26" height="26" fill="white"/>
-            </clipPath>
-        </defs>
-    </svg>
-
+  <svg
+    width="26"
+    height="26"
+    viewBox="0 0 26 26"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clip-path="url(#clip0_2_34)">
+      <path
+        d="M11.9167 11.9167V5.41666H14.0833V11.9167H20.5833V14.0833H14.0833V20.5833H11.9167V14.0833H5.41666V11.9167H11.9167Z"
+        fill="currentColor"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2_34">
+        <rect width="26" height="26" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
 </template>

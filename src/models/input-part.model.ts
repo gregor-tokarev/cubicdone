@@ -1,7 +1,7 @@
 export interface InputPart {
-    id: string
-    type: string
-    content: string
+  id: string;
+  type: string;
+  content: string;
 }
 
 // export class InputText implements InputPart {
