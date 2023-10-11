@@ -4,6 +4,14 @@ export interface InputPart {
   content: string;
 }
 
+export interface InputProjectPart extends InputPart {
+  projectId: string | null;
+}
+
+export interface InputTextPart extends InputPart {}
+
+export type InputGenericPart = InputTextPart | InputProjectPart;
+
 // export class InputText implements InputPart {
 //     readonly type = 'text'
 //     id = nanoid(3)

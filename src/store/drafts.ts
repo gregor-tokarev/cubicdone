@@ -26,12 +26,13 @@ export const useDraftsStore = defineStore("drafts", {
     //
     //     taskStore.remove(taskId)
     // },
-    create(title: string): Draft {
+    create(title: string, projectId: string | null): Draft {
       const draft: Draft = {
         id: nanoid(3),
         dateCreated: dayjs().toISOString(),
         dateUpdated: dayjs().toISOString(),
         order: this.maxOrder + 1,
+        projectId,
         title,
       };
 

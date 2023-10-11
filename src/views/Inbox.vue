@@ -4,17 +4,29 @@ import { ref } from "vue";
 import { useDraftsStore } from "../store/drafts.ts";
 import DraftRow from "../components/cards/DraftRow.vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import { nanoid } from "nanoid";
+import { InputGenericPart } from "../models/input-part.model.ts";
 
 const draftStore = useDraftsStore();
 
-const prompt = ref("");
+const prompt = ref<InputGenericPart[]>([
+  { type: "text", content: "", id: nanoid(3) },
+]);
 
 function onCreateDraft() {
   if (!prompt.value) return;
 
-  draftStore.create(prompt.value);
+  const text = prompt.value.reduce((acc, p) => {
+    if (p.type === "text") {
+      acc += p.content;
+    }
 
-  prompt.value = "";
+    return acc;
+  }, "");
+
+  const projectPart = prompt.value.find((p) => p.type === "project");
+
+  draftStore.create(text, projectPart?.projectId ?? null);
 }
 
 function onEditDraft(id: string, newTitle: string) {

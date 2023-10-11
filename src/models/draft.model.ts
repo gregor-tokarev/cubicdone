@@ -4,4 +4,5 @@ export interface Draft {
   dateCreated: string;
   dateUpdated: string;
   order: number;
+  projectId: string | null;
 }

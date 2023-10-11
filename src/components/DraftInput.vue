@@ -1,28 +1,36 @@
 <script setup lang="ts">
 import Icon from "./Icon.vue";
 import { computed, ref, watch } from "vue";
-import { InputPart } from "../models/input-part.model.ts";
+import { InputGenericPart } from "../models/input-part.model.ts";
 import { nanoid } from "nanoid";
 import Contenteditable from "./Contenteditable.vue";
 import { useProjectStore } from "../store/project.model.ts";
 import { Project } from "../models/project.model.ts";
 import Fuse from "fuse.js";
-import FuseResult = Fuse.FuseResult;
 import { focusOnEditableElement } from "../utils/focus.ts";
+import FuseResult = Fuse.FuseResult;
 
-defineProps<{
+const props = defineProps<{
   placeholder: string;
-  modelValue: string;
+  modelValue: InputGenericPart[];
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: "update:modelValue", value: InputGenericPart[]): void;
   (e: "enter", value: void): void;
 }>();
 
 const projectStore = useProjectStore();
 
-const parts = ref<InputPart[]>([{ type: "text", content: "", id: nanoid(3) }]);
+// const parts = ref<InputPart[]>([{ type: "text", content: "", id: nanoid(3) }]);
+// watch(
+//   parts,
+//   (newValue) => {
+//     emit("update:modelValue", newValue);
+//   },
+//   { deep: true },
+// );
+
 const partsContainer = ref<HTMLElement | null>(null);
 const currentPartIdx = ref(0);
 
@@ -36,7 +44,7 @@ function onFocus(event: Event) {
 }
 
 watch(currentPartIdx, (newValue) => {
-  const part = parts.value[newValue];
+  const part = props.modelValue[newValue];
 
   openProjectSearch.value = part.type === "project";
 
@@ -53,7 +61,7 @@ function onUpdate(event: Event) {
   const target = evt.target as HTMLElement;
   if (!target) return;
 
-  const currentPart = parts.value[currentPartIdx.value];
+  const currentPart = props.modelValue[currentPartIdx.value];
 
   if (evt.key === "ArrowLeft" || evt.key === "ArrowRight") {
     handleArrows(evt);
@@ -82,7 +90,7 @@ function handleArrows(evt: KeyboardEvent) {
     );
   } else if (
     evt.key === "ArrowRight" &&
-    currentPartIdx.value !== parts.value.length - 1 &&
+    currentPartIdx.value !== props.modelValue.length - 1 &&
     selection.focusOffset === selection.focusNode.textContent.length
   ) {
     focusOnEditableElement(
@@ -97,6 +105,8 @@ function handleText(evt: KeyboardEvent) {
     handleTextHashtag(evt);
   } else if (evt.key === "Backspace") {
     handleTextBackspace(evt);
+  } else if (evt.key === "Enter") {
+    handleTextEnter(evt);
   }
 }
 
@@ -105,7 +115,7 @@ function handleText(evt: KeyboardEvent) {
  * @param evt
  */
 function handleProject(evt: KeyboardEvent) {
-  const currentPart = parts.value[currentPartIdx.value];
+  const currentPart = props.modelValue[currentPartIdx.value];
 
   setTimeout(() => {
     if (evt.code !== "ArrowUp" && evt.code !== "ArrowDown")
@@ -121,6 +131,22 @@ function handleProject(evt: KeyboardEvent) {
   }
 }
 
+function handleTextEnter(evt: KeyboardEvent) {
+  evt.preventDefault();
+
+  setTimeout(() => {
+    emit("enter");
+
+    emit("update:modelValue", [{ type: "text", content: "", id: nanoid(3) }]);
+    currentPartIdx.value = 0;
+
+    setTimeout(() => {
+      if (!partsContainer.value) return;
+      focusOnEditableElement(partsContainer.value.children[0] as HTMLElement);
+    });
+  });
+}
+
 /**
  * Triggers every time `#` typed in text block
  * @param evt
@@ -134,7 +160,10 @@ function handleTextHashtag(evt: KeyboardEvent) {
     id: nanoid(3),
     content: "#",
   };
-  parts.value.splice(currentPartIdx.value + 1, 0, projectPart);
+  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+  tempValue.splice(currentPartIdx.value + 1, 0, projectPart);
+
+  emit("update:modelValue", tempValue);
 
   setTimeout(() => {
     if (!partsContainer.value) return;
@@ -151,13 +180,15 @@ function handleTextHashtag(evt: KeyboardEvent) {
  * @param _evt
  */
 function handleTextBackspace(_evt: KeyboardEvent) {
-  const currentPart = parts.value[currentPartIdx.value];
+  const currentPart = props.modelValue[currentPartIdx.value];
 
   setTimeout(() => {
     if (!partsContainer.value || currentPartIdx.value === 0) return;
 
     if (currentPart.content === "") {
-      parts.value.splice(currentPartIdx.value, 1);
+      const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+      tempValue.splice(currentPartIdx.value, 1);
+      emit("update:modelValue", tempValue);
 
       const focusNode = partsContainer.value.children[
         currentPartIdx.value - 1
@@ -189,13 +220,15 @@ watch(projectQuery, (newValue) => {
  * @param _evt
  */
 function handleProjectBackspace(_evt: KeyboardEvent) {
-  const currentPart = parts.value[currentPartIdx.value];
+  const currentPart = props.modelValue[currentPartIdx.value];
 
   setTimeout(() => {
     if (!partsContainer.value) return;
 
     if (currentPart.content === "") {
-      parts.value.splice(currentPartIdx.value, 1);
+      const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+      tempValue.splice(currentPartIdx.value, 1);
+      emit("update:modelValue", tempValue);
 
       const focusNode = partsContainer.value.children[
         currentPartIdx.value - 1
@@ -215,31 +248,44 @@ function handleProjectBackspace(_evt: KeyboardEvent) {
 function handleProjectEnter(evt: KeyboardEvent) {
   evt.preventDefault();
 
+  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+
   if (projectOptionSelected.value === projectSelectOptions.value.length) {
     const project = projectStore.create(projectQuery.value);
-    parts.value[currentPartIdx.value].projectId = project.id;
+
+    const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+    tempValue[currentPartIdx.value].projectId = project.id;
+
+    emit("update:modelValue", tempValue);
   } else {
-    parts.value[currentPartIdx.value].projectId =
+    tempValue[currentPartIdx.value].projectId =
       projectQueryResult.value[projectOptionSelected.value].item.id;
+
+    emit("update:modelValue", tempValue);
   }
 
   openProjectSearch.value = false;
   projectQuery.value = "";
 
   const textPart = { id: nanoid(3), content: "", type: "text" };
-  parts.value.push(textPart);
+
+  tempValue.push(textPart);
+
+  emit("update:modelValue", tempValue);
 
   setTimeout(() => {
-    parts.value.forEach((p, idx) => {
+    props.modelValue.forEach((p, idx) => {
       if (
         p.type === "project" &&
-        p.id !== parts.value[currentPartIdx.value].id
+        p.id !== props.modelValue[currentPartIdx.value].id
       ) {
-        parts.value.splice(idx, 1, {
+        const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+        tempValue.splice(idx, 1, {
           ...p,
           type: "text",
           projectId: undefined,
         });
+        emit("update:modelValue", tempValue);
       }
     });
 
@@ -273,8 +319,10 @@ function handleProjectArrows(evt: KeyboardEvent) {
   }
 
   if (projectSelectOptions.value[projectOptionSelected.value]) {
-    parts.value[currentPartIdx.value].content =
+    const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+    tempValue[currentPartIdx.value].content =
       "#" + projectSelectOptions.value[projectOptionSelected.value].title;
+    emit("update:modelValue", tempValue);
   }
 }
 </script>
@@ -289,11 +337,11 @@ function handleProjectArrows(evt: KeyboardEvent) {
         @keydown="onUpdate($event)"
         ref="partsContainer"
       >
-        <template v-for="part in parts" :key="part.id">
+        <template v-for="part in modelValue" :key="part.id">
           <Contenteditable
             class="outline-0"
             tag="p"
-            :class="{ grow: parts.length === 1 }"
+            :class="{ grow: modelValue.length === 1 }"
             v-if="part.type === 'text'"
             @focus="onFocus($event)"
             v-model="part.content"
