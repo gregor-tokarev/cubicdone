@@ -276,10 +276,10 @@ function handleProjectArrows(evt: KeyboardEvent) {
 <template>
   <div class="relative">
     <!--    Input box-->
-    <div class="flex items-center bg-gray-400 rounded-lg px-2.5 py-1">
-      <Icon name="plus" class="text-gray-350 mr-1.5"></Icon>
+    <div class="flex items-center rounded-lg bg-gray-400 px-2.5 py-1">
+      <Icon name="plus" class="mr-1.5 text-gray-350"></Icon>
       <div
-        class="flex items-center grow space-x-1"
+        class="flex grow items-center space-x-1"
         @keydown="onUpdate($event)"
         ref="partsContainer"
       >
@@ -294,7 +294,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           >
           </Contenteditable>
           <Contenteditable
-            class="py-[2.5px] px-[3px] rounded-lg bg-gray-450 outline-0"
+            class="rounded-lg bg-gray-450 px-[3px] py-[2.5px] outline-0"
             :class="{
               [`!bg-${projectStore.getOne(part.projectId)?.color}-100`]:
                 part.projectId,
@@ -319,19 +319,19 @@ function handleProjectArrows(evt: KeyboardEvent) {
       <template v-if="projectQueryResult">
         <div
           v-for="(p, idx) in projectQueryResult"
-          class="flex items-center py-1.5 px-2.5 space-x-1.5"
+          class="flex items-center space-x-1.5 px-2.5 py-1.5"
           :class="{ 'bg-gray-450': projectOptionSelected === idx }"
         >
           <!--        Color circle-->
           <div
-            class="rounded-full w-[11px] h-[11px] bg-amber-400"
+            class="h-[11px] w-[11px] rounded-full bg-amber-400"
             :class="{ [`bg-${p.item.color}-400`]: true }"
           ></div>
           <span>{{ p.item.title }}</span>
         </div>
       </template>
       <div
-        class="flex items-center py-1.5 px-2.5 space-x-1.5"
+        class="flex items-center space-x-1.5 px-2.5 py-1.5"
         :class="{
           'bg-gray-450': projectOptionSelected === projectQueryResult.length,
         }"

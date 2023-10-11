@@ -59,20 +59,20 @@ function onMove(date: Dayjs, evt: any) {
 </script>
 
 <template>
-  <div class="flex flex-col py-8 h-[100vh]">
+  <div class="flex h-[100vh] flex-col py-8">
     <!--  Inbox section-->
     <div class="space-y-2.5">
-      <div class="flex items-center space-x-2 text-black text-base">
+      <div class="flex items-center space-x-2 text-base text-black">
         <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
       <VueDraggableNext
-        class="flex items-center overflow-auto space-x-2.5 pb-2.5 min-h-[78px]"
+        class="flex min-h-[78px] items-center space-x-2.5 overflow-auto pb-2.5"
         :list="draftStore.sortedDrafts"
         :group="{ name: 'tasks', put: false, pull: 'clone' }"
       >
         <DraftCard
-          class="grow min-w-[25%] cursor-pointer"
+          class="min-w-[25%] grow cursor-pointer"
           v-for="d in draftStore.sortedDrafts"
           :key="d.id"
           :data-id="d.id"
@@ -80,7 +80,7 @@ function onMove(date: Dayjs, evt: any) {
         ></DraftCard>
         <div
           v-if="!draftStore.sortedDrafts.length"
-          class="flex items-center justify-center grow h-full text-sm text-gray-350"
+          class="flex h-full grow items-center justify-center text-sm text-gray-350"
         >
           <span>
             You plan all your Inbox Tasks. Start working or
@@ -92,13 +92,13 @@ function onMove(date: Dayjs, evt: any) {
       </VueDraggableNext>
     </div>
     <!--    Date columns-->
-    <div class="flex grow space-x-5 mt-5">
+    <div class="mt-5 flex grow space-x-5">
       <div
-        class="py-1.5 px-2.5 rounded-lg bg-gray-500 grow w-1/3 flex flex-col"
+        class="flex w-1/3 grow flex-col rounded-lg bg-gray-500 px-2.5 py-1.5"
         v-for="(c, idx) in dateColumns"
         :key="idx"
       >
-        <div class="text-base text-black mb-5">
+        <div class="mb-5 text-base text-black">
           <template v-if="idx === 0">Today,</template>
           <template v-else-if="idx === 1">Tomorrow,</template>
           {{ dayjs(c).format("DD MMM") }}

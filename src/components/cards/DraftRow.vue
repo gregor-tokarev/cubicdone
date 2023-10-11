@@ -20,13 +20,13 @@ function onEditDraft(event: Event) {
 
 <template>
   <div
-    class="flex items-baseline p-2.5 border-b border-gray-400 cursor-grab active:cursor-grabbing"
+    class="flex cursor-grab items-baseline border-b border-gray-400 p-2.5 active:cursor-grabbing"
   >
     <!--    Title-->
     <div
       contenteditable="true"
       @input="onEditDraft($event)"
-      class="text-base text-black outline-0 cursor-text"
+      class="cursor-text text-base text-black outline-0"
     >
       {{ draft.title }}
     </div>
