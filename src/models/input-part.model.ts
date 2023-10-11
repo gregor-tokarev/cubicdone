@@ -10,7 +10,7 @@ export interface InputProjectPart extends InputPart {
 
 export interface InputTextPart extends InputPart {}
 
-export type InputGenericPart = InputTextPart | InputProjectPart;
+export type InputGenericPart = InputProjectPart | InputTextPart;
 
 // export class InputText implements InputPart {
 //     readonly type = 'text'

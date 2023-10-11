@@ -26,7 +26,10 @@ function onCreateDraft() {
 
   const projectPart = prompt.value.find((p) => p.type === "project");
 
-  draftStore.create(text, projectPart?.projectId ?? null);
+  draftStore.create(
+    text,
+    projectPart && "projectId" in projectPart ? projectPart?.projectId : null,
+  );
 }
 
 function onEditDraft(id: string, newTitle: string) {

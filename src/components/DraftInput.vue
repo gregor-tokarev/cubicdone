@@ -74,7 +74,8 @@ function handleArrows(evt: KeyboardEvent) {
   if (!partsContainer.value) return;
 
   const selection = document.getSelection();
-  if (!selection || !selection.focusNode) return;
+  if (!selection || !selection.focusNode || !selection.focusNode.textContent)
+    return;
 
   if (
     evt.key === "ArrowLeft" &&
@@ -346,10 +347,16 @@ function handleProjectArrows(evt: KeyboardEvent) {
           <Contenteditable
             class="rounded-lg bg-gray-450 px-[3px] py-[2.5px] outline-0"
             :class="{
-              [`!bg-${projectStore.getOne(part.projectId)?.color}-100`]:
-                part.projectId,
-              [`!text-${projectStore.getOne(part.projectId)?.color}-400`]:
-                part.projectId,
+              [`!bg-${
+                'projectId' in part &&
+                part.projectId &&
+                projectStore.getOne(part.projectId)?.color
+              }-100`]: 'projectId' in part && part.projectId,
+              [`!text-${
+                'projectId' in part &&
+                part.projectId &&
+                projectStore.getOne(part.projectId)?.color
+              }-400`]: 'projectId' in part && part.projectId,
             }"
             tag="p"
             v-else-if="part.type === 'project'"
