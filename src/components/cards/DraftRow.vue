@@ -1,25 +1,15 @@
 <script setup lang="ts">
 import { Draft } from "../../models/draft.model.ts";
 import dayjs from "dayjs";
-import { useProjectStore } from "../../store/project.model.ts";
-import { computed } from "vue";
-import { Project } from "../../models/project.model.ts";
+import ProjectTag from "../UI/ProjectTag.vue";
 
-const props = defineProps<{
+defineProps<{
   draft: Draft;
 }>();
-
-const projectStore = useProjectStore();
 
 const emit = defineEmits<{
   (e: "update:title", value: string): void;
 }>();
-
-const project = computed<Project | undefined>(() => {
-  return props.draft.projectId
-    ? projectStore.getOne(props.draft.projectId)
-    : undefined;
-});
 
 function onEditDraft(event: Event) {
   const target = event.currentTarget as HTMLElement;
@@ -44,16 +34,11 @@ function onEditDraft(event: Event) {
     <div class="ml-2.5 text-xs text-gray-300">
       {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
     </div>
-    <div
-      v-if="project"
-      class="ml-auto rounded-lg px-1.5 py-1 text-xs"
-      :class="{
-        [`!bg-${project.color}-100`]: project,
-        [`!text-${project.color}-400`]: project,
-      }"
-    >
-      #{{ project.title }}
-    </div>
+    <ProjectTag
+      class="ml-auto"
+      v-if="draft.projectId"
+      :project-id="draft.projectId"
+    ></ProjectTag>
   </div>
 </template>
 
