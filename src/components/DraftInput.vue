@@ -254,8 +254,11 @@ function handleProjectEnter(evt: KeyboardEvent) {
 
     emit("update:modelValue", tempValue);
   } else {
-    tempValue[currentPartIdx.value].projectId =
-      projectQueryResult.value[projectOptionSelected.value].item.id;
+    const selectedOption =
+      projectSelectOptions.value[projectOptionSelected.value];
+
+    tempValue[currentPartIdx.value].projectId = selectedOption.id;
+    tempValue[currentPartIdx.value].content = "#" + selectedOption.title;
 
     emit("update:modelValue", tempValue);
   }
@@ -274,7 +277,6 @@ function handleProjectEnter(evt: KeyboardEvent) {
         p.type === "project" &&
         p.id !== props.modelValue[currentPartIdx.value].id
       ) {
-        const tempValue = JSON.parse(JSON.stringify(props.modelValue));
         tempValue.splice(idx, 1, {
           ...p,
           type: "text",
