@@ -131,6 +131,7 @@ function handleProject(evt: KeyboardEvent) {
 function handleTextEnter(evt: KeyboardEvent) {
   evt.preventDefault();
 
+  if (props.modelValue[currentPartIdx.value].content === "") return;
   setTimeout(() => {
     emit("enter");
 
