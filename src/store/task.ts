@@ -30,6 +30,7 @@ export const useTaskStore = defineStore("task", {
         dateCompleted: null,
         order: newIdx,
         dateTodo,
+        projectId: draft.projectId,
       };
 
       this.tasks.push(task);

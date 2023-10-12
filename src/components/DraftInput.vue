@@ -4,7 +4,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { InputGenericPart } from "../models/input-part.model.ts";
 import { nanoid } from "nanoid";
 import Contenteditable from "./Contenteditable.vue";
-import { useProjectStore } from "../store/project.model.ts";
+import { useProjectStore } from "../store/project.ts";
 import { Project } from "../models/project.model.ts";
 import Fuse from "fuse.js";
 import { focusOnEditableElement } from "../utils/focus.ts";

@@ -8,4 +8,5 @@ export interface Task {
   dateCommitted: string;
   dateCompleted: string | null;
   dateTodo: string;
+  projectId: string | null;
 }
