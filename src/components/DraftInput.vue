@@ -250,7 +250,6 @@ function handleProjectEnter(evt: KeyboardEvent) {
   if (projectOptionSelected.value === projectSelectOptions.value.length) {
     const project = projectStore.create(projectQuery.value);
 
-    const tempValue = JSON.parse(JSON.stringify(props.modelValue));
     tempValue[currentPartIdx.value].projectId = project.id;
 
     emit("update:modelValue", tempValue);
@@ -265,7 +264,6 @@ function handleProjectEnter(evt: KeyboardEvent) {
   projectQuery.value = "";
 
   const textPart = { id: nanoid(3), content: "", type: "text" };
-
   tempValue.push(textPart);
 
   emit("update:modelValue", tempValue);
