@@ -332,11 +332,13 @@ function handleProjectArrows(evt: KeyboardEvent) {
         @keydown="onUpdate($event)"
         ref="partsContainer"
       >
-        <template v-for="part in modelValue" :key="part.id">
+        <template v-for="(part, idx) in modelValue" :key="part.id">
           <Contenteditable
             class="outline-0"
             tag="p"
-            :class="{ grow: modelValue.length === 1 }"
+            :class="{
+              grow: modelValue.length - 1 === idx || modelValue.length === 0,
+            }"
             v-if="part.type === 'text'"
             @focus="onFocus($event)"
             v-model="part.content"
