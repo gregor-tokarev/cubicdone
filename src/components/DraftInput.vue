@@ -179,20 +179,18 @@ function handleTextHashtag(evt: KeyboardEvent) {
 function handleTextBackspace(_evt: KeyboardEvent) {
   const currentPart = props.modelValue[currentPartIdx.value];
 
-  setTimeout(() => {
-    if (!partsContainer.value || currentPartIdx.value === 0) return;
+  if (!partsContainer.value || currentPartIdx.value === 0) return;
 
-    if (currentPart.content === "") {
-      const tempValue = JSON.parse(JSON.stringify(props.modelValue));
-      tempValue.splice(currentPartIdx.value, 1);
-      emit("update:modelValue", tempValue);
+  if (currentPart.content === "") {
+    const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+    tempValue.splice(currentPartIdx.value, 1);
+    emit("update:modelValue", tempValue);
 
-      const focusNode = partsContainer.value.children[
-        currentPartIdx.value - 1
-      ] as HTMLElement;
-      focusOnEditableElement(focusNode);
-    }
-  });
+    const focusNode = partsContainer.value.children[
+      currentPartIdx.value - 1
+    ] as HTMLElement;
+    focusOnEditableElement(focusNode);
+  }
 }
 
 const projectQuery = ref("");
