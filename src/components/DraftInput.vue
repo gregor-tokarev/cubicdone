@@ -21,6 +21,7 @@ const emit = defineEmits<{
 }>();
 
 const projectStore = useProjectStore();
+const root = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   if (!partsContainer.value) return;
@@ -198,6 +199,15 @@ const projectQuery = ref("");
 const projectQueryResult = ref<FuseResult<Project>[]>([]);
 const openProjectSearch = ref(false);
 
+const projectSelectBound = computed(() => {
+  if (!root.value) return;
+
+  const x = root.value.getBoundingClientRect();
+  console.log(x);
+
+  return x;
+});
+
 const projectSelectOptions = computed<Project[]>(() => {
   return projectQuery.value
     ? projectQueryResult.value.map((r) => r.item)
@@ -324,7 +334,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative" ref="root">
     <!--    Input box-->
     <div class="flex items-center rounded-lg bg-gray-400 px-2.5 py-1">
       <Icon name="plus" class="mr-1.5 text-gray-350"></Icon>
@@ -369,35 +379,43 @@ function handleProjectArrows(evt: KeyboardEvent) {
       </div>
     </div>
     <!--    Project select-->
-    <div
-      v-if="openProjectSearch"
-      class="absolute bottom-0 left-0 right-0 translate-y-[calc(100%+4px)] rounded-lg bg-gray-400 py-1.5"
-    >
-      <!--      Project item-->
-      <template v-if="projectSelectOptions">
-        <div
-          v-for="(p, idx) in projectSelectOptions"
-          class="flex items-center space-x-1.5 px-2.5 py-1.5"
-          :class="{ 'bg-gray-450': projectOptionSelected === idx }"
-        >
-          <!--        Color circle-->
-          <div
-            class="h-[11px] w-[11px] rounded-full bg-amber-400"
-            :class="{ [`bg-${p.color}-400`]: true }"
-          ></div>
-          <span>{{ p.title }}</span>
-        </div>
-      </template>
+    <teleport to="body">
       <div
-        v-if="projectQuery"
-        class="flex items-center space-x-1.5 px-2.5 py-1.5"
-        :class="{
-          'bg-gray-450': projectOptionSelected === projectSelectOptions.length,
+        v-if="openProjectSearch && projectSelectBound"
+        class="absolute left-10 top-10 rounded-lg bg-gray-400 py-1.5"
+        :style="{
+          left: projectSelectBound.left + 'px',
+          top: projectSelectBound.top + projectSelectBound.height + 10 + 'px',
+          width: projectSelectBound.width + 'px',
         }"
       >
-        Create Project "{{ projectQuery }}"
+        <!--      Project item-->
+        <template v-if="projectSelectOptions">
+          <div
+            v-for="(p, idx) in projectSelectOptions"
+            class="flex items-center space-x-1.5 px-2.5 py-1.5"
+            :class="{ 'bg-gray-450': projectOptionSelected === idx }"
+          >
+            <!--        Color circle-->
+            <div
+              class="h-[11px] w-[11px] rounded-full bg-amber-400"
+              :class="{ [`bg-${p.color}-400`]: true }"
+            ></div>
+            <span>{{ p.title }}</span>
+          </div>
+        </template>
+        <div
+          v-if="projectQuery"
+          class="flex items-center space-x-1.5 px-2.5 py-1.5"
+          :class="{
+            'bg-gray-450':
+              projectOptionSelected === projectSelectOptions.length,
+          }"
+        >
+          Create Project "{{ projectQuery }}"
+        </div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
