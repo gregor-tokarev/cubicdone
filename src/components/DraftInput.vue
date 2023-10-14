@@ -218,6 +218,12 @@ watch(projectQuery, (newValue) => {
   projectQueryResult.value = searchIndex.search(newValue);
 });
 
+const queryMatchProject = computed(() => {
+  return projectSelectOptions.value.some(
+    (op) => op.title === projectQuery.value,
+  );
+});
+
 /**
  * Triggers every time `Backspace` pressed in project block
  * @param _evt
@@ -253,7 +259,10 @@ function handleProjectEnter(evt: KeyboardEvent) {
 
   const tempValue = JSON.parse(JSON.stringify(props.modelValue));
 
-  if (projectOptionSelected.value === projectSelectOptions.value.length) {
+  if (
+    projectOptionSelected.value === projectSelectOptions.value.length &&
+    !queryMatchProject
+  ) {
     const project = projectStore.create(projectQuery.value);
 
     tempValue[currentPartIdx.value].projectId = project.id;
@@ -402,7 +411,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           </div>
         </template>
         <div
-          v-if="projectQuery"
+          v-if="projectQuery && !queryMatchProject"
           class="flex items-center space-x-1.5 px-2.5 py-1.5"
           :class="{
             'bg-gray-450':
