@@ -261,7 +261,7 @@ function handleProjectEnter(evt: KeyboardEvent) {
 
   if (
     projectOptionSelected.value === projectSelectOptions.value.length &&
-    !queryMatchProject
+    !queryMatchProject.value
   ) {
     const project = projectStore.create(projectQuery.value);
 
