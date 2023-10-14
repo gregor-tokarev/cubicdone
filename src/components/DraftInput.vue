@@ -208,7 +208,7 @@ const projectSelectBound = computed(() => {
 const projectSelectOptions = computed<Project[]>(() => {
   return projectQuery.value
     ? projectQueryResult.value.map((r) => r.item)
-    : projectStore.projects;
+    : projectStore.rankedProjects;
 });
 
 const projectOptionSelected = ref(0);

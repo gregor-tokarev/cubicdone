@@ -84,6 +84,11 @@ export const useDraftsStore = defineStore("drafts", {
         return state.drafts.find((d) => d.id === id);
       };
     },
+    getByProject(state) {
+      return (projectId: string): Draft[] => {
+        return state.drafts.filter((d) => d.projectId === projectId);
+      };
+    },
     sortedDrafts(state) {
       return state.drafts.sort((prev, next) => prev.order - next.order);
     },
