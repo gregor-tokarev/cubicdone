@@ -7,7 +7,6 @@ import Fuse from "fuse.js";
 import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
-import { Draft } from "../models/draft.model.ts";
 
 dayjs.extend(minMax);
 
