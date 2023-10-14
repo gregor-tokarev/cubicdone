@@ -202,10 +202,7 @@ const openProjectSearch = ref(false);
 const projectSelectBound = computed(() => {
   if (!root.value) return;
 
-  const x = root.value.getBoundingClientRect();
-  console.log(x);
-
-  return x;
+  return root.value.getBoundingClientRect();
 });
 
 const projectSelectOptions = computed<Project[]>(() => {
