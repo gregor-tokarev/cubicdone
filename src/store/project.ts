@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
-import { Project } from "../models/project.model.ts";
+import { Project, ProjectStatistic } from "../models/project.model.ts";
 import { randomInt } from "../utils/random.ts";
 import { nanoid } from "nanoid";
 import Fuse from "fuse.js";
 import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
+import { useTaskStore } from "./task.ts";
 
 dayjs.extend(minMax);
 
@@ -82,6 +83,27 @@ export const useProjectStore = defineStore("project", {
     },
     sortedProjects(state): Project[] {
       return state.projects.sort((prev, next) => prev["order"] - next["order"]);
+    },
+    withStatistics(state): ProjectStatistic {
+      const draftStore = useDraftsStore();
+      const taskStore = useTaskStore();
+
+      return state.sortedProjects.map((p) => {
+        const draftCount = draftStore.getByProject(p.id).length;
+        const taskCompletedCount = taskStore
+          .getByProject(p.id)
+          .filter((t) => t.status === "done").length;
+        const taskActiveCount = taskStore
+          .getByProject(p.id)
+          .filter((t) => t.status === "todo").length;
+
+        return {
+          project: p,
+          draftCount,
+          taskCompletedCount,
+          taskActiveCount,
+        };
+      });
     },
     getIndex(state): Fuse<Project> {
       return new Fuse<Project>(state.projects, {

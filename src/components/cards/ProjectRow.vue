@@ -8,6 +8,9 @@ const projectStore = useProjectStore();
 
 defineProps<{
   project: Project;
+  draftCount: number;
+  taskCompletedCount: number;
+  taskActiveCount: number;
 }>();
 
 const emit = defineEmits<{
@@ -49,7 +52,7 @@ function onEnter(event: Event) {
 
 <template>
   <div class="flex items-center border-b border-gray-400 py-[18px]">
-    <div class="flex items-center space-x-2">
+    <div class="flex w-[38%] items-center space-x-2">
       <div
         ref="color"
         @click="showColorPicker = !showColorPicker"
@@ -66,6 +69,15 @@ function onEnter(event: Event) {
           {{ project.title }}
         </span>
       </span>
+    </div>
+    <div class="w-[20%]">
+      {{ taskActiveCount }}
+    </div>
+    <div class="w-[32%]">
+      {{ taskCompletedCount }}
+    </div>
+    <div class="">
+      {{ draftCount }}
     </div>
   </div>
   <teleport to="body">

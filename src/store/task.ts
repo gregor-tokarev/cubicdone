@@ -118,6 +118,11 @@ export const useTaskStore = defineStore("task", {
           .sort((prev, next) => prev.order - next.order);
       };
     },
+    getByProject(state) {
+      return (projectId: string): Task[] => {
+        return state.tasks.filter((t) => t.projectId === projectId);
+      };
+    },
     // groupByDates(state): { [date: string]: Task[] } {
     //     const res = {}
     //     this.tasks.forEach(t => {

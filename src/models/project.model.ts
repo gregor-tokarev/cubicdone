@@ -4,3 +4,10 @@ export interface Project {
   color: string;
   order: number;
 }
+
+export interface ProjectStatistic {
+  project: Project;
+  draftCount: number;
+  taskCompletedCount: number;
+  taskActiveCount: number;
+}

@@ -41,10 +41,13 @@ function onCreateProject() {
     </div>
     <div ref="rowsContainer" class="">
       <ProjectRow
-        :project="p"
-        :key="p.id"
-        v-for="p in projectStore.sortedProjects"
-        @update="onUpdateProject(p.id, $event)"
+        :project="row.project"
+        :draft-count="row.draftCount"
+        :task-active-count="row.taskActiveCount"
+        :task-completed-count="row.taskCompletedCount"
+        :key="row.project.id"
+        v-for="row in projectStore.withStatistics"
+        @update="onUpdateProject(row.project.id, $event)"
       ></ProjectRow>
     </div>
   </div>
