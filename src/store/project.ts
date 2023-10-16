@@ -39,11 +39,18 @@ export const useProjectStore = defineStore("project", {
         id: nanoid(4),
         color: this.colors[randomInt(0, this.colors.length)],
         title,
+        order: 0,
       };
+
+      this.projects.forEach((p) => p.order++);
 
       this.projects.push(proj);
 
       return proj;
+    },
+    edit(id: string, project: Partial<Project>): Project {
+      const pIdx = this.projects.findIndex((p) => p.id === id);
+      this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
     },
   },
   getters: {
@@ -73,6 +80,9 @@ export const useProjectStore = defineStore("project", {
         })
         .filter(Boolean) as Project[];
     },
+    sortedProjects(state): Project[] {
+      return state.projects.sort((prev, next) => prev["order"] - next["order"]);
+    },
     getIndex(state): Fuse<Project> {
       return new Fuse<Project>(state.projects, {
         keys: [{ name: "title" }],
@@ -82,6 +92,9 @@ export const useProjectStore = defineStore("project", {
       return (id: string): Project | undefined => {
         return state.projects.find((p) => p.id === id);
       };
+    },
+    maxOrder(state): number {
+      return Math.max(...state.projects.map((p) => p.order));
     },
   },
 });

@@ -42,6 +42,10 @@ onMounted(() => {
     evt.preventDefault();
     router.push("/");
   });
+  hotkeys("cmd+P", (evt) => {
+    evt.preventDefault();
+    router.push("/projects");
+  });
 });
 </script>
 
