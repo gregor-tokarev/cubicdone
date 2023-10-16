@@ -342,7 +342,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
 <template>
   <div class="relative" ref="root">
     <!--    Input box-->
-    <div class="flex items-center rounded-lg bg-gray-400 px-2.5 py-1">
+    <div class="dh-[34px] flex items-center rounded-lg bg-gray-400 px-2.5 py-1">
       <Icon name="plus" class="mr-1.5 text-gray-350"></Icon>
       <div
         class="flex grow items-center space-x-1"
@@ -362,7 +362,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           >
           </Contenteditable>
           <Contenteditable
-            class="rounded-lg bg-gray-450 px-[3px] py-[2.5px] outline-0"
+            class="rounded-lg bg-gray-450 px-[3px] py-[2.5px] leading-[120%] outline-0"
             :class="{
               [`!bg-${
                 'projectId' in part &&
