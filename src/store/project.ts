@@ -52,6 +52,8 @@ export const useProjectStore = defineStore("project", {
     edit(id: string, project: Partial<Project>): Project {
       const pIdx = this.projects.findIndex((p) => p.id === id);
       this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
+
+      return this.projects[pIdx];
     },
   },
   getters: {
@@ -84,11 +86,12 @@ export const useProjectStore = defineStore("project", {
     sortedProjects(state): Project[] {
       return state.projects.sort((prev, next) => prev["order"] - next["order"]);
     },
-    withStatistics(state): ProjectStatistic {
+    withStatistics(state): ProjectStatistic[] {
       const draftStore = useDraftsStore();
       const taskStore = useTaskStore();
 
-      return state.sortedProjects.map((p) => {
+      // @ts-ignore
+      return state.sortedProjects.map((p: Project) => {
         const draftCount = draftStore.getByProject(p.id).length;
         const taskCompletedCount = taskStore
           .getByProject(p.id)

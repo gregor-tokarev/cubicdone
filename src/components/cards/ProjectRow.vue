@@ -2,7 +2,7 @@
 import { Project } from "../../models/project.model.ts";
 import { useProjectStore } from "../../store/project.ts";
 import { computed, ref } from "vue";
-import { onClickOutside } from "@vueuse/core/index";
+import { onClickOutside } from "@vueuse/core";
 
 const projectStore = useProjectStore();
 
@@ -82,7 +82,7 @@ function onEnter(event: Event) {
   </div>
   <teleport to="body">
     <div
-      v-if="showColorPicker"
+      v-if="showColorPicker && colorBound"
       ref="colorPicker"
       class="fixed flex w-[156px] -translate-x-1/2 flex-wrap gap-2.5 rounded-lg bg-white p-2 shadow"
       :style="{

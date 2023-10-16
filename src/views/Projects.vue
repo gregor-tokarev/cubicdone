@@ -22,7 +22,9 @@ function onCreateProject() {
     if (!rowsContainer.value) return;
 
     focusOnEditableElement(
-      rowsContainer.value.children[0].querySelector("[contenteditable]"),
+      rowsContainer.value.children[0].querySelector(
+        "[contenteditable]",
+      ) as HTMLElement,
     );
   });
 }
