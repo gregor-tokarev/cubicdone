@@ -66,6 +66,7 @@ export const useProjectStore = defineStore("project", {
 
       state.projects.forEach((p) => {
         const drafts = draftStore.getByProject(p.id);
+
         recentTable[p.id] = dayjs
           .max(...drafts.map((d) => dayjs(d.dateCreated)))
           ?.toISOString();
