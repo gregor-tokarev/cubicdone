@@ -6,6 +6,7 @@ import { computed, ref } from "vue";
 import { focusOnEditableElement } from "../utils/focus.ts";
 import Icon from "../components/Icon.vue";
 import hotkeys from "hotkeys-js";
+import { useLocalStorage } from "@vueuse/core";
 
 const projectStore = useProjectStore();
 
@@ -34,8 +35,8 @@ function onCreateProject() {
   });
 }
 
-const sortField = ref("");
-const sortDirection = ref("");
+const sortField = useLocalStorage("projectSortField", "");
+const sortDirection = useLocalStorage("projectSortDirection", "");
 
 function getValue(obj: Record<string, any>, path: string): any {
   if (!path) return obj;
