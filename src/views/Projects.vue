@@ -66,7 +66,6 @@ const sortedProjects = computed(() => {
 });
 
 function onSort(field: string, direction: "desc" | "asc") {
-  console.log(field, direction);
   if (sortField.value === field && sortDirection.value === direction) {
     sortField.value = "";
     sortDirection.value = "";
