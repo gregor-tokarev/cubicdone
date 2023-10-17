@@ -5,6 +5,7 @@ import { Project, ProjectStatistic } from "../models/project.model.ts";
 import { computed, ref } from "vue";
 import { focusOnEditableElement } from "../utils/focus.ts";
 import Icon from "../components/Icon.vue";
+import hotkeys from "hotkeys-js";
 
 const projectStore = useProjectStore();
 
@@ -16,6 +17,9 @@ function onUpdateProject(id: string, project: Partial<Project>) {
   projectStore.edit(id, project);
 }
 
+hotkeys("C", () => {
+  onCreateProject();
+});
 function onCreateProject() {
   projectStore.create("");
 
@@ -82,6 +86,7 @@ function onSort(field: string, direction: "desc" | "asc") {
     <div class="mb-6 flex items-center space-x-5">
       <h1 class="text-xl">Projects</h1>
       <div
+        v-hint="'C'"
         @click="onCreateProject()"
         class="cursor-pointer rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400"
       >
