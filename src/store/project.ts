@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
-import { Project } from "../models/project.model.ts";
+import { Project, ProjectStatistic } from "../models/project.model.ts";
 import { randomInt } from "../utils/random.ts";
 import { nanoid } from "nanoid";
 import Fuse from "fuse.js";
 import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
+import { useTaskStore } from "./task.ts";
 
 dayjs.extend(minMax);
 
@@ -39,11 +40,20 @@ export const useProjectStore = defineStore("project", {
         id: nanoid(4),
         color: this.colors[randomInt(0, this.colors.length)],
         title,
+        order: 0,
       };
+
+      this.projects.forEach((p) => p.order++);
 
       this.projects.push(proj);
 
       return proj;
+    },
+    edit(id: string, project: Partial<Project>): Project {
+      const pIdx = this.projects.findIndex((p) => p.id === id);
+      this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
+
+      return this.projects[pIdx];
     },
   },
   getters: {
@@ -56,6 +66,7 @@ export const useProjectStore = defineStore("project", {
 
       state.projects.forEach((p) => {
         const drafts = draftStore.getByProject(p.id);
+
         recentTable[p.id] = dayjs
           .max(...drafts.map((d) => dayjs(d.dateCreated)))
           ?.toISOString();
@@ -73,6 +84,31 @@ export const useProjectStore = defineStore("project", {
         })
         .filter(Boolean) as Project[];
     },
+    sortedProjects(state): Project[] {
+      return state.projects.sort((prev, next) => prev["order"] - next["order"]);
+    },
+    withStatistics(state): ProjectStatistic[] {
+      const draftStore = useDraftsStore();
+      const taskStore = useTaskStore();
+
+      // @ts-ignore
+      return state.sortedProjects.map((p: Project) => {
+        const draftCount = draftStore.getByProject(p.id).length;
+        const taskCompletedCount = taskStore
+          .getByProject(p.id)
+          .filter((t) => t.status === "done").length;
+        const taskActiveCount = taskStore
+          .getByProject(p.id)
+          .filter((t) => t.status === "todo").length;
+
+        return {
+          project: p,
+          draftCount,
+          taskCompletedCount,
+          taskActiveCount,
+        };
+      });
+    },
     getIndex(state): Fuse<Project> {
       return new Fuse<Project>(state.projects, {
         keys: [{ name: "title" }],
@@ -82,6 +118,9 @@ export const useProjectStore = defineStore("project", {
       return (id: string): Project | undefined => {
         return state.projects.find((p) => p.id === id);
       };
+    },
+    maxOrder(state): number {
+      return Math.max(...state.projects.map((p) => p.order));
     },
   },
 });

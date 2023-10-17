@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{vue,ts}"],
   theme: {
     extend: {
+      boxShadow: {
+        colorPick: "0px 0px 0px 4px #F5F5F5",
+      },
       colors: {
         black: "#0F0F0F",
         "gray-500": "#FAFAFA",
@@ -19,6 +22,7 @@ export default {
   safelist: [
     { pattern: /^!?bg-.*-(100|400)$/ },
     { pattern: /^!?text-.*-(100|400)$/ },
+    "border-black",
   ],
   plugins: [],
 };
