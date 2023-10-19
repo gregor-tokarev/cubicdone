@@ -286,21 +286,21 @@ function handleProjectEnter(evt: KeyboardEvent) {
 
   emit("update:modelValue", tempValue);
 
-  setTimeout(() => {
-    props.modelValue.forEach((p, idx) => {
-      if (
-        p.type === "project" &&
-        p.id !== props.modelValue[currentPartIdx.value].id
-      ) {
-        tempValue.splice(idx, 1, {
-          ...p,
-          type: "text",
-          projectId: undefined,
-        });
-        emit("update:modelValue", tempValue);
-      }
-    });
+  props.modelValue.forEach((p, idx) => {
+    if (
+      p.type === "project" &&
+      p.id !== props.modelValue[currentPartIdx.value].id
+    ) {
+      tempValue.splice(idx, 1, {
+        ...p,
+        type: "text",
+        projectId: undefined,
+      });
+      emit("update:modelValue", tempValue);
+    }
+  });
 
+  setTimeout(() => {
     if (!partsContainer.value) return;
     const focusElement = partsContainer.value.children[
       currentPartIdx.value + 1
