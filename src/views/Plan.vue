@@ -72,7 +72,12 @@ function onMove(date: Dayjs, evt: any) {
         :group="{ name: 'tasks', put: false, pull: 'clone' }"
       >
         <DraftCard
-          class="min-w-[25%] grow cursor-pointer"
+          class="min-w-[25%] shrink grow cursor-pointer"
+          :class="{
+            'max-w-[25%]': draftStore.sortedDrafts.length >= 4,
+            'max-w-[33%]': draftStore.sortedDrafts.length === 3,
+            'max-w-[50%]': draftStore.sortedDrafts.length === 2,
+          }"
           v-for="d in draftStore.sortedDrafts"
           :key="d.id"
           :data-id="d.id"
