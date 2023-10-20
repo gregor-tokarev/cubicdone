@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@linear/sdk": "^9.0.1",
     "@vueuse/core": "^10.4.1",
     "dayjs": "^1.11.10",
     "fuse.js": "^6.6.2",
