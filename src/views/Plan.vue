@@ -56,6 +56,11 @@ function onMove(date: Dayjs, evt: any) {
     taskStore.changeOrder(item.id, oldIdx, newIdx);
   }
 }
+
+function onChangeDraft(event: any) {
+  const target = event.item as HTMLElement;
+  target.style.maxWidth = "unset";
+}
 </script>
 
 <template>
@@ -69,10 +74,11 @@ function onMove(date: Dayjs, evt: any) {
       <VueDraggableNext
         class="flex min-h-[78px] items-center space-x-2.5 overflow-auto pb-2.5"
         :list="draftStore.sortedDrafts"
+        @start="onChangeDraft($event)"
         :group="{ name: 'tasks', put: false, pull: 'clone' }"
       >
         <DraftCard
-          class="min-w-[25%] shrink grow cursor-pointer"
+          class="min-w-[25%] grow cursor-pointer"
           :class="{
             'max-w-[25%]': draftStore.sortedDrafts.length >= 4,
             'max-w-[33%]': draftStore.sortedDrafts.length === 3,
