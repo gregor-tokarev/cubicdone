@@ -12,17 +12,18 @@ const projectStore = useProjectStore();
 
 const rowsContainer = ref<HTMLElement | null>(null);
 
+hotkeys("C", onCreateProject);
+
+onUnmounted(() => {
+  hotkeys.unbind("C", "all", onCreateProject);
+});
+
 function onUpdateProject(id: string, project: Partial<Project>) {
   if (project?.title === "") return;
 
   projectStore.edit(id, project);
 }
 
-hotkeys("C", onCreateProject);
-
-onUnmounted(() => {
-  hotkeys.unbind("C", "all", onCreateProject);
-});
 function onCreateProject() {
   projectStore.create("");
 
