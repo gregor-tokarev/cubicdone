@@ -97,7 +97,7 @@ function onSort(field: string, direction: "desc" | "asc") {
         New project +
       </div>
     </div>
-    <div class="flex items-center space-x-0.5">
+    <div v-if="sortedProjects.length" class="flex items-center space-x-0.5">
       <div class="flex w-[38%] items-center pl-[2%] text-xs text-gray-350">
         <span> name </span>
         <div class="text-gray-350"></div>
