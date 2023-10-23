@@ -2,7 +2,7 @@
 import { useProjectStore } from "../store/project.ts";
 import ProjectRow from "../components/cards/ProjectRow.vue";
 import { Project, ProjectStatistic } from "../models/project.model.ts";
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { focusOnEditableElement } from "../utils/focus.ts";
 import Icon from "../components/Icon.vue";
 import hotkeys from "hotkeys-js";
@@ -18,8 +18,10 @@ function onUpdateProject(id: string, project: Partial<Project>) {
   projectStore.edit(id, project);
 }
 
-hotkeys("C", () => {
-  onCreateProject();
+hotkeys("C", onCreateProject);
+
+onUnmounted(() => {
+  hotkeys.unbind("C", "all", onCreateProject);
 });
 function onCreateProject() {
   projectStore.create("");

@@ -256,6 +256,7 @@ function handleProjectBackspace(_evt: KeyboardEvent) {
  */
 function handleProjectEnter(evt: KeyboardEvent) {
   evt.preventDefault();
+  console.log("Enter");
 
   const tempValue = JSON.parse(JSON.stringify(props.modelValue));
 
