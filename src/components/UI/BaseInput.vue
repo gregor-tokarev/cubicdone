@@ -17,6 +17,7 @@ withDefaults(
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "blur", value: void): void;
+  (e: "enter", value: void): void;
 }>();
 
 function onInput(event: Event) {
@@ -37,6 +38,7 @@ function onInput(event: Event) {
       :placeholder="placeholder"
       @input="onInput"
       @blur="emit('blur')"
+      @keyup.enter="emit('enter')"
     />
   </div>
 </template>

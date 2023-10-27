@@ -94,6 +94,7 @@ async function onSubmit() {
             v-model="v$.apiKey.$model"
             :error="v$.apiKey.$error"
             @blur="v$.apiKey.$touch"
+            @enter="onSubmit"
             type="password"
             placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
           ></BaseInput>
