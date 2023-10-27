@@ -2,7 +2,7 @@
 import { useProjectStore } from "../store/project.ts";
 import ProjectRow from "../components/cards/ProjectRow.vue";
 import { Project, ProjectStatistic } from "../models/project.model.ts";
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { focusOnEditableElement } from "../utils/focus.ts";
 import Icon from "../components/Icon.vue";
 import hotkeys from "hotkeys-js";
@@ -12,15 +12,18 @@ const projectStore = useProjectStore();
 
 const rowsContainer = ref<HTMLElement | null>(null);
 
+hotkeys("C", onCreateProject);
+
+onUnmounted(() => {
+  hotkeys.unbind("C", "all", onCreateProject);
+});
+
 function onUpdateProject(id: string, project: Partial<Project>) {
   if (project?.title === "") return;
 
   projectStore.edit(id, project);
 }
 
-hotkeys("C", () => {
-  onCreateProject();
-});
 function onCreateProject() {
   projectStore.create("");
 
@@ -94,7 +97,7 @@ function onSort(field: string, direction: "desc" | "asc") {
         New project +
       </div>
     </div>
-    <div class="flex items-center space-x-0.5">
+    <div v-if="sortedProjects.length" class="flex items-center space-x-0.5">
       <div class="flex w-[38%] items-center pl-[2%] text-xs text-gray-350">
         <span> name </span>
         <div class="text-gray-350"></div>
