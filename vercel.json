@@ -1,3 +1,15 @@
 {
-  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }]
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/",
+      "status": 200
+    }
+  ],
+  "functions": {
+    "api/linear/*.ts": {
+      "memory": 1024,
+      "maxDuration": 2
+    }
+  }
 }

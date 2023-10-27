@@ -5,6 +5,7 @@
   "scripts": {
     "build": "vue-tsc && vite build",
     "dev": "vite",
+    "dev:all": "vercel dev",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@vercel/node": "^3.0.7",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/cli-plugin-pwa": "~5.0.0",
     "autoprefixer": "^10.4.16",
