@@ -27,9 +27,18 @@ function onClickAction() {
     }"
   >
     <div class="p-5 pb-8">
-      <div class="flex items-center space-x-2">
-        <img :src="integration.iconURL" alt="icn" />
-        <p class="text-xl capitalize">{{ integration.name }}</p>
+      <div class="flex items-center space-x-2.5">
+        <div class="flex items-center space-x-2">
+          <img :src="integration.iconURL" alt="icn" />
+          <p class="text-xl capitalize">{{ integration.name }}</p>
+        </div>
+        <div
+          v-if="integration.apiKey"
+          class="flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
+        >
+          <Icon name="link"></Icon>
+          <span>link projects</span>
+        </div>
       </div>
       <p class="mt-4 opacity-50">{{ integration.description }}</p>
     </div>
