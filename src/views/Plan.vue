@@ -9,7 +9,6 @@ import TaskCard from "../components/cards/TaskCard.vue";
 import { Task } from "../models/task.model.ts";
 import { VueDraggableNext } from "vue-draggable-next";
 import { Draft } from "../models/draft.model.ts";
-import { LinearClient } from "@linear/sdk";
 
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();
@@ -24,14 +23,6 @@ const dateColumns = computed(() => {
 
   return res;
 });
-
-const linearClient = new LinearClient({
-  apiKey: "lin_api_k7Hk0QrBjwdTyzBAEHwW1SyTR33ycZoZHu3eHfGU",
-});
-
-const v = await linearClient.viewer;
-const t = await v.assignedIssues();
-console.log(t);
 
 function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });

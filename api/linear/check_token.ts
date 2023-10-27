@@ -6,11 +6,10 @@ export default async function (
   response: VercelResponse,
 ) {
   const linear = new LinearClient({
-    apiKey: "lin_api_k7Hk0QrBjwdTyzBAEHwW1SyTR33ycZoZHu3eHfGU",
+    apiKey: request.query["apiKey"],
   });
 
   const v = await linear.viewer;
-  const tasks = await v.teams();
 
-  return response.status(200).json(tasks);
+  return response.status(200).json(v);
 }

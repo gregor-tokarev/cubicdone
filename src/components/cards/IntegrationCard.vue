@@ -1,13 +1,53 @@
 <script setup lang="ts">
-import { IntegrationItem } from "../../models/integration.model.ts";
+import Icon from "../Icon.vue";
+import { Integration } from "../../models/integration.model.ts";
 
-defineProps<{
-  integration: IntegrationItem;
+const props = defineProps<{
+  integration: Integration;
 }>();
+console.log(props.integration);
+
+const emit = defineEmits<{
+  (e: "connect", value: void): void;
+  (e: "disconnect", value: void): void;
+}>();
+
+function onClickAction() {
+  if (props.integration.apiKey) emit("disconnect");
+  else emit("connect");
+}
 </script>
 
 <template>
-  <div class="border-gray-150 rounded-lg border p-5 pb-0"></div>
+  <div
+    class="rounded-lg border"
+    :class="{
+      'border-gray-150': !integration.apiKey,
+      'border-black': integration.apiKey,
+    }"
+  >
+    <div class="p-5 pb-8">
+      <div class="flex items-center space-x-2">
+        <img :src="integration.iconURL" alt="icn" />
+        <p class="text-xl capitalize">{{ integration.name }}</p>
+      </div>
+      <p class="mt-4 opacity-50">{{ integration.description }}</p>
+    </div>
+    <div
+      class="flex cursor-pointer select-none items-center justify-center space-x-1 border-t py-4"
+      :class="{
+        'border-gray-150': !integration.apiKey,
+        'border-black': integration.apiKey,
+      }"
+      @click="onClickAction"
+    >
+      <template v-if="!integration.apiKey">
+        <Icon name="integrations"></Icon>
+        <span>Connect</span>
+      </template>
+      <span v-else class="text-red-400">Disconnect</span>
+    </div>
+  </div>
 </template>
 
 <style scoped></style>
