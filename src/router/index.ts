@@ -3,6 +3,7 @@ import Plan from "../views/Plan.vue";
 import Inbox from "../views/Inbox.vue";
 import Projects from "../views/Projects.vue";
 import Integrations from "../views/Integrations.vue";
+import Mapper from "../views/Integrations/Mapper.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -22,6 +23,12 @@ export const router = createRouter({
     {
       path: "/integrations",
       component: Integrations,
+      children: [
+        {
+          path: "mapper/:integration_name",
+          component: Mapper,
+        },
+      ],
     },
   ],
 });

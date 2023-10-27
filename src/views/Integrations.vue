@@ -9,8 +9,10 @@ import { useIntegrationStore } from "../store/integration.ts";
 import { Integration } from "../models/integration.model.ts";
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
+import { useRouter } from "vue-router";
 
 const integrationStore = useIntegrationStore();
+const router = useRouter();
 
 const openIntegrationName = ref("");
 const openIntegration = computed<Integration | undefined>(() => {
@@ -41,7 +43,13 @@ async function onSubmit() {
 
   loading.value = true;
   try {
-    await openIntegration.value.checkToken(v$.value.apiKey.$model);
+    const res = await openIntegration.value.checkToken(v$.value.apiKey.$model);
+    if (!res) {
+      openIntegration.value.apiKey = "";
+      openIntegrationName.value = "";
+
+      return;
+    }
 
     integrationStore.connect(
       openIntegration.value.name,
@@ -68,6 +76,7 @@ async function onSubmit() {
         :key="idx"
         @connect="onConnect(i.name)"
         @disconnect="onDisconnect(i.name)"
+        @link="router.push(`/integrations/mapper/${i.name}`)"
       ></IntegrationCard>
     </div>
   </div>
@@ -113,6 +122,7 @@ async function onSubmit() {
       </div>
     </BaseModal>
   </teleport>
+  <router-view></router-view>
 </template>
 
 <style scoped></style>

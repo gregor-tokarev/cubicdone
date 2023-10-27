@@ -5,11 +5,11 @@ import { Integration } from "../../models/integration.model.ts";
 const props = defineProps<{
   integration: Integration;
 }>();
-console.log(props.integration);
 
 const emit = defineEmits<{
   (e: "connect", value: void): void;
   (e: "disconnect", value: void): void;
+  (e: "link", value: void): void;
 }>();
 
 function onClickAction() {
@@ -35,6 +35,7 @@ function onClickAction() {
         <div
           v-if="integration.apiKey"
           class="flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
+          @click="emit('link')"
         >
           <Icon name="link"></Icon>
           <span>link projects</span>

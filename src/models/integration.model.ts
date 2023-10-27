@@ -1,3 +1,5 @@
+import { ProjectConnection } from "@linear/sdk";
+
 export interface IntegrationItem {
   id: number;
   name: string;
@@ -7,6 +9,11 @@ export interface IntegrationItem {
 
 export interface IntegrationTask {}
 
+export interface IntegrationProject {
+  id: string;
+  name: string;
+}
+
 export interface Integration {
   name: string;
   description: string;
@@ -15,8 +22,7 @@ export interface Integration {
 
   checkToken(apiKey: any): Promise<boolean>;
   // fetchTasks(): Promise<IntegrationTask>;
-  fetchProjects(): Promise<string[]>;
-  // getToken(): string;
+  fetchProjects(): Promise<IntegrationProject[]>;
 }
 
 export class LinearIntegration implements Integration {
@@ -28,15 +34,29 @@ export class LinearIntegration implements Integration {
 
   async checkToken(apiKey: string): Promise<boolean> {
     try {
-      await fetch(`/api/linear/check_token?apiKey=${apiKey}`);
+      const { ok } = await fetch(`/api/linear/check_token`, {
+        headers: { Authorization: apiKey },
+      }).then((r) => r.json());
 
-      return true;
+      return ok;
     } catch (e) {
       return false;
     }
   }
 
-  async fetchProjects(): Promise<string[]> {
-    return [];
+  async fetchProjects(): Promise<IntegrationProject[]> {
+    if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
+
+    const req = await fetch(`/api/linear/get_projects`, {
+      headers: { Authorization: this.apiKey },
+    });
+    const res: ProjectConnection = await req.json();
+
+    return res.nodes
+      .map((p) => ({ name: p.name, id: p.id }))
+      .concat([
+        { id: "232", name: "procollab" },
+        { id: "234sdf", name: "personal_todo" },
+      ]);
   }
 }

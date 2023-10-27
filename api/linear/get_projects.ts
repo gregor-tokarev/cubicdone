@@ -6,14 +6,10 @@ export default async function (
   response: VercelResponse,
 ) {
   const linear = new LinearClient({
-    apiKey: request.query["apiKey"],
+    apiKey: request.headers["authorization"],
   });
 
-  try {
-    const me = await linear.viewer;
+  const projects = await linear.projects();
 
-    return response.status(200).json({ ok: "id" in me });
-  } catch (err) {
-    return response.status(200).send({ ok: false });
-  }
+  return response.status(200).json(projects);
 }

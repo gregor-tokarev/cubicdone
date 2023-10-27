@@ -9,11 +9,11 @@ export default async function (
     apiKey: request.query["apiKey"],
   });
 
-  try {
-    const me = await linear.viewer;
+  const me = await linear.viewer;
+  const tasks = me.assignedIssues();
+  const projects = linear.projects();
+  const status = linear.workflowStates();
+  const res = await Promise.all([tasks, projects, status]);
 
-    return response.status(200).json({ ok: "id" in me });
-  } catch (err) {
-    return response.status(200).send({ ok: false });
-  }
+  return response.status(200).json(res);
 }
