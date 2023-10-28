@@ -24,7 +24,11 @@ const integration = computed<Integration | undefined>(() => {
 
 const projects = ref<IntegrationProject[]>([]);
 const projectOptions = computed(() => {
-  return projects.value.map((p) => ({ id: p.id, value: p.id, label: p.name }));
+  return projects.value.map((p) => ({
+    id: p.id,
+    value: p.name,
+    label: p.name,
+  }));
 });
 
 onMounted(async () => {
@@ -32,6 +36,8 @@ onMounted(async () => {
 
   projects.value = await integration.value?.fetchProjects();
 });
+
+const sval = ref("");
 </script>
 
 <template>
@@ -49,7 +55,7 @@ onMounted(async () => {
           <span>Todo project</span>
         </div>
         <div class="">
-          <BaseSelect :options="projectOptions" model-value=""></BaseSelect>
+          <BaseSelect :options="projectOptions" v-model="sval"></BaseSelect>
           <div
             class="mt-6 inline-flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
           >

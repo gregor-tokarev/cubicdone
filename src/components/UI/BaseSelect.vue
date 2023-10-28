@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import Icon from "../Icon.vue";
 import { computed, onMounted, ref } from "vue";
-import { onClickOutside } from "@vueuse/core";
-import { useEventListener } from "@vueuse/core/index";
+import { useEventListener, onClickOutside } from "@vueuse/core";
 import Fuse from "fuse.js";
 
 const props = defineProps<{
@@ -37,13 +36,40 @@ function onToggle() {
   open.value = !open.value;
 }
 
+const optionIdx = ref(0);
 const filterQ = ref("");
 onMounted(() => {
   useEventListener(document, "keydown", (e) => {
+    if (!open.value) return;
+
     if (e.key === "Backspace") filterQ.value = filterQ.value.slice(0, -1);
-    else filterQ.value += e.key;
+    else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      if (e.key === "ArrowUp") {
+        optionIdx.value =
+          optionIdx.value === 0
+            ? filteredOptions.value.length - 1
+            : optionIdx.value - 1;
+      } else if (e.key === "ArrowDown") {
+        optionIdx.value =
+          optionIdx.value === filteredOptions.value.length - 1
+            ? 0
+            : optionIdx.value + 1;
+      }
+    } else if (e.key === "Enter") {
+      onEmit(filteredOptions.value[optionIdx.value].id);
+    } else {
+      filterQ.value += e.key;
+      optionIdx.value = 0;
+    }
   });
 });
+
+function onEmit(opId: string) {
+  const op = filteredOptions.value.find((o) => o.id === opId);
+  op && emit("update:modelValue", op?.value);
+
+  open.value = false;
+}
 
 const filteredOptions = computed(() => {
   const fuse = new Fuse(props.options, { keys: ["label", "value"] });
@@ -80,8 +106,9 @@ const filteredOptions = computed(() => {
       >
         <div
           class="px-2.5 py-1.5 transition-colors hover:bg-gray-450"
-          @click="emit('update:modelValue', op.value)"
-          v-for="op in filteredOptions"
+          :class="{ 'bg-gray-450': idx === optionIdx }"
+          @click="onEmit(op.id)"
+          v-for="(op, idx) in filteredOptions"
           :key="op.id"
         >
           {{ op.label }}
