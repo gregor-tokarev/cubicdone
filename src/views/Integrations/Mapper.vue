@@ -9,7 +9,7 @@ import {
 } from "../../models/integration.model.ts";
 import BaseButton from "../../components/UI/BaseButton.vue";
 import Icon from "../../components/Icon.vue";
-import BaseSelect from "../../components/UI/BaseSelect.vue";
+import ProjectSelect from "../../components/UI/ProjectSelect.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -36,8 +36,7 @@ onMounted(async () => {
 
   projects.value = await integration.value?.fetchProjects();
 });
-
-const sval = ref("");
+const projectId = ref<null | string>(null);
 </script>
 
 <template>
@@ -55,7 +54,7 @@ const sval = ref("");
           <span>Todo project</span>
         </div>
         <div class="">
-          <BaseSelect :options="projectOptions" v-model="sval"></BaseSelect>
+          <ProjectSelect v-model="projectId"></ProjectSelect>
           <div
             class="mt-6 inline-flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
           >

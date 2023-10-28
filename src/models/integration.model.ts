@@ -52,11 +52,6 @@ export class LinearIntegration implements Integration {
     });
     const res: ProjectConnection = await req.json();
 
-    return res.nodes
-      .map((p) => ({ name: p.name, id: p.id }))
-      .concat([
-        { id: "232", name: "procollab" },
-        { id: "234sdf", name: "personal_todo" },
-      ]);
+    return res.nodes.map((p) => ({ name: p.name, id: p.id }));
   }
 }

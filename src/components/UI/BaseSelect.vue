@@ -36,7 +36,7 @@ function onToggle() {
   open.value = !open.value;
 }
 
-const optionIdx = ref(0);
+const optionIdx = ref(-1);
 const filterQ = ref("");
 onMounted(() => {
   useEventListener(document, "keydown", (e) => {
@@ -44,6 +44,8 @@ onMounted(() => {
 
     if (e.key === "Backspace") filterQ.value = filterQ.value.slice(0, -1);
     else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+
       if (e.key === "ArrowUp") {
         optionIdx.value =
           optionIdx.value === 0
