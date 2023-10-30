@@ -56,7 +56,7 @@ function onEnter(event: Event) {
       <div
         ref="color"
         @click="showColorPicker = !showColorPicker"
-        class="hover:shadow-colorPick h-5 w-5 cursor-pointer rounded-full"
+        class="h-5 w-5 cursor-pointer rounded-full hover:shadow-colorPick"
         :class="{ [`bg-${project.color}-400`]: true }"
       ></div>
       <span>
@@ -93,7 +93,7 @@ function onEnter(event: Event) {
       <div
         v-for="c in projectStore.colors"
         :key="c"
-        class="hover:shadow-colorPick h-5 w-5 cursor-pointer rounded-full border"
+        class="h-5 w-5 cursor-pointer rounded-full border hover:shadow-colorPick"
         :class="{ [`bg-${c}-400`]: true, 'border-black': c === project.color }"
         @click="onPickColor(c)"
       ></div>

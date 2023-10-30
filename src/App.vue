@@ -7,29 +7,18 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 onMounted(() => {
-  hotkeys.filter = function () {
-    return true;
-  };
-  //How to add the filter to edit labels. <div contentEditable="true"></div>
-  //"contentEditable" Older browsers that do not support drops
   hotkeys.filter = (event) => {
+    if (event.metaKey) return true;
+
     const target = event.target as HTMLElement;
     const tagName = target?.tagName;
+
     return !(
       target.isContentEditable ||
       tagName == "INPUT" ||
       tagName == "SELECT" ||
       tagName == "TEXTAREA"
     );
-  };
-
-  hotkeys.filter = (event) => {
-    const target = event.target as HTMLElement;
-    const tagName = target?.tagName;
-    hotkeys.setScope(
-      /^(INPUT|TEXTAREA|SELECT)$/.test(tagName) ? "input" : "other",
-    );
-    return true;
   };
 
   // go to inbox page hotkey
