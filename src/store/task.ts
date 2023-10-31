@@ -22,6 +22,7 @@ export const useTaskStore = defineStore("task", {
 
       const task: Task = {
         id: nanoid(3),
+        draftId: draft.id,
         title: draft.title,
         status: "todo",
         dateUpdated: draft.dateUpdated,
@@ -32,6 +33,10 @@ export const useTaskStore = defineStore("task", {
         dateTodo,
         projectId: draft.projectId,
       };
+
+      if (draft && draft.external) {
+        task.external = JSON.parse(JSON.stringify(draft.external));
+      }
 
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
@@ -98,8 +103,6 @@ export const useTaskStore = defineStore("task", {
     update(taskId: string, newTask: Partial<Task>): void {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1, { ...this.tasks[taskIdx], ...newTask });
-
-      // return this.tasks[taskIdx]
     },
     remove(taskId: string): void {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);

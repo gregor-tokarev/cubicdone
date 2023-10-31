@@ -31,5 +31,10 @@ export const useIntegrationStore = defineStore("integrations", {
         return i;
       });
     },
+    getByName(state) {
+      return (integrationName: string): Integration | undefined => {
+        return state.integrations.find((i) => i.name === integrationName);
+      };
+    },
   },
 });

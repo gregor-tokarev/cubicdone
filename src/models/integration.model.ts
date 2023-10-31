@@ -1,13 +1,17 @@
-import { ProjectConnection } from "@linear/sdk";
+import { Issue, ProjectConnection } from "@linear/sdk";
+import { Task } from "@models/task.model.ts";
 
-export interface IntegrationItem {
-  id: number;
-  name: string;
-  description: string;
+export interface IntegrationTask {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  link: string;
   iconURL: string;
+  integrationName: string;
+  projectTitle: string;
+  projectId: string;
 }
-
-export interface IntegrationTask {}
 
 export interface IntegrationProject {
   id: string;
@@ -21,8 +25,9 @@ export interface Integration {
   apiKey?: string;
 
   checkToken(apiKey: any): Promise<boolean>;
-  // fetchTasks(): Promise<IntegrationTask>;
+  fetchTasks(): Promise<IntegrationTask[]>;
   fetchProjects(): Promise<IntegrationProject[]>;
+  changeStatus(id: string, status: Task["status"]): Promise<void>;
 }
 
 export class LinearIntegration implements Integration {
@@ -44,6 +49,7 @@ export class LinearIntegration implements Integration {
     }
   }
 
+  projectsCache: IntegrationProject[] = [];
   async fetchProjects(): Promise<IntegrationProject[]> {
     if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
 
@@ -52,6 +58,54 @@ export class LinearIntegration implements Integration {
     });
     const res: ProjectConnection = await req.json();
 
+    this.projectsCache = res.nodes;
+
     return res.nodes.map((p) => ({ name: p.name, id: p.id }));
+  }
+
+  async fetchTasks(): Promise<IntegrationTask[]> {
+    if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
+
+    const fetches: Promise<any>[] = [];
+
+    const req = fetch(`/api/linear/get_tasks`, {
+      headers: { Authorization: this.apiKey },
+    });
+    fetches.push(req.then((r) => r.json()));
+
+    if (!this.projectsCache.length) {
+      fetches.push(this.fetchProjects());
+    }
+
+    const [tasks] = await Promise.all(fetches);
+
+    return tasks.nodes.map((t: Issue) => {
+      // @ts-ignore
+      const project = this.projectsCache.find((p) => p.id === t._project.id);
+      return {
+        id: t.id,
+        title: t.title,
+        createdAt: t.createdAt as unknown as string,
+        updatedAt: t.updatedAt as unknown as string,
+        link: t.url,
+        iconURL: this.iconURL,
+        integrationName: this.name,
+        projectTitle: project?.name ?? "",
+        projectId: project?.id ?? "",
+      };
+    });
+  }
+
+  async changeStatus(id: string, status: Task["status"]): Promise<void> {
+    if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
+
+    await fetch("/api/linear/change_status", {
+      headers: { Authorization: this.apiKey },
+      method: "POST",
+      body: JSON.stringify({
+        taskId: id,
+        status: status === "todo" ? "Todo" : "Done",
+      }),
+    }).then((r) => r.json());
   }
 }

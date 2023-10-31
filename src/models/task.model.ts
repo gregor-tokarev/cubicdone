@@ -1,5 +1,6 @@
-export interface Task {
+export type Task = {
   id: string;
+  draftId: string;
   title: string;
   status: "todo" | "done";
   order: number;
@@ -9,4 +10,11 @@ export interface Task {
   dateCompleted: string | null;
   dateTodo: string;
   projectId: string | null;
-}
+  external?: {
+    integrationName: string;
+    projectTitle: string;
+    projectId: string;
+    link: string;
+    iconURL: string;
+  };
+};

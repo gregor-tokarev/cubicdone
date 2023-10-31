@@ -3,6 +3,8 @@ import { useLocalStorage } from "@vueuse/core";
 import { Draft } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
+import { IntegrationTask } from "@models/integration.model.ts";
+import { useTaskStore } from "@store/task.ts";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({
@@ -39,6 +41,35 @@ export const useDraftsStore = defineStore("drafts", {
       this.drafts.push(draft);
 
       return draft;
+    },
+    commitFromIntegration(tasks: IntegrationTask[]): Draft[] {
+      const drafts = tasks.map((it, idx) => ({
+        id: it.id,
+        title: it.title,
+        projectId: null,
+        dateCreated: it.createdAt,
+        dateUpdated: it.updatedAt,
+        order: this.maxOrder + 1 + idx,
+        external: {
+          integrationName: it.integrationName,
+          projectTitle: it.projectTitle,
+          projectId: it.projectId,
+          iconURL: it.iconURL,
+          link: it.link,
+        },
+      })) satisfies Draft[];
+
+      const oldIds = this.drafts.map((d) => d.id);
+      const taskStore = useTaskStore();
+      const taskIds = taskStore.tasks.map((t) => t.draftId);
+
+      const draftsToCommit = drafts.filter(
+        (d) => oldIds.indexOf(d.id) === -1 && taskIds.indexOf(d.id) === -1,
+      );
+
+      this.drafts = [...this.drafts, ...draftsToCommit];
+
+      return draftsToCommit;
     },
     edit(id: string, title: string): Draft | undefined {
       const draft = this.drafts.find((d) => d.id === id);

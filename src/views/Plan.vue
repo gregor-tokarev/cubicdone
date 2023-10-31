@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import Icon from "@components/Icon.vue";
+import Icon from "../components/Icon.vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import DraftCard from "@components/cards/DraftCard.vue";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import dayjs, { Dayjs } from "dayjs";
 import { useTaskStore } from "@store/task.ts";
 import TaskCard from "@components/cards/TaskCard.vue";
 import { Task } from "@models/task.model.ts";
 import { VueDraggableNext } from "vue-draggable-next";
 import { Draft } from "@models/draft.model.ts";
+import { useIntegrationStore } from "@store/integration.ts";
 
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();
+const integrationStore = useIntegrationStore();
 
 const dateColumns = computed(() => {
   const count = 3;
@@ -24,8 +26,29 @@ const dateColumns = computed(() => {
   return res;
 });
 
-function onUpdateStatus(id: string, status: Task["status"]) {
+const loading = ref(true);
+
+onMounted(async () => {
+  const taskPromises = integrationStore.mappedIntegrations.map((i) =>
+    i.fetchTasks(),
+  );
+  const externalDrafts = (await Promise.all(taskPromises)).flat();
+  draftStore.commitFromIntegration(externalDrafts);
+
+  loading.value = false;
+});
+
+async function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });
+
+  const task = taskStore.getOne(id);
+  if (task && task.external) {
+    const integration = integrationStore.getByName(
+      task.external.integrationName,
+    );
+
+    await integration?.changeStatus(task.draftId, status);
+  }
 }
 
 function onMove(date: Dayjs, evt: any) {

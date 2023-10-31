@@ -10,10 +10,10 @@ export default async function (
   });
 
   const me = await linear.viewer;
-  const tasks = me.assignedIssues();
-  const projects = linear.projects();
-  const status = linear.workflowStates();
-  const res = await Promise.all([tasks, projects, status]);
+  const tasks = await me.assignedIssues({
+    includeArchived: false,
+    filter: { state: { name: { in: ["Todo", "Progress"] } } },
+  });
 
-  return response.status(200).json(res);
+  return response.status(200).json(tasks);
 }
