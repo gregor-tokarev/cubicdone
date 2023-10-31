@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import Icon from "../components/Icon.vue";
-import { useDraftsStore } from "../store/drafts.ts";
-import DraftCard from "../components/cards/DraftCard.vue";
+import Icon from "@components/Icon.vue";
+import { useDraftsStore } from "@store/drafts.ts";
+import DraftCard from "@components/cards/DraftCard.vue";
 import { computed } from "vue";
 import dayjs, { Dayjs } from "dayjs";
-import { useTaskStore } from "../store/task.ts";
-import TaskCard from "../components/cards/TaskCard.vue";
-import { Task } from "../models/task.model.ts";
+import { useTaskStore } from "@store/task.ts";
+import TaskCard from "@components/cards/TaskCard.vue";
+import { Task } from "@models/task.model.ts";
 import { VueDraggableNext } from "vue-draggable-next";
-import { Draft } from "../models/draft.model.ts";
+import { Draft } from "@models/draft.model.ts";
 
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Project } from "../../models/project.model.ts";
-import { useProjectStore } from "../../store/project.ts";
+import { Project } from "@models/project.model.ts";
+import { useProjectStore } from "@store/project.ts";
 import { computed, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 

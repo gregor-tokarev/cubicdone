@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
-import { Project, ProjectStatistic } from "../models/project.model.ts";
-import { randomInt } from "../utils/random.ts";
+import { Project, ProjectStatistic } from "@models/project.model.ts";
+import { randomInt } from "@utils/random.ts";
 import { nanoid } from "nanoid";
 import Fuse from "fuse.js";
 import { useDraftsStore } from "./drafts.ts";

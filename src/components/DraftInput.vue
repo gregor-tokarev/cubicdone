@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Icon from "./Icon.vue";
 import { computed, onMounted, ref, watch } from "vue";
-import { InputGenericPart } from "../models/input-part.model.ts";
+import { InputGenericPart } from "@models/input-part.model.ts";
 import { nanoid } from "nanoid";
 import Contenteditable from "./Contenteditable.vue";
-import { useProjectStore } from "../store/project.ts";
-import { Project } from "../models/project.model.ts";
+import { useProjectStore } from "@store/project.ts";
+import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
-import { focusOnEditableElement } from "../utils/focus.ts";
+import { focusOnEditableElement } from "@utils/focus.ts";
 import FuseResult = Fuse.FuseResult;
 
 const props = defineProps<{

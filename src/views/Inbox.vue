@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import DraftInput from "../components/DraftInput.vue";
+import DraftInput from "@components/DraftInput.vue";
 import { ref } from "vue";
-import { useDraftsStore } from "../store/drafts.ts";
-import DraftRow from "../components/cards/DraftRow.vue";
+import { useDraftsStore } from "@store/drafts.ts";
+import DraftRow from "@components/cards/DraftRow.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { nanoid } from "nanoid";
-import { InputGenericPart } from "../models/input-part.model.ts";
+import { InputGenericPart } from "@models/input-part.model.ts";
 
 const draftStore = useDraftsStore();
 
