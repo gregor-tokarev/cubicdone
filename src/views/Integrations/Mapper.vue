@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import BaseModal from "../../components/BaseModal.vue";
+import BaseModal from "@components/BaseModal.vue";
 import { useRoute, useRouter } from "vue-router";
-import { useIntegrationStore } from "../../store/integration.ts";
+import { useIntegrationStore } from "@store/integration.ts";
 import { computed, onMounted, ref } from "vue";
-import {
-  Integration,
-  IntegrationProject,
-} from "../../models/integration.model.ts";
-import BaseButton from "../../components/UI/BaseButton.vue";
+import { Integration, IntegrationProject } from "@models/integration.model.ts";
 import Icon from "../../components/Icon.vue";
-import ProjectSelect from "../../components/UI/ProjectSelect.vue";
+import ProjectSelect from "@components/UI/ProjectSelect.vue";
+import BaseSelect from "@components/UI/BaseSelect.vue";
+import SkeletonLoader from "@components/UI/SkeletonLoader.vue";
+import { useLocalStorage } from "@vueuse/core";
 
 const router = useRouter();
 const route = useRoute();
@@ -22,11 +21,12 @@ const integration = computed<Integration | undefined>(() => {
   );
 });
 
+const projectsLoading = ref(true);
 const projects = ref<IntegrationProject[]>([]);
 const projectOptions = computed(() => {
   return projects.value.map((p) => ({
     id: p.id,
-    value: p.name,
+    value: p.id,
     label: p.name,
   }));
 });
@@ -35,8 +35,15 @@ onMounted(async () => {
   if (!integration.value) return;
 
   projects.value = await integration.value?.fetchProjects();
+  projectsLoading.value = false;
 });
-const projectId = ref<null | string>(null);
+
+const projectsMap = useLocalStorage<
+  { externalId: string | null; internalId: string | null }[]
+>("map", []);
+function onCreateLink() {
+  projectsMap.value.push({ externalId: null, internalId: null });
+}
 </script>
 
 <template>
@@ -47,29 +54,43 @@ const projectId = ref<null | string>(null);
           <img :src="integration.iconURL" :alt="integration.name" />
           <span class="text-xl capitalize">{{ integration.name }}</span>
         </div>
-        <div class="mt-8 flex text-xs text-gray-350">
-          <span class="mr-[55%] capitalize">
+        <div class="mb-2 mt-8 flex text-xs text-gray-350">
+          <span class="mr-[61%] capitalize">
             {{ integration.name }} project
           </span>
           <span>Todo project</span>
         </div>
-        <div class="">
-          <ProjectSelect v-model="projectId"></ProjectSelect>
+        <div v-if="!projectsLoading" class="">
+          <div class="space-y-4">
+            <div v-for="m in projectsMap" class="flex items-center">
+              <BaseSelect
+                class="w-[33%]"
+                :options="projectOptions"
+                v-model="m.externalId"
+              ></BaseSelect>
+              <div class="mx-2.5 h-[1px] max-w-[36%] grow bg-gray-150"></div>
+              <ProjectSelect
+                class="w-[30%]"
+                v-model="m.internalId"
+              ></ProjectSelect>
+            </div>
+          </div>
           <div
             class="mt-6 inline-flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
+            @click="onCreateLink"
           >
             <Icon name="link"></Icon>
             <span>Link new project</span>
           </div>
         </div>
-        <div class="mt-8 flex space-x-2">
-          <BaseButton>
-            <div class="flex items-center space-x-1">
-              <span>Save</span>
-              <Icon name="arrow" class="h-5 w-5 rotate-90"></Icon>
+        <div v-else class="">
+          <div class="space-y-4">
+            <div v-for="() in projectsMap" class="flex justify-between">
+              <SkeletonLoader class="h-8 w-[33%]"></SkeletonLoader>
+              <SkeletonLoader class="h-8 w-[30%]"></SkeletonLoader>
             </div>
-          </BaseButton>
-          <BaseButton color="gray"> Cancel </BaseButton>
+          </div>
+          <SkeletonLoader class="mt-6 h-[34px] w-[30%]"></SkeletonLoader>
         </div>
       </div>
     </BaseModal>

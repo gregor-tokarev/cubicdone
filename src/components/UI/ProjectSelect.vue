@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { Project } from "../../models/project.model.ts";
+import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
 import FuseResult = Fuse.FuseResult;
-import { useProjectStore } from "../../store/project.ts";
+import { useProjectStore } from "@store/project.ts";
 import Icon from "../Icon.vue";
 
 const projectStore = useProjectStore();
@@ -33,13 +33,13 @@ watch(projectQuery, (newValue) => {
   projectQueryResult.value = searchIndex.search(newValue);
 });
 
-const project = computed(() => {
+const project = computed<Project | undefined>(() => {
   return projectStore.getOne(props.modelValue);
 });
 
 const inputEl = ref<HTMLInputElement | null>(null);
 
-function handleEnter(evt: KeyboardEvent) {
+function handleEnter(_evt: KeyboardEvent) {
   const selectedProject =
     projectSelectOptions.value[projectOptionSelected.value];
 
@@ -102,7 +102,7 @@ function onClick() {
 <template>
   <div
     ref="projectSelect"
-    class="flex cursor-pointer items-center justify-between rounded-lg bg-gray-450 px-2 py-1"
+    class="flex cursor-pointer items-center justify-between rounded-lg bg-gray-400 px-2 py-1"
     @click="onClick()"
     :class="{
       [`!bg-${project ? project.color : ''}-100`]: modelValue !== null,
@@ -121,7 +121,7 @@ function onClick() {
         @focus="openProjectSearch = true"
         @blur="openProjectSearch = false"
       />
-      <span v-else>
+      <span v-else-if="project">
         {{ project.title }}
       </span>
     </div>

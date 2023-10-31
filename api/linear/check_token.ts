@@ -6,7 +6,7 @@ export default async function (
   response: VercelResponse,
 ) {
   const linear = new LinearClient({
-    apiKey: request.query["apiKey"],
+    apiKey: request.headers["authorization"],
   });
 
   try {

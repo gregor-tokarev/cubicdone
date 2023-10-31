@@ -36,6 +36,10 @@ function onToggle() {
   open.value = !open.value;
 }
 
+const selectedOption = computed(() => {
+  return filteredOptions.value.find((op) => op.value === props.modelValue);
+});
+
 const optionIdx = ref(-1);
 const filterQ = ref("");
 onMounted(() => {
@@ -88,7 +92,9 @@ const filteredOptions = computed(() => {
       class="flex min-h-[32px] cursor-pointer items-center justify-between rounded-lg bg-gray-400 px-3 py-1"
       @click="onToggle()"
     >
-      <span>{{ modelValue }}</span>
+      <span>{{
+        selectedOption !== undefined ? selectedOption.label : ""
+      }}</span>
       <Icon
         name="arrow"
         class="h-6 w-6 rotate-180 transition-transform"
