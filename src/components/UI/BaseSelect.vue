@@ -5,7 +5,7 @@ import { useEventListener, onClickOutside } from "@vueuse/core";
 import Fuse from "fuse.js";
 
 const props = defineProps<{
-  modelValue: string;
+  modelValue: string | null;
   options: { label: string; value: string; id: string }[];
 }>();
 

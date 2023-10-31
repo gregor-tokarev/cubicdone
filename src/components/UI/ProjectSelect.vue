@@ -34,6 +34,7 @@ watch(projectQuery, (newValue) => {
 });
 
 const project = computed<Project | undefined>(() => {
+  if (!props.modelValue) return;
   return projectStore.getOne(props.modelValue);
 });
 
