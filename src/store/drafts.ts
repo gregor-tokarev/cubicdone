@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
-import { Draft } from "../models/draft.model.ts";
+import { Draft } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
 

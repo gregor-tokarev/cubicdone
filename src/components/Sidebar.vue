@@ -91,7 +91,7 @@ window.addEventListener("resize", (_) => {
     <!--    title block-->
     <div class="flex items-center border-b border-[#333333] pb-2.5">
       <img
-        src="../assets/img/gregor.png"
+        src="@assets/img/gregor.png"
         alt="gregor tokarev"
         class="h-[60px] w-[60px] overflow-hidden rounded-full"
         :class="{ '!h-[40px] !w-[40px]': compact }"

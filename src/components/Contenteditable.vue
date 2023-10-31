@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { focusOnEditableElement } from "../utils/focus.ts";
+import { focusOnEditableElement } from "@utils/focus.ts";
 
 const props = withDefaults(
   defineProps<{

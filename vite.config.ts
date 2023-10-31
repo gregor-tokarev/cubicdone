@@ -12,7 +12,13 @@ export default defineConfig({
       workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
     }),
   ],
-  define: {
-    global: {},
+  resolve: {
+    alias: {
+      "@components": "src/components",
+      "@store": "src/store",
+      "@models": "src/models",
+      "@utils": "src/utils",
+      "@assets": "src/assets",
+    },
   },
 });

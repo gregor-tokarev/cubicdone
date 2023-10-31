@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useProjectStore } from "../store/project.ts";
-import ProjectRow from "../components/cards/ProjectRow.vue";
-import { Project, ProjectStatistic } from "../models/project.model.ts";
+import { useProjectStore } from "@store/project.ts";
+import ProjectRow from "@components/cards/ProjectRow.vue";
+import { Project, ProjectStatistic } from "@models/project.model.ts";
 import { computed, onUnmounted, ref } from "vue";
-import { focusOnEditableElement } from "../utils/focus.ts";
-import Icon from "../components/Icon.vue";
+import { focusOnEditableElement } from "@utils/focus.ts";
+import Icon from "@components/Icon.vue";
 import hotkeys from "hotkeys-js";
 import { useLocalStorage } from "@vueuse/core";
 

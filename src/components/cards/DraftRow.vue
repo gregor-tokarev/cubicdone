@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Draft } from "../../models/draft.model.ts";
+import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
 

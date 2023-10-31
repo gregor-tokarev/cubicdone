@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProjectStore } from "../../store/project.ts";
+import { useProjectStore } from "@store/project.ts";
 import { computed } from "vue";
 
 const props = defineProps<{
