@@ -1,4 +1,11 @@
 {
+  "routes": [
+    {
+      "src": "^(?!api).+",
+      "dest": "/",
+      "status": 200
+    }
+  ],
   "functions": {
     "api/linear/*.ts": {
       "memory": 1024,
