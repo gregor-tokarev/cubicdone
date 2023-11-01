@@ -18,13 +18,15 @@ defineProps<{
         v-if="draft.projectId"
         :project-id="draft.projectId"
       ></ProjectTag>
-      <div
+      <a
         v-if="draft.external"
-        class="bg-gray-425 flex items-center space-x-1 rounded-lg px-1.5 py-1"
+        class="flex cursor-pointer items-center space-x-1 rounded-lg bg-gray-425 px-1.5 py-1"
+        :href="draft.external.link"
+        target="_blank"
       >
         <img class="h-[14px] w-[14px]" :src="draft.external.iconURL" alt="" />
         <span class="text-xs">{{ draft.external.projectTitle }}</span>
-      </div>
+      </a>
       <span class="text-xs text-gray-350">
         {{ dayjs(draft.dateCreated).format("DD MMM, HH:MM") }}
       </span>

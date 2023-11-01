@@ -101,7 +101,7 @@ function onChangeDraft(event: any) {
         :group="{ name: 'tasks', put: false, pull: 'clone' }"
       >
         <DraftCard
-          class="min-w-[25%] grow cursor-pointer"
+          class="min-w-[25%] grow"
           :class="{
             'max-w-[25%]': draftStore.sortedDrafts.length >= 4,
             'max-w-[33%]': draftStore.sortedDrafts.length === 3,
