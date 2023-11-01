@@ -1,6 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
+      "source": "/((?!api\/.*).*)",
+      "destination": "/index.html"
     }
   ],
   "functions": {
