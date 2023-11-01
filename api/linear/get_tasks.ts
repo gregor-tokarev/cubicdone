@@ -12,8 +12,10 @@ export default async function (
   const me = await linear.viewer;
   const tasks = await me.assignedIssues({
     includeArchived: false,
-    filter: { state: { name: { in: ["Todo", "Progress"] } } },
   });
+  const states = await Promise.all(tasks.nodes.map((t) => t.state));
 
-  return response.status(200).json(tasks);
+  return response
+    .status(200)
+    .json(tasks.nodes.map((t, idx) => ({ ...t, state: states[idx] })));
 }

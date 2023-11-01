@@ -55,7 +55,7 @@ export class LinearIntegration implements Integration {
 
     const [tasks] = await Promise.all(fetches);
 
-    return tasks.nodes.map((t: Issue) => {
+    return tasks.map((t: Issue) => {
       // @ts-ignore
       const project = this.projectsCache.find((p) => p.id === t._project.id);
       return {
@@ -68,6 +68,7 @@ export class LinearIntegration implements Integration {
         integrationName: this.name,
         projectTitle: project?.name ?? "",
         projectId: project?.id ?? "",
+        state: t.state.name.toLowerCase() === "done" ? "done" : "todo",
       };
     });
   }

@@ -10,6 +10,7 @@ export interface IntegrationTask {
   integrationName: string;
   projectTitle: string;
   projectId: string;
+  state: Task["status"];
 }
 
 export interface IntegrationProject {
