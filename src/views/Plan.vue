@@ -8,6 +8,7 @@ import { useTaskStore } from "@store/task.ts";
 import TaskCard from "@components/cards/TaskCard.vue";
 import { Task } from "@models/task.model.ts";
 import { VueDraggableNext } from "vue-draggable-next";
+import { VueSpinner } from "vue3-spinners";
 import { Draft } from "@models/draft.model.ts";
 import { useIntegrationStore } from "@store/integration.ts";
 
@@ -90,9 +91,15 @@ function onChangeDraft(event: any) {
   <div class="flex h-[100vh] flex-col py-8">
     <!--  Inbox section-->
     <div class="space-y-2.5">
-      <div class="flex items-center space-x-2 text-base text-black">
-        <Icon name="inbox"></Icon>
-        <span>Inbox</span>
+      <div class="flex items-center space-x-5">
+        <div class="flex items-center space-x-2 text-base text-black">
+          <Icon name="inbox"></Icon>
+          <span>Inbox</span>
+        </div>
+        <div v-if="loading" class="flex items-center space-x-1.5 text-gray-350">
+          <VueSpinner size="16px"></VueSpinner>
+          <span>Loading...</span>
+        </div>
       </div>
       <VueDraggableNext
         class="flex min-h-[78px] items-center space-x-2.5 overflow-auto pb-2.5"
@@ -118,9 +125,9 @@ function onChangeDraft(event: any) {
         >
           <span>
             You plan all your Inbox Tasks. Start working or
-            <router-link tag="span" class="text-black underline" to="/inbox"
-              >create new drafts</router-link
-            >
+            <router-link tag="span" class="text-black underline" to="/inbox">
+              create new drafts
+            </router-link>
           </span>
         </div>
       </VueDraggableNext>
