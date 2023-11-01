@@ -31,13 +31,15 @@ const emit = defineEmits<{
           v-if="task.projectId"
           :project-id="task.projectId"
         ></ProjectTag>
-        <div
+        <a
           v-if="task.external"
-          class="bg-gray-425 flex items-center space-x-1 rounded-lg px-1.5 py-1"
+          class="flex items-center space-x-1 rounded-lg bg-gray-425 px-1.5 py-1"
+          :href="task.external.link"
+          target="_blank"
         >
           <img class="h-[14px] w-[14px]" :src="task.external.iconURL" alt="" />
           <span class="text-xs">{{ task.external.projectTitle }}</span>
-        </div>
+        </a>
       </div>
     </div>
   </div>
