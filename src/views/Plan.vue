@@ -65,21 +65,6 @@ onMounted(async () => {
 
 async function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });
-
-  const task = taskStore.getOne(id);
-  if (task && task.external) {
-    loading.value = true;
-
-    const integration = integrationStore.getByName(
-      task.external.integrationName,
-    );
-
-    try {
-      await integration?.changeStatus(task.draftId, status);
-    } finally {
-      loading.value = true;
-    }
-  }
 }
 
 function onMove(date: Dayjs, evt: any) {

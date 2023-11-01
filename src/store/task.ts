@@ -131,7 +131,7 @@ export const useTaskStore = defineStore("task", {
           id: nanoid(3),
           draftId: d.id,
           title: d.title,
-          status: d.state,
+          status: this.tasks[taskIdx].status,
           dateUpdated: d.updatedAt,
           dateCreated: d.createdAt,
           dateCommitted: dayjs().toISOString(),

@@ -1,5 +1,3 @@
-import { Task } from "@models/task.model.ts";
-
 export interface IntegrationTask {
   id: string;
   title: string;
@@ -10,7 +8,6 @@ export interface IntegrationTask {
   integrationName: string;
   projectTitle: string;
   projectId: string;
-  state: Task["status"];
 }
 
 export interface IntegrationProject {
@@ -27,5 +24,4 @@ export interface Integration {
   checkToken(apiKey: any): Promise<boolean>;
   fetchTasks(): Promise<IntegrationTask[]>;
   fetchProjects(): Promise<IntegrationProject[]>;
-  changeStatus(id: string, status: Task["status"]): Promise<void>;
 }

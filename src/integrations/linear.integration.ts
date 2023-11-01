@@ -1,5 +1,4 @@
 import { Issue, ProjectConnection } from "@linear/sdk";
-import { Task } from "@models/task.model.ts";
 import {
   Integration,
   IntegrationProject,
@@ -68,21 +67,7 @@ export class LinearIntegration implements Integration {
         integrationName: this.name,
         projectTitle: project?.name ?? "",
         projectId: project?.id ?? "",
-        state: t.state.name.toLowerCase() === "done" ? "done" : "todo",
       };
     });
-  }
-
-  async changeStatus(id: string, status: Task["status"]): Promise<void> {
-    if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
-
-    await fetch("/api/linear/change_status", {
-      headers: { Authorization: this.apiKey },
-      method: "POST",
-      body: JSON.stringify({
-        taskId: id,
-        status: status === "todo" ? "Todo" : "Done",
-      }),
-    }).then((r) => r.json());
   }
 }
