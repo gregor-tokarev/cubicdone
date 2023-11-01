@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import { Integration, LinearIntegration } from "../models/integration.model.ts";
+import { Integration } from "@models/integration.model.ts";
 import { useLocalStorage } from "@vueuse/core";
+import { LinearIntegration } from "../integrations/linear.integration.ts";
 
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
