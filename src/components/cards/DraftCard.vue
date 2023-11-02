@@ -13,11 +13,20 @@ defineProps<{
     class="cursor-grab space-y-1 rounded-lg bg-gray-400 px-4 py-2.5 active:cursor-grabbing"
   >
     <p class="">{{ draft.title }}</p>
-    <div class="space-x flex items-center space-x-1">
+    <div class="flex items-center space-x-1">
       <ProjectTag
         v-if="draft.projectId"
         :project-id="draft.projectId"
       ></ProjectTag>
+      <a
+        v-if="draft.external"
+        class="flex cursor-pointer items-center space-x-1 rounded-lg bg-gray-425 px-1.5 py-1"
+        :href="draft.external.link"
+        target="_blank"
+      >
+        <img class="h-[14px] w-[14px]" :src="draft.external.iconURL" alt="" />
+        <span class="text-xs">{{ draft.external.projectTitle }}</span>
+      </a>
       <span class="text-xs text-gray-350">
         {{ dayjs(draft.dateCreated).format("DD MMM, HH:MM") }}
       </span>

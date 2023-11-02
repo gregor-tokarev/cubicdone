@@ -4,6 +4,8 @@ import { Task } from "@models/task.model.ts";
 import { useDraftsStore } from "./drafts.ts";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
+import { Draft } from "@models/draft.model.ts";
+import { IntegrationTask } from "@models/integration.model.ts";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -22,6 +24,7 @@ export const useTaskStore = defineStore("task", {
 
       const task: Task = {
         id: nanoid(3),
+        draftId: draft.id,
         title: draft.title,
         status: "todo",
         dateUpdated: draft.dateUpdated,
@@ -37,6 +40,27 @@ export const useTaskStore = defineStore("task", {
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
 
       draftStore.remove(draftId);
+    },
+    commitIntegration(draft: Draft, dateTodo: string, newIdx: number): Task {
+      const task: Task = {
+        id: nanoid(3),
+        draftId: draft.id,
+        title: draft.title,
+        status: "todo",
+        dateUpdated: draft.dateUpdated,
+        dateCreated: draft.dateCreated,
+        dateCommitted: dayjs().toISOString(),
+        dateCompleted: null,
+        order: newIdx,
+        dateTodo,
+        projectId: draft.projectId,
+        external: JSON.parse(JSON.stringify(draft.external)),
+      };
+
+      this.tasks.push(task);
+      this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
+
+      return task;
     },
     setOrder(taskId: string, date: string, order: number): Task | undefined {
       const task = this.tasks.find((t) => t.id === taskId);
@@ -98,8 +122,34 @@ export const useTaskStore = defineStore("task", {
     update(taskId: string, newTask: Partial<Task>): void {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1, { ...this.tasks[taskIdx], ...newTask });
+    },
+    updateFromIntegrations(draft: IntegrationTask[]): void {
+      draft.forEach((d) => {
+        const taskIdx = this.tasks.findIndex((t) => t.draftId === d.id);
 
-      // return this.tasks[taskIdx]
+        const task: Task = {
+          id: nanoid(3),
+          draftId: d.id,
+          title: d.title,
+          status: this.tasks[taskIdx].status,
+          dateUpdated: d.updatedAt,
+          dateCreated: d.createdAt,
+          dateCommitted: dayjs().toISOString(),
+          dateCompleted: null,
+          order: this.tasks[taskIdx].order,
+          dateTodo: this.tasks[taskIdx].dateTodo,
+          projectId: d.projectId,
+          external: {
+            integrationName: d.integrationName,
+            projectTitle: d.projectTitle,
+            projectId: d.projectId,
+            iconURL: d.iconURL,
+            link: d.link,
+          },
+        };
+
+        this.tasks.splice(taskIdx, 1, task);
+      });
     },
     remove(taskId: string): void {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);

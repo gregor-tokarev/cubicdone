@@ -57,6 +57,11 @@ const navItems = ref([
 <span>+ P</span>
 `,
   },
+  {
+    title: "Integrations",
+    icon: "integrations",
+    link: "/integrations",
+  },
 ]);
 
 const compact = ref(window.innerWidth < 1400);

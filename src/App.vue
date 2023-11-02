@@ -26,11 +26,13 @@ onMounted(() => {
     evt.preventDefault();
     router.push("/inbox");
   });
+
   // go to plan page hotkey
   hotkeys("cmd+g", (evt) => {
     evt.preventDefault();
     router.push("/");
   });
+
   hotkeys("cmd+P", (evt) => {
     evt.preventDefault();
     router.push("/projects");

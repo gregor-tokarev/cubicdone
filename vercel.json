@@ -1,3 +1,14 @@
 {
-  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }]
+  "rewrites": [
+    {
+      "source": "^\\/((?!api\\/|\\.).*)$\n",
+      "destination": "/index.html"
+    }
+  ],
+  "functions": {
+    "api/linear/*.ts": {
+      "memory": 1024,
+      "maxDuration": 2
+    }
+  }
 }

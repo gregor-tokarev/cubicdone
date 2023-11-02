@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import Icon from "@components/Icon.vue";
+import Icon from "../components/Icon.vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import DraftCard from "@components/cards/DraftCard.vue";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import dayjs, { Dayjs } from "dayjs";
 import { useTaskStore } from "@store/task.ts";
 import TaskCard from "@components/cards/TaskCard.vue";
 import { Task } from "@models/task.model.ts";
 import { VueDraggableNext } from "vue-draggable-next";
+import { VueSpinner } from "vue3-spinners";
 import { Draft } from "@models/draft.model.ts";
+import { useIntegrationStore } from "@store/integration.ts";
+import { draftsFromIntegration } from "@utils/draftsFromIntegration.ts";
 
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();
+const integrationStore = useIntegrationStore();
 
 const dateColumns = computed(() => {
   const count = 3;
@@ -24,7 +28,44 @@ const dateColumns = computed(() => {
   return res;
 });
 
-function onUpdateStatus(id: string, status: Task["status"]) {
+const loading = ref(false);
+const integrationDrafts = ref<Draft[]>([]);
+const allDrafts = computed(() => {
+  return JSON.parse(
+    JSON.stringify([...integrationDrafts.value, ...draftStore.drafts]),
+  );
+});
+
+onMounted(async () => {
+  const activatedIntegrations = integrationStore.mappedIntegrations.filter(
+    (i) => i.apiKey,
+  );
+
+  if (activatedIntegrations.length) {
+    loading.value = true;
+    const taskPromises = activatedIntegrations.map((i) => i.fetchTasks());
+    try {
+      const externalDrafts = (await Promise.all(taskPromises)).flat();
+
+      integrationDrafts.value = draftsFromIntegration(
+        externalDrafts,
+        draftStore.maxOrder,
+        taskStore.tasks,
+      );
+
+      const taskIds = taskStore.tasks.map((t) => t.draftId);
+
+      const draftsToUpdate = externalDrafts.filter(
+        (d) => taskIds.indexOf(d.id) !== -1,
+      );
+      taskStore.updateFromIntegrations(draftsToUpdate);
+    } finally {
+      loading.value = false;
+    }
+  }
+});
+
+async function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });
 }
 
@@ -41,11 +82,25 @@ function onMove(date: Dayjs, evt: any) {
       );
     } else {
       const draft = item as Draft;
-      taskStore.commitDraft(
-        draft.id,
-        date.toISOString(),
-        evt["added"].newIndex,
-      );
+
+      if (!draft.external) {
+        taskStore.commitDraft(
+          draft.id,
+          date.toISOString(),
+          evt["added"].newIndex,
+        );
+      } else {
+        taskStore.commitIntegration(
+          draft,
+          date.toISOString(),
+          evt["added"].newIndex,
+        );
+
+        const integrationIdx = integrationDrafts.value.findIndex(
+          (d) => d.id === draft.id,
+        );
+        integrationDrafts.value.splice(integrationIdx, 1);
+      }
     }
   } else if ("moved" in evt) {
     const item = evt["moved"].element;
@@ -67,37 +122,43 @@ function onChangeDraft(event: any) {
   <div class="flex h-[100vh] flex-col py-8">
     <!--  Inbox section-->
     <div class="space-y-2.5">
-      <div class="flex items-center space-x-2 text-base text-black">
-        <Icon name="inbox"></Icon>
-        <span>Inbox</span>
+      <div class="flex items-center space-x-5">
+        <div class="flex items-center space-x-2 text-base text-black">
+          <Icon name="inbox"></Icon>
+          <span>Inbox</span>
+        </div>
+        <div v-if="loading" class="flex items-center space-x-1.5 text-gray-350">
+          <VueSpinner size="16px"></VueSpinner>
+          <span>Loading...</span>
+        </div>
       </div>
       <VueDraggableNext
         class="flex min-h-[78px] items-center space-x-2.5 overflow-auto pb-2.5"
-        :list="draftStore.sortedDrafts"
+        :list="allDrafts"
         @start="onChangeDraft($event)"
         :group="{ name: 'tasks', put: false, pull: 'clone' }"
       >
         <DraftCard
-          class="min-w-[25%] grow cursor-pointer"
+          class="min-w-[25%] grow"
           :class="{
-            'max-w-[25%]': draftStore.sortedDrafts.length >= 4,
-            'max-w-[33%]': draftStore.sortedDrafts.length === 3,
-            'max-w-[50%]': draftStore.sortedDrafts.length === 2,
+            'max-w-[25%]': allDrafts.length >= 4,
+            'max-w-[33%]': allDrafts.length === 3,
+            'max-w-[50%]': allDrafts.length === 2,
           }"
-          v-for="d in draftStore.sortedDrafts"
+          v-for="d in allDrafts"
           :key="d.id"
           :data-id="d.id"
           :draft="d"
         ></DraftCard>
         <div
-          v-if="!draftStore.sortedDrafts.length"
+          v-if="!allDrafts.length"
           class="flex h-full grow items-center justify-center text-sm text-gray-350"
         >
           <span>
             You plan all your Inbox Tasks. Start working or
-            <router-link tag="span" class="text-black underline" to="/inbox"
-              >create new drafts</router-link
-            >
+            <router-link tag="span" class="text-black underline" to="/inbox">
+              create new drafts
+            </router-link>
           </span>
         </div>
       </VueDraggableNext>
