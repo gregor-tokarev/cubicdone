@@ -37,11 +37,13 @@ const allDrafts = computed(() => {
 });
 
 onMounted(async () => {
-  if (integrationStore.mappedIntegrations.length) {
+  const activatedIntegrations = integrationStore.mappedIntegrations.filter(
+    (i) => i.apiKey,
+  );
+
+  if (activatedIntegrations.length) {
     loading.value = true;
-    const taskPromises = integrationStore.mappedIntegrations.map((i) =>
-      i.fetchTasks(),
-    );
+    const taskPromises = activatedIntegrations.map((i) => i.fetchTasks());
     try {
       const externalDrafts = (await Promise.all(taskPromises)).flat();
 
