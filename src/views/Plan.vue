@@ -46,7 +46,7 @@ onMounted(async () => {
       const externalDrafts = (await Promise.all(taskPromises)).flat();
 
       integrationDrafts.value = draftsFromIntegration(
-        externalDrafts.filter((d) => d.state !== "done"),
+        externalDrafts,
         draftStore.maxOrder,
         taskStore.tasks,
       );
