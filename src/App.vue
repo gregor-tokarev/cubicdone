@@ -37,11 +37,6 @@ onMounted(() => {
     evt.preventDefault();
     router.push("/projects");
   });
-
-  hotkeys("cmd+U", (evt) => {
-    evt.preventDefault();
-    router.push("/integrations");
-  });
 });
 </script>
 

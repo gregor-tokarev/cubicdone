@@ -2,6 +2,8 @@ import { Directive } from "vue";
 
 export const hint: Directive = {
   mounted(el, binding) {
+    if (!binding.value) return;
+
     const tooltip = document.createElement("div");
     tooltip.className =
       "flex absolute py-0.5 px-1.5  transition-opacity rounded-lg bg-[#292929] translate-x-[10px] text-gray-300 text-xs";
