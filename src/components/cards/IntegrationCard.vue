@@ -32,14 +32,14 @@ function onClickAction() {
           <img :src="integration.iconURL" alt="icn" />
           <p class="text-xl capitalize">{{ integration.name }}</p>
         </div>
-        <div
+        <!--        <div
           v-if="integration.apiKey"
           class="flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
           @click="emit('link')"
         >
           <Icon name="link"></Icon>
           <span>link projects</span>
-        </div>
+        </div>-->
       </div>
       <p class="mt-4 opacity-50">{{ integration.description }}</p>
     </div>

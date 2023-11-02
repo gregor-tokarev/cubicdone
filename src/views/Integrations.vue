@@ -122,7 +122,6 @@ async function onSubmit() {
       </div>
     </BaseModal>
   </teleport>
-  <router-view></router-view>
 </template>
 
 <style scoped></style>
