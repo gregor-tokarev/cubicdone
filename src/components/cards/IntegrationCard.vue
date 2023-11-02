@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Icon from "../Icon.vue";
-import { Integration } from "../../models/integration.model.ts";
+import { Integration } from "@models/integration.model.ts";
 
 const props = defineProps<{
   integration: Integration;
