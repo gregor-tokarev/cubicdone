@@ -349,7 +349,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
         @keydown="onUpdate($event)"
         ref="partsContainer"
       >
-        <template v-for="part in modelValue" :key="part.id">
+        <template v-for="(part, idx) in modelValue" :key="part.id">
           <Contenteditable
             class="outline-0"
             tag="p"
