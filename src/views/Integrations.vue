@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
-import IntegrationCard from "../components/cards/IntegrationCard.vue";
-import BaseModal from "../components/BaseModal.vue";
-import BaseInput from "../components/UI/BaseInput.vue";
-import BaseButton from "../components/UI/BaseButton.vue";
-import Icon from "../components/Icon.vue";
+import IntegrationCard from "@components/cards/IntegrationCard.vue";
+import BaseModal from "@components/BaseModal.vue";
+import BaseInput from "@components/UI/BaseInput.vue";
+import BaseButton from "@components/UI/BaseButton.vue";
+import Icon from "@components/Icon.vue";
 import { useIntegrationStore } from "../store/integration.ts";
 import { Integration } from "../models/integration.model.ts";
 import useVuelidate from "@vuelidate/core";
@@ -39,15 +39,17 @@ function onDisconnect(name: string) {
 }
 
 const loading = ref(false);
+const showError = ref(false);
 async function onSubmit() {
   if (v$.value.$error || !openIntegration.value) return;
 
   loading.value = true;
+  showError.value = false;
   try {
     const res = await openIntegration.value.checkToken(v$.value.apiKey.$model);
     if (!res) {
       openIntegration.value.apiKey = "";
-      openIntegrationName.value = "";
+      showError.value = true;
 
       return;
     }
@@ -58,7 +60,6 @@ async function onSubmit() {
     );
 
     openIntegrationName.value = "";
-  } catch (e) {
   } finally {
     loading.value = false;
   }
@@ -91,7 +92,7 @@ async function onSubmit() {
           <img :src="openIntegration.iconURL" :alt="openIntegration.name" />
           <h2 class="text-xl">Linear</h2>
         </div>
-        <div class="mb-9 space-y-2">
+        <div class="mb-6 space-y-2">
           <div class="space-y-1">
             <div class="flex items-center space-x-1">
               <p class="text-xs capitalize text-gray-500">
@@ -110,7 +111,7 @@ async function onSubmit() {
               placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
             ></BaseInput>
           </div>
-          <ErrorMessage>
+          <ErrorMessage v-if="showError">
             Ahtung! your api key is wrong, try to regenerate it
           </ErrorMessage>
         </div>
