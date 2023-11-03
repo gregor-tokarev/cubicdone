@@ -342,14 +342,14 @@ function handleProjectArrows(evt: KeyboardEvent) {
 <template>
   <div class="relative" ref="root">
     <!--    Input box-->
-    <div class="dh-[34px] flex items-center rounded-lg bg-gray-400 px-2.5 py-1">
+    <div class="dh-[34px] flex items-center rounded-lg bg-gray-100 px-2.5 py-1">
       <Icon name="plus" class="mr-1.5 text-gray-600"></Icon>
       <div
         class="flex grow items-center space-x-1"
         @keydown="onUpdate($event)"
         ref="partsContainer"
       >
-        <template v-for="(part, idx) in modelValue" :key="part.id">
+        <template v-for="part in modelValue" :key="part.id">
           <Contenteditable
             class="outline-0"
             tag="p"
@@ -388,7 +388,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
     <teleport to="body">
       <div
         v-if="openProjectSearch && projectSelectBound"
-        class="absolute left-10 top-10 rounded-lg bg-gray-400 py-1.5"
+        class="absolute left-10 top-10 rounded-lg bg-gray-100 py-1.5"
         :style="{
           left: projectSelectBound.left + 'px',
           top: projectSelectBound.top + projectSelectBound.height + 10 + 'px',
@@ -404,7 +404,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           >
             <!--        Color circle-->
             <div
-              class="h-[11px] w-[11px] rounded-full bg-amber-400"
+              class="h-[11px] w-[11px] rounded-full"
               :class="{ [`bg-${p.color}-400`]: true }"
             ></div>
             <span>{{ p.title }}</span>

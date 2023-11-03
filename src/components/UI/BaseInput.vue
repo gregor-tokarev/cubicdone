@@ -28,7 +28,7 @@ function onInput(event: Event) {
 
 <template>
   <div
-    class="rounded-lg border border-transparent bg-gray-400 px-2 py-1.5"
+    class="rounded-lg border border-transparent bg-gray-100 px-2 py-1.5"
     :class="{ '!border-red-400': error }"
   >
     <input

@@ -14,7 +14,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="flex cursor-grab items-start space-x-2 rounded-lg bg-gray-400 px-4 py-2.5 active:cursor-grabbing"
+    class="flex cursor-grab items-start space-x-2 rounded-lg bg-gray-100 px-4 py-2.5 active:cursor-grabbing"
     :class="{ 'opacity-50': task.status === 'done' }"
   >
     <div

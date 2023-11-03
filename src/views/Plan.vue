@@ -166,7 +166,7 @@ function onChangeDraft(event: any) {
     <!--    Date columns-->
     <div class="mt-5 flex grow space-x-5">
       <div
-        class="bg-gray-9000 flex w-1/3 grow flex-col rounded-lg px-2.5 py-1.5"
+        class="flex w-1/3 grow flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
         v-for="(c, idx) in dateColumns"
         :key="idx"
       >

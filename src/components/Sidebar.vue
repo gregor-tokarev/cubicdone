@@ -91,7 +91,7 @@ window.addEventListener("resize", (_) => {
     <!--  navigation block-->
     <nav class="mt-8 space-y-1.5">
       <router-link
-        class="flex items-center space-x-2 rounded-lg p-1.5 text-base text-gray-300"
+        class="flex items-center space-x-2 rounded-lg p-1.5 text-base text-gray-200"
         v-for="item in navItems"
         :to="item.link"
         v-hint="item.hint"
@@ -108,7 +108,7 @@ window.addEventListener("resize", (_) => {
       <span v-if="!compact">Hide Sidebar</span>
       <Icon
         name="double-arrow"
-        class="text-gray-300 transition-colors group-hover:text-white"
+        class="text-gray-200 transition-colors group-hover:text-white"
         :class="{ 'rotate-180': compact }"
       ></Icon>
     </div>
