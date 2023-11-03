@@ -30,11 +30,16 @@ function onCreateProject() {
   setTimeout(() => {
     if (!rowsContainer.value) return;
 
-    focusOnEditableElement(
-      rowsContainer.value.children[0].querySelector(
-        "[contenteditable]",
-      ) as HTMLElement,
-    );
+    const addedElement = Array.from(rowsContainer.value.children).find((el) => {
+      const editable = el.querySelector("[contenteditable]")!;
+      return editable.textContent === "";
+    });
+
+    addedElement?.scrollIntoView();
+    addedElement &&
+      focusOnEditableElement(
+        addedElement.querySelector("[contenteditable]") as HTMLElement,
+      );
   });
 }
 
