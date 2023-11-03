@@ -1,0 +1,32 @@
+<template>
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M20.0429 20.9999H3.95707C2.41904 20.9999 1.4566 19.3363 2.22326 18.003L10.2662 4.01527C11.0352 2.67786 12.9648 2.67785 13.7338 4.01526L21.7768 18.003C22.5434 19.3363 21.581 20.9999 20.0429 20.9999Z"
+      stroke="currentColor"
+      stroke-width="1.5"
+      fill="transparent"
+      stroke-linecap="round"
+    />
+    <path
+      d="M12 9V13"
+      stroke="currentColor"
+      stroke-width="1.5"
+      fill="transparent"
+      stroke-linecap="round"
+    />
+    <path
+      d="M12 17.01L12.01 16.9989"
+      stroke="currentColor"
+      stroke-width="1.5"
+      fill="transparent"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</template>

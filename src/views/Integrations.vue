@@ -10,6 +10,7 @@ import { Integration } from "../models/integration.model.ts";
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
 import { useRouter } from "vue-router";
+import ErrorMessage from "@components/ErrorMessage.vue";
 
 const integrationStore = useIntegrationStore();
 const router = useRouter();
@@ -90,23 +91,28 @@ async function onSubmit() {
           <img :src="openIntegration.iconURL" :alt="openIntegration.name" />
           <h2 class="text-xl">Linear</h2>
         </div>
-        <div class="mb-9 space-y-1">
-          <div class="flex items-center space-x-1">
-            <p class="text-xs capitalize text-gray-500">
-              {{ openIntegration.name }} apiKey
-            </p>
-            <p v-if="v$.apiKey.$errors[0]" class="text-xs text-red-400">
-              {{ v$.apiKey.$errors[0].$message }}
-            </p>
+        <div class="mb-9 space-y-2">
+          <div class="space-y-1">
+            <div class="flex items-center space-x-1">
+              <p class="text-xs capitalize text-gray-500">
+                {{ openIntegration.name }} apiKey
+              </p>
+              <p v-if="v$.apiKey.$errors[0]" class="text-xs text-red-400">
+                {{ v$.apiKey.$errors[0].$message }}
+              </p>
+            </div>
+            <BaseInput
+              v-model="v$.apiKey.$model"
+              :error="v$.apiKey.$error"
+              @blur="v$.apiKey.$touch"
+              @enter="onSubmit"
+              type="password"
+              placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
+            ></BaseInput>
           </div>
-          <BaseInput
-            v-model="v$.apiKey.$model"
-            :error="v$.apiKey.$error"
-            @blur="v$.apiKey.$touch"
-            @enter="onSubmit"
-            type="password"
-            placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
-          ></BaseInput>
+          <ErrorMessage>
+            Ahtung! your api key is wrong, try to regenerate it
+          </ErrorMessage>
         </div>
         <div class="flex space-x-2">
           <BaseButton @click="onSubmit" :loading="loading">
