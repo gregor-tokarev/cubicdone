@@ -92,7 +92,7 @@ async function onSubmit() {
         </div>
         <div class="mb-9 space-y-1">
           <div class="flex items-center space-x-1">
-            <p class="text-xs capitalize text-gray-250">
+            <p class="text-xs capitalize text-gray-500">
               {{ openIntegration.name }} apiKey
             </p>
             <p v-if="v$.apiKey.$errors[0]" class="text-xs text-red-400">

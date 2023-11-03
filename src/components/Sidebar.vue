@@ -76,7 +76,7 @@ window.addEventListener("resize", (_) => {
     :class="{ '!w-[60px]': compact }"
   >
     <!--    title block-->
-    <div class="flex items-center border-b border-gray-100 pb-2.5">
+    <div class="flex items-center border-b border-gray-800 pb-2.5">
       <img
         src="@assets/img/gregor.png"
         alt="gregor tokarev"
@@ -85,7 +85,7 @@ window.addEventListener("resize", (_) => {
       />
       <div v-if="!compact" class="ml-2">
         <h1 class="text-base text-white">Personal todo</h1>
-        <p class="text-xs text-gray-200">Gregor Tokarev</p>
+        <p class="text-xs text-gray-700">Gregor Tokarev</p>
       </div>
     </div>
     <!--  navigation block-->

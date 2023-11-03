@@ -127,7 +127,7 @@ function onChangeDraft(event: any) {
           <Icon name="inbox"></Icon>
           <span>Inbox</span>
         </div>
-        <div v-if="loading" class="flex items-center space-x-1.5 text-gray-350">
+        <div v-if="loading" class="flex items-center space-x-1.5 text-gray-600">
           <VueSpinner size="16px"></VueSpinner>
           <span>Loading...</span>
         </div>
@@ -152,7 +152,7 @@ function onChangeDraft(event: any) {
         ></DraftCard>
         <div
           v-if="!allDrafts.length"
-          class="flex h-full grow items-center justify-center text-sm text-gray-350"
+          class="flex h-full grow items-center justify-center text-sm text-gray-600"
         >
           <span>
             You plan all your Inbox Tasks. Start working or
@@ -166,7 +166,7 @@ function onChangeDraft(event: any) {
     <!--    Date columns-->
     <div class="mt-5 flex grow space-x-5">
       <div
-        class="flex w-1/3 grow flex-col rounded-lg bg-gray-500 px-2.5 py-1.5"
+        class="bg-gray-9000 flex w-1/3 grow flex-col rounded-lg px-2.5 py-1.5"
         v-for="(c, idx) in dateColumns"
         :key="idx"
       >

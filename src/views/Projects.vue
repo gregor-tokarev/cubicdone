@@ -92,19 +92,19 @@ function onSort(field: string, direction: "desc" | "asc") {
       <div
         v-hint="'C'"
         @click="onCreateProject()"
-        class="cursor-pointer rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400"
+        class="cursor-pointer rounded-lg px-1.5 py-[3px] text-gray-600 transition-colors hover:bg-gray-400"
       >
         New project +
       </div>
     </div>
     <div v-if="sortedProjects.length" class="flex items-center space-x-0.5">
-      <div class="flex w-[38%] items-center pl-[2%] text-xs text-gray-350">
+      <div class="flex w-[38%] items-center pl-[2%] text-xs text-gray-600">
         <span> name </span>
-        <div class="text-gray-350"></div>
+        <div class="text-gray-600"></div>
       </div>
-      <div class="flex w-[20%] items-center text-xs text-gray-350">
+      <div class="flex w-[20%] items-center text-xs text-gray-600">
         <span> active tasks </span>
-        <div class="text-gray-350">
+        <div class="text-gray-600">
           <Icon
             class="cursor-pointer transition-colors hover:text-black"
             name="arrow"
@@ -125,9 +125,9 @@ function onSort(field: string, direction: "desc" | "asc") {
           ></Icon>
         </div>
       </div>
-      <div class="flex w-[32%] items-center text-xs text-gray-350">
+      <div class="flex w-[32%] items-center text-xs text-gray-600">
         <span> completed tasks </span>
-        <div class="text-gray-350">
+        <div class="text-gray-600">
           <Icon
             class="cursor-pointer transition-colors hover:text-black"
             name="arrow"
@@ -148,9 +148,9 @@ function onSort(field: string, direction: "desc" | "asc") {
           ></Icon>
         </div>
       </div>
-      <div class="flex items-center text-xs text-gray-350">
+      <div class="flex items-center text-xs text-gray-600">
         <span> drafts </span>
-        <div class="text-gray-350">
+        <div class="text-gray-600">
           <Icon
             class="cursor-pointer transition-colors hover:text-black"
             name="arrow"

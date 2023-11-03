@@ -22,7 +22,7 @@ function onClickAction() {
   <div
     class="rounded-lg border"
     :class="{
-      'border-gray-150': !integration.apiKey,
+      'border-gray-300': !integration.apiKey,
       'border-black': integration.apiKey,
     }"
   >
@@ -34,7 +34,7 @@ function onClickAction() {
         </div>
         <!--        <div
           v-if="integration.apiKey"
-          class="flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
+          class="flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-600 transition-colors hover:bg-gray-400 hover:text-black"
           @click="emit('link')"
         >
           <Icon name="link"></Icon>
@@ -46,7 +46,7 @@ function onClickAction() {
     <div
       class="flex cursor-pointer select-none items-center justify-center space-x-1 border-t py-4"
       :class="{
-        'border-gray-150': !integration.apiKey,
+        'border-gray-300': !integration.apiKey,
         'border-black': integration.apiKey,
       }"
       @click="onClickAction"

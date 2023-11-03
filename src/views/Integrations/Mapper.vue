@@ -54,7 +54,7 @@ function onCreateLink() {
           <img :src="integration.iconURL" :alt="integration.name" />
           <span class="text-xl capitalize">{{ integration.name }}</span>
         </div>
-        <div class="mb-2 mt-8 flex text-xs text-gray-350">
+        <div class="mb-2 mt-8 flex text-xs text-gray-600">
           <span class="mr-[61%] capitalize">
             {{ integration.name }} project
           </span>
@@ -68,7 +68,7 @@ function onCreateLink() {
                 :options="projectOptions"
                 v-model="m.externalId"
               ></BaseSelect>
-              <div class="mx-2.5 h-[1px] max-w-[36%] grow bg-gray-150"></div>
+              <div class="mx-2.5 h-[1px] max-w-[36%] grow bg-gray-300"></div>
               <ProjectSelect
                 class="w-[30%]"
                 v-model="m.internalId"
@@ -76,7 +76,7 @@ function onCreateLink() {
             </div>
           </div>
           <div
-            class="mt-6 inline-flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-350 transition-colors hover:bg-gray-400 hover:text-black"
+            class="mt-6 inline-flex cursor-pointer items-center space-x-1.5 rounded-lg px-1.5 py-[3px] text-gray-600 transition-colors hover:bg-gray-400 hover:text-black"
             @click="onCreateLink"
           >
             <Icon name="link"></Icon>

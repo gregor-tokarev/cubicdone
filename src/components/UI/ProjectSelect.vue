@@ -143,7 +143,7 @@ function onClick() {
         <div
           v-for="(p, idx) in projectSelectOptions"
           class="flex items-center space-x-1.5 px-2.5 py-1.5"
-          :class="{ 'bg-gray-450': projectOptionSelected === idx }"
+          :class="{ 'bg-gray-300': projectOptionSelected === idx }"
         >
           <!--        Color circle-->
           <div
@@ -157,7 +157,7 @@ function onClick() {
         v-if="projectQuery && !queryMatchProject"
         class="flex items-center space-x-1.5 px-2.5 py-1.5"
         :class="{
-          'bg-gray-450': projectOptionSelected === projectSelectOptions.length,
+          'bg-gray-300': projectOptionSelected === projectSelectOptions.length,
         }"
       >
         Create Project "{{ projectQuery }}"

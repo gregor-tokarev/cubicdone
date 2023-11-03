@@ -343,7 +343,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
   <div class="relative" ref="root">
     <!--    Input box-->
     <div class="dh-[34px] flex items-center rounded-lg bg-gray-400 px-2.5 py-1">
-      <Icon name="plus" class="mr-1.5 text-gray-350"></Icon>
+      <Icon name="plus" class="mr-1.5 text-gray-600"></Icon>
       <div
         class="flex grow items-center space-x-1"
         @keydown="onUpdate($event)"
@@ -362,7 +362,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           >
           </Contenteditable>
           <Contenteditable
-            class="rounded-lg bg-gray-450 px-[3px] py-[2.5px] leading-[120%] outline-0"
+            class="rounded-lg bg-gray-300 px-[3px] py-[2.5px] leading-[120%] outline-0"
             :class="{
               [`!bg-${
                 'projectId' in part &&
@@ -400,7 +400,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           <div
             v-for="(p, idx) in projectSelectOptions"
             class="flex items-center space-x-1.5 px-2.5 py-1.5"
-            :class="{ 'bg-gray-450': projectOptionSelected === idx }"
+            :class="{ 'bg-gray-300': projectOptionSelected === idx }"
           >
             <!--        Color circle-->
             <div
@@ -414,7 +414,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
           v-if="projectQuery && !queryMatchProject"
           class="flex items-center space-x-1.5 px-2.5 py-1.5"
           :class="{
-            'bg-gray-450':
+            'bg-gray-300':
               projectOptionSelected === projectSelectOptions.length,
           }"
         >

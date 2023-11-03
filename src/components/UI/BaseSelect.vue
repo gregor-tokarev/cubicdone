@@ -113,8 +113,8 @@ const filteredOptions = computed(() => {
         }"
       >
         <div
-          class="px-2.5 py-1.5 transition-colors hover:bg-gray-450"
-          :class="{ 'bg-gray-450': idx === optionIdx }"
+          class="px-2.5 py-1.5 transition-colors hover:bg-gray-300"
+          :class="{ 'bg-gray-300': idx === optionIdx }"
           @click="onEmit(op.id)"
           v-for="(op, idx) in filteredOptions"
           :key="op.id"

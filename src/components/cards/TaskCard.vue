@@ -18,7 +18,7 @@ const emit = defineEmits<{
     :class="{ 'opacity-50': task.status === 'done' }"
   >
     <div
-      class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center break-words rounded-full border-2 border-gray-350 text-white"
+      class="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center break-words rounded-full border-2 border-gray-600 text-white"
       @click="emit('update:status', task.status === 'done' ? 'todo' : 'done')"
       :class="{ '!border-black bg-black': task.status === 'done' }"
     >
@@ -33,7 +33,7 @@ const emit = defineEmits<{
         ></ProjectTag>
         <a
           v-if="task.external"
-          class="flex items-center space-x-1 rounded-lg bg-gray-425 px-1.5 py-1"
+          class="flex items-center space-x-1 rounded-lg bg-gray-400 px-1.5 py-1"
           :href="task.external.link"
           target="_blank"
         >

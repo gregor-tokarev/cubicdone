@@ -33,7 +33,7 @@ function onInput(event: Event) {
   >
     <input
       :type="type"
-      class="w-full border-0 bg-transparent placeholder-gray-250 outline-0"
+      class="w-full border-0 bg-transparent placeholder-gray-500 outline-0"
       :value="modelValue"
       :placeholder="placeholder"
       @input="onInput"
