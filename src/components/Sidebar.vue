@@ -76,7 +76,7 @@ window.addEventListener("resize", (_) => {
     :class="{ '!w-[60px]': compact }"
   >
     <!--    title block-->
-    <div class="flex items-center border-b border-[#333333] pb-2.5">
+    <div class="flex items-center border-b border-gray-100 pb-2.5">
       <img
         src="@assets/img/gregor.png"
         alt="gregor tokarev"
