@@ -2,9 +2,9 @@
 import { computed, ref, watch } from "vue";
 import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
-import FuseResult = Fuse.FuseResult;
 import { useProjectStore } from "@store/project.ts";
 import Icon from "../Icon.vue";
+import FuseResult = Fuse.FuseResult;
 
 const projectStore = useProjectStore();
 
@@ -87,6 +87,14 @@ const queryMatchProject = computed(() => {
   );
 });
 
+function onSelectItem(projectId: string) {
+  emit("update:modelValue", projectId);
+}
+
+function onBlur() {
+  setTimeout(() => (openProjectSearch.value = false));
+}
+
 function onClick() {
   if (props.modelValue !== null) {
     emit("update:modelValue", null);
@@ -103,7 +111,7 @@ function onClick() {
 <template>
   <div
     ref="projectSelect"
-    class="flex cursor-pointer items-center justify-between rounded-lg bg-gray-400 px-2 py-1"
+    class="flex cursor-pointer items-center justify-between rounded-lg bg-gray-100 px-2 py-1"
     @click="onClick()"
     :class="{
       [`!bg-${project ? project.color : ''}-100`]: modelValue !== null,
@@ -120,7 +128,7 @@ function onClick() {
         @keydown.up.down.prevent="handleArrows"
         @keydown.enter.prevent="handleEnter"
         @focus="openProjectSearch = true"
-        @blur="openProjectSearch = false"
+        @blur="onBlur()"
       />
       <span v-else-if="project">
         {{ project.title }}
@@ -130,8 +138,8 @@ function onClick() {
   </div>
   <teleport to="body">
     <div
-      v-if="openProjectSearch && projectSelectBound"
-      class="absolute left-10 top-10 rounded-lg bg-gray-400 py-1.5"
+      v-if="projectSelectBound && openProjectSearch"
+      class="absolute left-10 top-10 rounded-lg bg-gray-100 py-1.5"
       :style="{
         left: projectSelectBound.left + 'px',
         top: projectSelectBound.top + projectSelectBound.height + 6 + 'px',
@@ -139,20 +147,19 @@ function onClick() {
       }"
     >
       <!--      Project item-->
-      <template v-if="projectSelectOptions">
+      <div
+        v-for="(p, idx) in projectSelectOptions"
+        class="flex cursor-pointer items-center space-x-1.5 px-2.5 py-1.5 transition-colors hover:bg-gray-300"
+        :class="{ 'bg-gray-300': projectOptionSelected === idx }"
+        @click="onSelectItem(p.id)"
+      >
+        <!--        Color circle-->
         <div
-          v-for="(p, idx) in projectSelectOptions"
-          class="flex items-center space-x-1.5 px-2.5 py-1.5"
-          :class="{ 'bg-gray-300': projectOptionSelected === idx }"
-        >
-          <!--        Color circle-->
-          <div
-            class="h-[11px] w-[11px] rounded-full bg-amber-400"
-            :class="{ [`bg-${p.color}-400`]: true }"
-          ></div>
-          <span>{{ p.title }}</span>
-        </div>
-      </template>
+          class="h-[11px] w-[11px] rounded-full"
+          :class="{ [`bg-${p.color}-400`]: true }"
+        ></div>
+        <span>{{ p.title }}</span>
+      </div>
       <!--      <div
         v-if="projectQuery && !queryMatchProject"
         class="flex items-center space-x-1.5 px-2.5 py-1.5"
