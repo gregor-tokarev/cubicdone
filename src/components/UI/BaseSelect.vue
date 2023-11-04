@@ -25,9 +25,13 @@ const selectBound = computed(() => {
 });
 
 const optionsEl = ref<HTMLElement | null>(null);
-onClickOutside(optionsEl, () => {
-  open.value = false;
-});
+onClickOutside(
+  optionsEl,
+  () => {
+    open.value = false;
+  },
+  { ignore: [selectEl] },
+);
 
 function onToggle() {
   if (!open.value) {
@@ -89,8 +93,8 @@ const filteredOptions = computed(() => {
   <div class="" ref="root">
     <div
       ref="selectEl"
-      class="flex min-h-[32px] cursor-pointer items-center justify-between rounded-lg bg-gray-400 px-3 py-1"
-      @click="onToggle()"
+      class="flex min-h-[32px] cursor-pointer items-center justify-between rounded-lg bg-gray-100 px-3 py-1"
+      @click.prevent.stop="onToggle()"
     >
       <span>{{
         selectedOption !== undefined ? selectedOption.label : ""
@@ -105,7 +109,7 @@ const filteredOptions = computed(() => {
       <div
         ref="optionsEl"
         v-if="selectBound && open"
-        class="fixed z-10 cursor-pointer rounded-lg bg-gray-400 py-1.5 shadow-lg"
+        class="fixed z-10 cursor-pointer rounded-lg bg-gray-100 py-1.5 shadow-lg"
         :style="{
           top: `${selectBound.top + selectBound.height + 8}px`,
           left: `${selectBound.left}px`,
