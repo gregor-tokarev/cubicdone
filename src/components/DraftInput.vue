@@ -250,6 +250,18 @@ function handleProjectBackspace(_evt: KeyboardEvent) {
   });
 }
 
+function onClickProject(projectId: string) {
+  const project = projectSelectOptions.value.find((p) => p.id === projectId);
+  if (!project) return;
+
+  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+
+  tempValue[currentPartIdx.value].projectId = projectId;
+  tempValue[currentPartIdx.value].content = "#" + project.title;
+
+  afterAddProject(tempValue);
+}
+
 /**
  * Triggers every time `Enter` pressed in project block
  * @param evt
@@ -266,25 +278,25 @@ function handleProjectEnter(evt: KeyboardEvent) {
     const project = projectStore.create(projectQuery.value);
 
     tempValue[currentPartIdx.value].projectId = project.id;
-
-    emit("update:modelValue", tempValue);
   } else {
     const selectedOption =
       projectSelectOptions.value[projectOptionSelected.value];
 
     tempValue[currentPartIdx.value].projectId = selectedOption.id;
     tempValue[currentPartIdx.value].content = "#" + selectedOption.title;
-
-    emit("update:modelValue", tempValue);
   }
 
   openProjectSearch.value = false;
   projectQuery.value = "";
 
+  emit("update:modelValue", tempValue);
+
+  afterAddProject(tempValue);
+}
+
+function afterAddProject(tempValue: any) {
   const textPart = { id: nanoid(3), content: "", type: "text" };
   tempValue.push(textPart);
-
-  emit("update:modelValue", tempValue);
 
   props.modelValue.forEach((p, idx) => {
     if (
@@ -296,15 +308,17 @@ function handleProjectEnter(evt: KeyboardEvent) {
         type: "text",
         projectId: undefined,
       });
-      emit("update:modelValue", tempValue);
     }
   });
+
+  emit("update:modelValue", tempValue);
 
   setTimeout(() => {
     if (!partsContainer.value) return;
     const focusElement = partsContainer.value.children[
       currentPartIdx.value + 1
     ] as HTMLElement;
+
     focusOnEditableElement(focusElement);
   });
 }
@@ -399,8 +413,9 @@ function handleProjectArrows(evt: KeyboardEvent) {
         <template v-if="projectSelectOptions">
           <div
             v-for="(p, idx) in projectSelectOptions"
-            class="flex items-center space-x-1.5 px-2.5 py-1.5"
+            class="flex cursor-pointer items-center space-x-1.5 px-2.5 py-1.5 transition-colors hover:bg-gray-300"
             :class="{ 'bg-gray-300': projectOptionSelected === idx }"
+            @click="onClickProject(p.id)"
           >
             <!--        Color circle-->
             <div
