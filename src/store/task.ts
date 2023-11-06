@@ -138,7 +138,7 @@ export const useTaskStore = defineStore("task", {
           dateCompleted: null,
           order: this.tasks[taskIdx].order,
           dateTodo: this.tasks[taskIdx].dateTodo,
-          projectId: d.projectId,
+          projectId: null,
           external: {
             integrationName: d.integrationName,
             projectTitle: d.projectTitle,

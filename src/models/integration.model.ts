@@ -6,8 +6,8 @@ export interface IntegrationTask {
   link: string;
   iconURL: string;
   integrationName: string;
-  projectTitle: string;
-  projectId: string;
+  projectTitle?: string;
+  projectId?: string;
 }
 
 export interface IntegrationProject {

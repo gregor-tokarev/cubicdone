@@ -56,7 +56,7 @@ export class LinearIntegration implements Integration {
 
     return tasks.map((t: Issue) => {
       // @ts-ignore
-      const project = this.projectsCache.find((p) => p.id === t._project.id);
+      const project = this.projectsCache.find((p) => p.id === t._project?.id);
       return {
         id: t.id,
         title: t.title,

@@ -7,8 +7,8 @@ export interface Draft {
   projectId: string | null;
   external?: {
     integrationName: string;
-    projectTitle: string;
-    projectId: string;
+    projectTitle?: string;
+    projectId?: string;
     link: string;
     iconURL: string;
   };

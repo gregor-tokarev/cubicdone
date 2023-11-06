@@ -25,7 +25,11 @@ defineProps<{
         target="_blank"
       >
         <img class="h-[14px] w-[14px]" :src="draft.external.iconURL" alt="" />
-        <span class="text-xs">{{ draft.external.projectTitle }}</span>
+        <span class="text-xs">{{
+          draft.external.projectTitle
+            ? draft.external.projectTitle
+            : draft.title
+        }}</span>
       </a>
       <span class="text-xs text-gray-600">
         {{ dayjs(draft.dateCreated).format("DD MMM, HH:MM") }}
