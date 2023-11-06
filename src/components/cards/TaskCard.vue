@@ -39,7 +39,9 @@ const emit = defineEmits<{
         >
           <img class="h-[14px] w-[14px]" :src="task.external.iconURL" alt="" />
           <span class="text-xs">{{
-            task.external.projectTitle ? task.external.projectTitle : task.title
+            task.external.projectTitle
+              ? task.external.projectTitle
+              : task.external.integrationName
           }}</span>
         </a>
       </div>

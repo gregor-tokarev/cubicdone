@@ -28,7 +28,7 @@ defineProps<{
         <span class="text-xs">{{
           draft.external.projectTitle
             ? draft.external.projectTitle
-            : draft.title
+            : draft.external.integrationName
         }}</span>
       </a>
       <span class="text-xs text-gray-600">
