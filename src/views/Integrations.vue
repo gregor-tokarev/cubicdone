@@ -4,7 +4,7 @@ import IntegrationCard from "@components/cards/IntegrationCard.vue";
 import BaseModal from "@components/BaseModal.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
 import BaseButton from "@components/UI/BaseButton.vue";
-import Icon from "@components/Icon.vue";
+import Icon from "../components/Icon.vue";
 import { useIntegrationStore } from "../store/integration.ts";
 import { Integration } from "../models/integration.model.ts";
 import useVuelidate from "@vuelidate/core";
@@ -71,7 +71,7 @@ async function onSubmit() {
     <div class="mb-10 flex items-center justify-between">
       <h1 class="text-xl">Integrations</h1>
     </div>
-    <div class="">
+    <div class="grid grid-cols-2 gap-5">
       <IntegrationCard
         v-for="(i, idx) in integrationStore.mappedIntegrations"
         :integration="i"
@@ -89,8 +89,12 @@ async function onSubmit() {
     >
       <div class="w-[670px]">
         <div class="mb-6 flex items-center space-x-2">
-          <img :src="openIntegration.iconURL" :alt="openIntegration.name" />
-          <h2 class="text-xl">Linear</h2>
+          <img
+            :src="openIntegration.iconURL"
+            class="!h-6 !w-6 object-contain"
+            :alt="openIntegration.name"
+          />
+          <h2 class="text-xl">{{ openIntegration.name }}</h2>
         </div>
         <div class="mb-6 space-y-2">
           <div class="space-y-1">

@@ -20,7 +20,7 @@ function onClickAction() {
 
 <template>
   <div
-    class="rounded-lg border"
+    class="flex flex-col rounded-lg border"
     :class="{
       'border-gray-300': !integration.apiKey,
       'border-black': integration.apiKey,
@@ -29,7 +29,11 @@ function onClickAction() {
     <div class="p-5 pb-8">
       <div class="flex items-center space-x-2.5">
         <div class="flex items-center space-x-2">
-          <img :src="integration.iconURL" alt="icn" />
+          <img
+            :src="integration.iconURL"
+            class="!h-6 !w-6 object-contain"
+            alt="icn"
+          />
           <p class="text-xl capitalize">{{ integration.name }}</p>
         </div>
         <!--        <div
@@ -44,7 +48,7 @@ function onClickAction() {
       <p class="mt-4 opacity-50">{{ integration.description }}</p>
     </div>
     <div
-      class="flex cursor-pointer select-none items-center justify-center space-x-1 border-t py-4"
+      class="mt-auto flex cursor-pointer select-none items-center justify-center space-x-1 border-t py-4"
       :class="{
         'border-gray-300': !integration.apiKey,
         'border-black': integration.apiKey,
