@@ -18,7 +18,7 @@ export class ClickupIntegration implements Integration {
   }
 
   teams: any[] = [];
-  async fetchTeams(): Promise<any[]> {
+  async fetchTeams(): Promise<any[] | void> {
     const { teams } = await this.fetch("/team");
 
     this.teams = teams;
@@ -27,67 +27,49 @@ export class ClickupIntegration implements Integration {
   }
 
   spaces: any[] = [];
-  async fetchSpaces(): Promise<any[]> {
+  async fetchSpaces(): Promise<any[] | void> {
     if (!this.teams.length) return;
 
-    const spaces = (
-      await Promise.allSettled(
-        this.teams.map((t) => this.fetch(`/team/${t.id}/space?archived=false`)),
-      )
-    )
-      .filter((r) => r.status === "fulfilled")
-      .filter((r) => !("err" in r.value))
-      .map((r) => r.value)
-      .map((r) => r.spaces);
+    const spaces = await this.makeGroupCall(
+      this.teams.map((t) => this.fetch(`/team/${t.id}/space?archived=false`)),
+      "spaces",
+    );
 
-    const flatSpaces = spaces.flat();
-    this.spaces = flatSpaces;
+    this.spaces = spaces;
 
-    return flatSpaces;
+    return spaces;
   }
 
   folders: any[] = [];
-  async fetchFolders(): Promise<any[]> {
+  async fetchFolders(): Promise<any[] | void> {
     if (!this.spaces.length) return;
 
-    const folders = (
-      await Promise.allSettled(
-        this.spaces.map((t) =>
-          this.fetch(`/space/${t.id}/folder?archived=false`),
-        ),
-      )
-    )
-      .filter((r) => r.status === "fulfilled")
-      .filter((r) => !("err" in r.value))
-      .map((r) => r.value)
-      .map((r) => r.folders);
+    const folders = await this.makeGroupCall(
+      this.spaces.map((t) =>
+        this.fetch(`/space/${t.id}/folder?archived=false`),
+      ),
+      "folders",
+    );
 
-    const flatFolders = folders.flat();
-    this.folders = flatFolders;
+    this.folders = folders;
 
-    return flatFolders;
+    return folders;
   }
 
   lists: any[] = [];
-  async fetchLists(): Promise<any[]> {
+  async fetchLists(): Promise<any[] | void> {
     if (!this.folders.length) return;
 
-    const lists = (
-      await Promise.allSettled(
-        this.folders.map((t) =>
-          this.fetch(`/folder/${t.id}/list?archived=false`),
-        ),
-      )
-    )
-      .filter((r) => r.status === "fulfilled")
-      .filter((r) => !("err" in r.value))
-      .map((r) => r.value)
-      .map((r) => r.lists);
+    const lists = await this.makeGroupCall(
+      this.folders.map((t) =>
+        this.fetch(`/folder/${t.id}/list?archived=false`),
+      ),
+      "lists",
+    );
 
-    const flatLists = lists.flat();
-    this.lists = flatLists;
+    this.lists = lists;
 
-    return flatLists;
+    return lists;
   }
 
   async getMyId(): Promise<string> {
@@ -96,6 +78,8 @@ export class ClickupIntegration implements Integration {
   }
 
   async fetch(url: string) {
+    if (!this.apiKey) throw new Error("No api key");
+
     return fetch(`${this.apiBase}${url}`, {
       method: "GET",
       headers: {
@@ -106,6 +90,25 @@ export class ClickupIntegration implements Integration {
       .catch((err) => {
         throw new Error(err);
       });
+  }
+
+  async makeGroupCall(
+    promises: Promise<any>[],
+    upField: string,
+  ): Promise<any[]> {
+    const results = await Promise.allSettled(promises);
+
+    return (
+      results
+        .filter((r) => r.status === "fulfilled" && r.value)
+        .filter((r) => "value" in r)
+        // @ts-ignore
+        .filter((r) => !("err" in r.value))
+        // @ts-ignore
+        .map((r) => r.value)
+        .map((r) => r[upField])
+        .flat()
+    );
   }
 
   async fetchTasks(): Promise<IntegrationTask[]> {
@@ -126,15 +129,10 @@ export class ClickupIntegration implements Integration {
       "assignees[]": userId,
     }).toString();
 
-    const tasks = (
-      await Promise.allSettled(
-        this.lists.map((t) => this.fetch(`/list/${t.id}/task?${query}`)),
-      )
-    )
-      .filter((r) => r.status === "fulfilled")
-      .filter((r) => !("err" in r.value))
-      .map((r) => r.value)
-      .map((r) => r.tasks);
+    const tasks = await this.makeGroupCall(
+      this.lists.map((t) => this.fetch(`/list/${t.id}/task?${query}`)),
+      "tasks",
+    );
 
     return tasks.flat().map((t) => ({
       id: t.id,
@@ -149,6 +147,7 @@ export class ClickupIntegration implements Integration {
 
   async checkToken(apiKey: any): Promise<boolean> {
     try {
+      this.apiKey = apiKey;
       const data = this.fetch("/user");
 
       return "user" in data;
