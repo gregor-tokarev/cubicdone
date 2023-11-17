@@ -148,7 +148,7 @@ export class ClickupIntegration implements Integration {
   async checkToken(apiKey: any): Promise<boolean> {
     try {
       this.apiKey = apiKey;
-      const data = this.fetch("/user");
+      const data = await this.fetch("/user");
 
       return "user" in data;
     } catch (e) {
