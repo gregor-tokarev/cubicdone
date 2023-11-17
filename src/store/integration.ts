@@ -2,10 +2,14 @@ import { defineStore } from "pinia";
 import { Integration } from "@models/integration.model.ts";
 import { useLocalStorage } from "@vueuse/core";
 import { LinearIntegration } from "../integrations/linear.integration.ts";
+import { ClickupIntegration } from "../integrations/clickup.integration.ts";
 
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
-    integrations: [new LinearIntegration()] satisfies Integration[],
+    integrations: [
+      new LinearIntegration(),
+      new ClickupIntegration(),
+    ] satisfies Integration[],
     apiKeys: useLocalStorage<Record<string, string>>("apiKeys", {}),
   }),
 
