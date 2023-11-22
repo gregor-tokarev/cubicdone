@@ -16,6 +16,7 @@ export interface IntegrationProject {
 }
 
 export interface Integration {
+  id: string;
   name: string;
   description: string;
   iconURL: string;

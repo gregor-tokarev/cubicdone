@@ -15,10 +15,10 @@ import ErrorMessage from "@components/ErrorMessage.vue";
 const integrationStore = useIntegrationStore();
 const router = useRouter();
 
-const openIntegrationName = ref("");
+const openIntegrationId = ref<null | string>(null);
 const openIntegration = computed<Integration | undefined>(() => {
   return integrationStore.mappedIntegrations.find(
-    (i) => i.name === openIntegrationName.value,
+    (i) => i.id === openIntegrationId.value,
   );
 });
 
@@ -29,13 +29,13 @@ const v$ = useVuelidate(
   { apiKey: { required: helpers.withMessage("Required field", required) } },
   formState,
 );
-function onConnect(name: string) {
-  openIntegrationName.value = name;
+function onConnect(id: string) {
+  openIntegrationId.value = id;
 }
 
-function onDisconnect(name: string) {
-  openIntegrationName.value = "";
-  integrationStore.disconnect(name);
+function onDisconnect(id: string) {
+  openIntegrationId.value = "";
+  integrationStore.disconnect(id);
 }
 
 const loading = ref(false);
@@ -54,12 +54,9 @@ async function onSubmit() {
       return;
     }
 
-    integrationStore.connect(
-      openIntegration.value.name,
-      v$.value.apiKey.$model,
-    );
+    integrationStore.connect(openIntegration.value.id, v$.value.apiKey.$model);
 
-    openIntegrationName.value = "";
+    openIntegrationId.value = "";
   } finally {
     loading.value = false;
   }
@@ -76,16 +73,16 @@ async function onSubmit() {
         v-for="(i, idx) in integrationStore.mappedIntegrations"
         :integration="i"
         :key="idx"
-        @connect="onConnect(i.name)"
-        @disconnect="onDisconnect(i.name)"
+        @connect="onConnect(i.id)"
+        @disconnect="onDisconnect(i.id)"
         @link="router.push(`/integrations/mapper/${i.name}`)"
       ></IntegrationCard>
     </div>
   </div>
   <teleport to="body">
     <BaseModal
-      v-if="openIntegrationName && openIntegration"
-      @cancel="openIntegrationName = ''"
+      v-if="openIntegrationId && openIntegration"
+      @cancel="openIntegrationId = ''"
     >
       <div class="w-[670px]">
         <div class="mb-6 flex items-center space-x-2">
@@ -126,7 +123,7 @@ async function onSubmit() {
               <Icon name="arrow" class="h-5 w-5 rotate-90"></Icon>
             </div>
           </BaseButton>
-          <BaseButton color="gray" @click="openIntegrationName = ''">
+          <BaseButton color="gray" @click="openIntegrationId = ''">
             Cancel
           </BaseButton>
         </div>

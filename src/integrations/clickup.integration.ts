@@ -13,6 +13,8 @@ export class ClickupIntegration implements Integration {
 
   apiBase = "https://api.clickup.com/api/v2";
 
+  constructor(public id: string) {}
+
   async fetchProjects(): Promise<IntegrationProject[]> {
     return [];
   }

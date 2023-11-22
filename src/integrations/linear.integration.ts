@@ -12,6 +12,8 @@ export class LinearIntegration implements Integration {
   iconURL = "/img/integrations/linear.svg";
   apiKey?: string;
 
+  constructor(public id: string) {}
+
   async checkToken(apiKey: string): Promise<boolean> {
     try {
       const { ok } = await fetch(`/api/linear/check_token`, {

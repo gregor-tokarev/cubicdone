@@ -7,32 +7,33 @@ import { ClickupIntegration } from "../integrations/clickup.integration.ts";
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
     integrations: [
-      new LinearIntegration(),
-      new ClickupIntegration(),
+      new LinearIntegration("lin_1"),
+      new LinearIntegration("lin_2"),
+      new ClickupIntegration("clickup"),
     ] satisfies Integration[],
     apiKeys: useLocalStorage<Record<string, string>>("apiKeys", {}),
   }),
 
   actions: {
-    connect(integrationName: string, apiKey: string): Integration | undefined {
-      const int = this.integrations.find((i) => i.name === integrationName);
+    connect(integrationId: string, apiKey: string): Integration | undefined {
+      const int = this.integrations.find((i) => i.id === integrationId);
       if (!int) return;
 
       int.apiKey = apiKey;
-      this.apiKeys[integrationName] = apiKey;
+      this.apiKeys[integrationId] = apiKey;
     },
-    disconnect(integrationName: string): Integration | undefined {
-      const int = this.integrations.find((i) => i.name === integrationName);
+    disconnect(integrationId: string): Integration | undefined {
+      const int = this.integrations.find((i) => i.id === integrationId);
       if (!int) return;
 
       int.apiKey = "";
-      delete this.apiKeys[integrationName];
+      delete this.apiKeys[integrationId];
     },
   },
   getters: {
     mappedIntegrations(state): Integration[] {
       return state.integrations.map((i) => {
-        i.apiKey = state.apiKeys[i.name];
+        i.apiKey = state.apiKeys[i.id];
         return i;
       });
     },
