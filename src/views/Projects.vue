@@ -2,24 +2,20 @@
 import { useProjectStore } from "@store/project.ts";
 import ProjectRow from "@components/cards/ProjectRow.vue";
 import { Project, ProjectStatistic } from "@models/project.model.ts";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { focusOnEditableElement } from "@utils/focus.ts";
 import Icon from "../components/Icon.vue";
+import hotkeys from "hotkeys-js";
 import { useLocalStorage } from "@vueuse/core";
-import Combokeys from "combokeys";
 
 const projectStore = useProjectStore();
 
 const rowsContainer = ref<HTMLElement | null>(null);
 
-const combokeys = new Combokeys(document.documentElement);
-
-onMounted(() => {
-  combokeys.bind("c", onCreateProject);
-});
+hotkeys("C", onCreateProject);
 
 onUnmounted(() => {
-  combokeys.unbind("c");
+  hotkeys.unbind("C", "all", onCreateProject);
 });
 
 function onUpdateProject(id: string, project: Partial<Project>) {
