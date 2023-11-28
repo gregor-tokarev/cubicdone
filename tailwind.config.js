@@ -1,5 +1,3 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{vue,ts}"],
@@ -8,14 +6,10 @@ export default {
       boxShadow: {
         colorPick: "0px 0px 0px 4px #F5F5F5",
       },
-      fontFamily: {
-        mono: ["Jetbrains Mono", defaultTheme.fontFamily.mono],
-      },
       colors: {
         white: "#FFFFFF",
         "gray-50": "#FAFAFA",
         "gray-100": "#F5F5F5",
-        "gray-150": "#EDEDED",
         "gray-200": "#CCCCCC",
         "gray-300": "#EBEBEB",
         "gray-400": "#E7E7E7",
@@ -30,12 +24,10 @@ export default {
   },
 
   safelist: [
-    { pattern: /^!?bg-.*-(100|150|400)$/ },
+    { pattern: /^!?bg-.*-(100|400)$/ },
     { pattern: /^!?text-.*-(100|400)$/ },
     { pattern: /^max-w-.*$/ },
     "border-black",
-    "inline-block",
-    "font-mono",
   ],
   plugins: [],
 };
