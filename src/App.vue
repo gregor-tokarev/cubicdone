@@ -1,41 +1,23 @@
 <script setup lang="ts">
 import Sidebar from "./components/Sidebar.vue";
-import { onMounted } from "vue";
-import hotkeys from "hotkeys-js";
+import Combokeys from "combokeys";
+import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
+const combokeys = new Combokeys(document.documentElement);
 onMounted(() => {
-  hotkeys.filter = (event) => {
-    if (event.metaKey) return true;
-
-    const target = event.target as HTMLElement;
-    const tagName = target?.tagName;
-
-    return !(
-      target.isContentEditable ||
-      tagName == "INPUT" ||
-      tagName == "SELECT" ||
-      tagName == "TEXTAREA"
-    );
-  };
-
-  // go to inbox page hotkey
-  hotkeys("cmd+i", (evt) => {
-    evt.preventDefault();
+  combokeys.bind("g i", () => {
     router.push("/inbox");
   });
 
-  // go to plan page hotkey
-  hotkeys("cmd+g", (evt) => {
-    evt.preventDefault();
-    router.push("/");
+  combokeys.bind("g p", () => {
+    router.push("/projects");
   });
 
-  hotkeys("cmd+P", (evt) => {
-    evt.preventDefault();
-    router.push("/projects");
+  combokeys.bind("g r", () => {
+    router.push("/");
   });
 });
 </script>
