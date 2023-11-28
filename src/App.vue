@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Sidebar from "./components/Sidebar.vue";
 import Combokeys from "combokeys";
-import { computed, onMounted } from "vue";
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
