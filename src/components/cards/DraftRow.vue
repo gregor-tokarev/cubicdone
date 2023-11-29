@@ -2,9 +2,10 @@
 import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import MarkdownIt from "markdown-it";
 import TurndownService from "turndown";
+import { getSelectionOffset, setSelectionOffset } from "@utils/focus.ts";
 
 const props = defineProps<{
   draft: Draft;
@@ -14,31 +15,33 @@ const emit = defineEmits<{
   (e: "update:title", value: string): void;
 }>();
 
+const titleEl = ref<HTMLElement | null>(null);
+
+const turndown = new TurndownService({});
+turndown.escape = (val) => val + " ";
 function onEditDraft(event: Event) {
   const target = event.currentTarget as HTMLElement;
-  let value = target.innerHTML;
-  const turndown = new TurndownService();
 
-  value = turndown.turndown(value);
-  console.log(value);
+  const value = turndown.turndown(target);
 
   value && emit("update:title", value);
+
+  if (!titleEl.value) return;
+  const pos = getSelectionOffset(titleEl.value);
+  if (!pos) return;
+
+  setTimeout(() => {
+    if (!titleEl.value) return;
+    setSelectionOffset(titleEl.value, pos[0], pos[1]);
+  });
 }
 
+const markdown = new MarkdownIt();
 const text = computed(() => {
-  // const regex = /`([^`]+)`/g;
-  // const matches = [...props.draft.title.matchAll(regex)];
-  //
-  // let res = props.draft.title;
-  // matches.forEach(([withBrackets, content]) => {
-  //   res = res.replace(
-  //     withBrackets,
-  //     `<code class="[&>code]:text-xs [&>code]:inline-block [&>code]:rounded [&>code]:px-1 [&>code]:bg-gray-150 [&>code]:font-mono">${content}</code>`,
-  //   );
-  // });
-  const markdown = new MarkdownIt();
+  const val = markdown.render(props.draft.title);
+  console.log(props.draft.title, val);
 
-  return markdown.render(props.draft.title);
+  return val;
 });
 </script>
 
@@ -48,10 +51,11 @@ const text = computed(() => {
   >
     <!--    Title-->
     <div
+      ref="titleEl"
       contenteditable="true"
       @input="onEditDraft($event)"
       v-html="text"
-      class="[&_code]:bg-gray-150 cursor-text text-base text-black outline-0 [&_code]:inline-block [&_code]:rounded [&_code]:px-1 [&_code]:font-mono [&_code]:text-xs"
+      class="cursor-text text-base text-black outline-0 [&_code]:inline-block [&_code]:rounded [&_code]:bg-gray-150 [&_code]:px-1 [&_code]:font-mono [&_code]:text-xs"
     ></div>
     <div class="ml-2.5 text-xs text-gray-300">
       {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
