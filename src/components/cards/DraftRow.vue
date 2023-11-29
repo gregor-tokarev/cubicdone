@@ -3,7 +3,6 @@ import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
 import { ref } from "vue";
-import TurndownService from "turndown";
 import Markdown from "@components/Markdown.vue";
 
 const props = defineProps<{
