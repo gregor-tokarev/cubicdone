@@ -2,6 +2,7 @@
 import { Task } from "@models/task.model.ts";
 import Icon from "../Icon.vue";
 import ProjectTag from "../UI/ProjectTag.vue";
+import Markdown from "@components/Markdown.vue";
 
 defineProps<{
   task: Task;
@@ -25,7 +26,7 @@ const emit = defineEmits<{
       <Icon v-if="task.status === 'done'" name="double-check"></Icon>
     </div>
     <div class="flex flex-col items-start space-y-1.5">
-      <span>{{ task.title }}</span>
+      <Markdown :model-value="task.title"></Markdown>
       <div class="flex space-x-2">
         <ProjectTag
           v-if="task.projectId"

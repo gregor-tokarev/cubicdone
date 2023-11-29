@@ -2,6 +2,7 @@
 import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
+import Markdown from "@components/Markdown.vue";
 
 defineProps<{
   draft: Draft;
@@ -12,7 +13,7 @@ defineProps<{
   <div
     class="cursor-grab space-y-1 rounded-lg bg-gray-100 px-4 py-2.5 active:cursor-grabbing"
   >
-    <p class="">{{ draft.title }}</p>
+    <Markdown :model-value="draft.title"></Markdown>
     <div class="flex items-center space-x-1">
       <ProjectTag
         v-if="draft.projectId"
