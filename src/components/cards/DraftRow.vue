@@ -2,10 +2,9 @@
 import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
-import { computed, ref } from "vue";
-import MarkdownIt from "markdown-it";
+import { ref } from "vue";
 import TurndownService from "turndown";
-import { getSelectionOffset, setSelectionOffset } from "@utils/focus.ts";
+import Markdown from "@components/Markdown.vue";
 
 const props = defineProps<{
   draft: Draft;
@@ -15,34 +14,14 @@ const emit = defineEmits<{
   (e: "update:title", value: string): void;
 }>();
 
-const titleEl = ref<HTMLElement | null>(null);
+const mode = ref<"view" | "edit">("view");
 
-const turndown = new TurndownService({});
-turndown.escape = (val) => val + " ";
 function onEditDraft(event: Event) {
   const target = event.currentTarget as HTMLElement;
-
-  const value = turndown.turndown(target);
+  const value = target.textContent;
 
   value && emit("update:title", value);
-
-  if (!titleEl.value) return;
-  const pos = getSelectionOffset(titleEl.value);
-  if (!pos) return;
-
-  setTimeout(() => {
-    if (!titleEl.value) return;
-    setSelectionOffset(titleEl.value, pos[0], pos[1]);
-  });
 }
-
-const markdown = new MarkdownIt();
-const text = computed(() => {
-  const val = markdown.render(props.draft.title);
-  console.log(props.draft.title, val);
-
-  return val;
-});
 </script>
 
 <template>
@@ -51,12 +30,19 @@ const text = computed(() => {
   >
     <!--    Title-->
     <div
-      ref="titleEl"
+      v-if="mode === 'edit'"
       contenteditable="true"
       @input="onEditDraft($event)"
-      v-html="text"
-      class="cursor-text text-base text-black outline-0 [&_code]:inline-block [&_code]:rounded [&_code]:bg-gray-150 [&_code]:px-1 [&_code]:font-mono [&_code]:text-xs"
-    ></div>
+      @blur="mode = 'view'"
+      class="cursor-text text-base text-black outline-0"
+    >
+      {{ props.draft.title }}
+    </div>
+    <Markdown
+      v-else-if="mode === 'view'"
+      @click="mode = 'edit'"
+      :model-value="props.draft.title"
+    ></Markdown>
     <div class="ml-2.5 text-xs text-gray-300">
       {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
     </div>
