@@ -2,14 +2,18 @@
 import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
+import { ref } from "vue";
+import Markdown from "@components/Markdown.vue";
 
-defineProps<{
+const props = defineProps<{
   draft: Draft;
 }>();
 
 const emit = defineEmits<{
   (e: "update:title", value: string): void;
 }>();
+
+const mode = ref<"view" | "edit">("view");
 
 function onEditDraft(event: Event) {
   const target = event.currentTarget as HTMLElement;
@@ -25,12 +29,19 @@ function onEditDraft(event: Event) {
   >
     <!--    Title-->
     <div
+      v-if="mode === 'edit'"
       contenteditable="true"
       @input="onEditDraft($event)"
+      @blur="mode = 'view'"
       class="cursor-text text-base text-black outline-0"
     >
-      {{ draft.title }}
+      {{ props.draft.title }}
     </div>
+    <Markdown
+      v-else-if="mode === 'view'"
+      @click="mode = 'edit'"
+      :model-value="props.draft.title"
+    ></Markdown>
     <div class="ml-2.5 text-xs text-gray-300">
       {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
     </div>
