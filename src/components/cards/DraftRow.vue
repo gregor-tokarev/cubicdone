@@ -5,7 +5,7 @@ import ProjectTag from "../UI/ProjectTag.vue";
 import { ref } from "vue";
 import Markdown from "@components/Markdown.vue";
 
-const props = defineProps<{
+defineProps<{
   draft: Draft;
 }>();
 
