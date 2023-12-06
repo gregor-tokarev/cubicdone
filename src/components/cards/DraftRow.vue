@@ -40,7 +40,7 @@ function onEditDraft(event: Event) {
     <Markdown
       v-else-if="mode === 'view'"
       @click="mode = 'edit'"
-      :model-value="draft.order + ' ' + draft.title"
+      :model-value="draft.title"
     ></Markdown>
     <div class="ml-2.5 text-xs text-gray-300">
       {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
