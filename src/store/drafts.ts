@@ -49,7 +49,19 @@ export const useDraftsStore = defineStore("drafts", {
     },
     remove(id: string): void {
       const draftIdx = this.drafts.findIndex((d) => d.id === id);
+      this.descOrders(id);
+
       this.drafts.splice(draftIdx, 1);
+    },
+    descOrders(draftId: string) {
+      const draft = this.getOne(draftId);
+      if (!draft) return;
+
+      this.drafts
+        .filter((d) => d.order > draft.order)
+        .forEach((d) => {
+          d.order--;
+        });
     },
     changeOrder(
       draftId: string,

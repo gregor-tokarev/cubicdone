@@ -35,12 +35,12 @@ function onEditDraft(event: Event) {
       @blur="mode = 'view'"
       class="cursor-text text-base text-black outline-0"
     >
-      {{ props.draft.title }}
+      {{ draft.title }}
     </div>
     <Markdown
       v-else-if="mode === 'view'"
       @click="mode = 'edit'"
-      :model-value="props.draft.title"
+      :model-value="draft.order + ' ' + draft.title"
     ></Markdown>
     <div class="ml-2.5 text-xs text-gray-300">
       {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
