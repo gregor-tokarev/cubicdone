@@ -4,8 +4,9 @@ import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
 import { ref } from "vue";
 import Markdown from "@components/Markdown.vue";
+import { setCursorPosition } from "@utils/focus.ts";
 
-defineProps<{
+const props = defineProps<{
   draft: Draft;
 }>();
 
@@ -21,6 +22,25 @@ function onEditDraft(event: Event) {
 
   value && emit("update:title", value);
 }
+
+const editEl = ref<HTMLElement | null>(null);
+function onKeydown(evt: KeyboardEvent) {
+  if (evt.key === "`") {
+    evt.preventDefault();
+
+    const sel = window.getSelection();
+    const range = sel?.getRangeAt(0);
+    const offset = range?.startOffset;
+
+    emit("update:title", props.draft.title + "``");
+
+    setTimeout(() => {
+      if (!editEl.value || !offset) return;
+
+      setCursorPosition(editEl.value, offset + 1);
+    });
+  }
+}
 </script>
 
 <template>
@@ -32,7 +52,9 @@ function onEditDraft(event: Event) {
       v-if="mode === 'edit'"
       contenteditable="true"
       @input="onEditDraft($event)"
+      @keydown="onKeydown($event)"
       @blur="mode = 'view'"
+      ref="editEl"
       class="cursor-text text-base text-black outline-0"
     >
       {{ draft.title }}

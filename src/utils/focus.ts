@@ -12,3 +12,14 @@ export function focusOnEditableElement(
     el.focus();
   }
 }
+
+export function setCursorPosition(node: HTMLElement, position: number) {
+  const range = document.createRange();
+  const sel = window.getSelection();
+
+  range.setStart(node.childNodes[0], position);
+  range.collapse(true);
+
+  sel?.removeAllRanges();
+  sel?.addRange(range);
+}

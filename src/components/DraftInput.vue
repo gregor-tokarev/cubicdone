@@ -7,7 +7,7 @@ import Contenteditable from "./Contenteditable.vue";
 import { useProjectStore } from "@store/project.ts";
 import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
-import { focusOnEditableElement } from "@utils/focus.ts";
+import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
 import FuseResult = Fuse.FuseResult;
 
 const props = defineProps<{
@@ -101,6 +101,8 @@ function handleArrows(evt: KeyboardEvent) {
 function handleText(evt: KeyboardEvent) {
   if (evt.key === "#") {
     handleTextHashtag(evt);
+  } else if (evt.key === "`") {
+    handleBackticks(evt);
   } else if (evt.key === "Backspace") {
     handleTextBackspace(evt);
   } else if (evt.key === "Enter") {
@@ -127,6 +129,29 @@ function handleProject(evt: KeyboardEvent) {
   } else if (evt.code === "ArrowUp" || evt.code === "ArrowDown") {
     handleProjectArrows(evt);
   }
+}
+
+function handleBackticks(evt: KeyboardEvent) {
+  evt.preventDefault();
+
+  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+  tempValue[currentPartIdx.value].content += "``";
+  emit("update:modelValue", tempValue);
+
+  const sel = window.getSelection();
+  const range = sel?.getRangeAt(0);
+  const offset = range?.startOffset;
+
+  if (!partsContainer.value) return;
+  const currentNode = partsContainer.value.children[
+    currentPartIdx.value
+  ] as HTMLElement;
+
+  setTimeout(() => {
+    if (!offset) return;
+
+    setCursorPosition(currentNode, offset + 1);
+  });
 }
 
 function handleTextEnter(evt: KeyboardEvent) {
