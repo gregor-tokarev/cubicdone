@@ -58,7 +58,7 @@ export const useDraftsStore = defineStore("drafts", {
       if (!draft) return;
 
       this.drafts
-        .filter((d) => d.order > draft.order)
+        .filter((d) => d.order >= draft.order && d.id !== draftId)
         .forEach((d) => {
           d.order--;
         });
