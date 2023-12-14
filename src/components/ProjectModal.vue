@@ -59,6 +59,11 @@ function onEnter(_evt: KeyboardEvent) {
   projectModalStore.resolveFn(selectedProject.id);
   projectModalStore.close();
 }
+
+function onClick(projectId: string) {
+  projectModalStore.resolveFn(projectId);
+  projectModalStore.close();
+}
 </script>
 
 <template>
@@ -84,6 +89,7 @@ function onEnter(_evt: KeyboardEvent) {
           :project="p"
           :check="p.id === projectModalStore.modalOptions.draft.projectId"
           :active="selectedProjectIdx === idx"
+          @click="onClick(p.id)"
         ></ProjectOption>
       </div>
     </div>
