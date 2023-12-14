@@ -43,7 +43,7 @@ onMounted(() => {
 <template>
   <div class="flex items-start">
     <Sidebar class="h-[100vh]"></Sidebar>
-    <div class="max-h-screen grow overflow-y-auto">
+    <div class="max-h-screen grow overflow-y-auto" data-scroll-container>
       <div class="mx-auto max-w-[980px]">
         <router-view></router-view>
       </div>

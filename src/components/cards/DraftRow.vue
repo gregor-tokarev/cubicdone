@@ -24,6 +24,7 @@ function onEditDraft(event: Event) {
 }
 
 const editEl = ref<HTMLElement | null>(null);
+
 function onKeydown(evt: KeyboardEvent) {
   if (evt.key === "`") {
     evt.preventDefault();
@@ -45,7 +46,8 @@ function onKeydown(evt: KeyboardEvent) {
 
 <template>
   <div
-    class="flex cursor-grab items-center border-b border-gray-400 p-2.5 active:cursor-grabbing"
+    ref="rootEl"
+    class="flex cursor-grab items-center border-b border-gray-400 p-2.5 transition-colors duration-75 hover:bg-gray-50 active:cursor-grabbing"
   >
     <!--    checkbox-->
     <div class="mr-1.5 h-4 w-4 cursor-pointer"></div>

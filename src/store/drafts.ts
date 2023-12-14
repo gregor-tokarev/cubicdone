@@ -47,11 +47,23 @@ export const useDraftsStore = defineStore("drafts", {
       draft.title = title;
       draft.dateUpdated = dayjs().toISOString();
     },
-    remove(id: string): void {
-      const draftIdx = this.drafts.findIndex((d) => d.id === id);
-      this.descOrders(id);
+    remove(id: string | string[]): void {
+      if (typeof id === "string") {
+        const draftIdx = this.drafts.findIndex((d) => d.id === id);
+        this.descOrders(id);
 
-      this.drafts.splice(draftIdx, 1);
+        this.drafts.splice(draftIdx, 1);
+      } else if (Array.isArray(id)) {
+        console.log(id);
+        this.drafts = this.drafts.filter((d) => {
+          if (id.includes(d.id)) {
+            this.descOrders(d.id);
+            return false;
+          }
+
+          return true;
+        });
+      }
     },
     descOrders(draftId: string) {
       const draft = this.getOne(draftId);
