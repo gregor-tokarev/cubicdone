@@ -62,7 +62,7 @@ watch(contextMenuOpen, (value) => {
     setScrolling(true);
   }
 });
-const contextMenuEl = ref<ContextMenu | null>(null);
+const contextMenuEl = ref<HTMLElement | null>(null);
 const listEl = ref<HTMLElement | null>(null);
 
 function onToggleContextMenu(evt: MouseEvent) {
