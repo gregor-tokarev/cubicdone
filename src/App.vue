@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar.vue";
 import { onMounted } from "vue";
 import hotkeys from "hotkeys-js";
 import { useRouter } from "vue-router";
+import ProjectModal from "@components/ProjectModal.vue";
 
 const router = useRouter();
 
@@ -49,6 +50,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <ProjectModal></ProjectModal>
 </template>
 
 <style scoped></style>

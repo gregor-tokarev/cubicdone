@@ -1,13 +1,14 @@
 export function setScrolling(allow: boolean) {
-  const body = document.body;
   const scrollContainer = document.querySelector("[data-scroll-container]");
   if (!scrollContainer) return;
 
-  [body, scrollContainer].forEach((el) => {
+  [scrollContainer].forEach((el) => {
     if (allow) {
-      el.classList.remove("overflow-y-hidden");
+      el.classList.contains("overflow-y-hidden") &&
+        el.classList.remove("overflow-y-hidden");
     } else {
-      el.classList.add("overflow-y-hidden");
+      !el.classList.contains("overflow-y-hidden") &&
+        el.classList.add("overflow-y-hidden");
     }
   });
 }

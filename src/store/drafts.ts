@@ -100,6 +100,12 @@ export const useDraftsStore = defineStore("drafts", {
 
       return draft;
     },
+    setProject(draftId: string, projectId: string) {
+      const draft = this.getOne(draftId);
+      if (!draft) return;
+
+      draft.projectId = projectId;
+    },
   },
   getters: {
     getOne(state) {

@@ -9,6 +9,7 @@ import { InputGenericPart } from "@models/input-part.model.ts";
 import ContextMenu from "@components/ContextMenu.vue";
 import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
+import { useProjectModalStore } from "@store/project-modal.ts";
 
 const draftStore = useDraftsStore();
 
@@ -19,6 +20,9 @@ const prompt = ref<InputGenericPart[]>([
 onMounted(() => {
   hotkeys("cmd+backspace", () => {
     hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
+  });
+  hotkeys("shift+p", () => {
+    selectProject();
   });
 });
 
@@ -76,14 +80,31 @@ function onToggleContextMenu(evt: MouseEvent) {
 const clickX = ref(0);
 const clickY = ref(0);
 
-// const selectedDraftIds = ref<string[]>([]);
 const hoveredDraftId = ref<string | null>(null);
 
-function onSelectContextMenu(action: string) {
+const projectModalStore = useProjectModalStore();
+async function onSelectContextMenu(action: string) {
   if (action === "del") {
     hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
     contextMenuOpen.value = false;
+  } else if (action === "proj") {
+    contextMenuOpen.value = false;
+    selectProject();
   }
+}
+
+function selectProject() {
+  if (!hoveredDraftId.value) return;
+  const draft = draftStore.getOne(hoveredDraftId.value);
+  if (!draft) return;
+
+  projectModalStore
+    .use({
+      draft,
+    })
+    .then((projectId) => {
+      draftStore.setProject(draft.id, projectId);
+    });
 }
 
 function onListLeave() {
@@ -123,7 +144,10 @@ function onListLeave() {
     <ContextMenu
       ref="contextMenuEl"
       v-model:show="contextMenuOpen"
-      :options="[{ id: nanoid(3), label: 'Delete', kbd: '⌘ ⌫', value: 'del' }]"
+      :options="[
+        { id: nanoid(3), label: 'Delete', kbd: '⌘ ⌫', value: 'del' },
+        { id: nanoid(3), label: 'Project', kbd: '⇧ P', value: 'proj' },
+      ]"
       class="absolute"
       :style="{
         top: `${clickY}px`,

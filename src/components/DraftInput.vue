@@ -8,6 +8,7 @@ import { useProjectStore } from "@store/project.ts";
 import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
 import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
+import ProjectOption from "@components/ProjectOption.vue";
 import FuseResult = Fuse.FuseResult;
 
 const props = defineProps<{
@@ -436,19 +437,12 @@ function handleProjectArrows(evt: KeyboardEvent) {
       >
         <!--      Project item-->
         <template v-if="projectSelectOptions">
-          <div
+          <ProjectOption
             v-for="(p, idx) in projectSelectOptions"
-            class="flex cursor-pointer items-center space-x-1.5 px-2.5 py-1.5 transition-colors hover:bg-gray-300"
-            :class="{ 'bg-gray-300': projectOptionSelected === idx }"
+            :active="projectOptionSelected === idx"
+            :project="p"
             @click="onClickProject(p.id)"
-          >
-            <!--        Color circle-->
-            <div
-              class="h-[11px] w-[11px] rounded-full"
-              :class="{ [`bg-${p.color}-400`]: true }"
-            ></div>
-            <span>{{ p.title }}</span>
-          </div>
+          />
         </template>
         <div
           v-if="projectQuery && !queryMatchProject"
@@ -464,5 +458,3 @@ function handleProjectArrows(evt: KeyboardEvent) {
     </teleport>
   </div>
 </template>
-
-<style scoped></style>
