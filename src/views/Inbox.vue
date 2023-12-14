@@ -1,21 +1,26 @@
 <script setup lang="ts">
 import DraftInput from "@components/DraftInput.vue";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import DraftRow from "@components/cards/DraftRow.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { nanoid } from "nanoid";
 import { InputGenericPart } from "@models/input-part.model.ts";
 import ContextMenu from "@components/ContextMenu.vue";
-import { onClickOutside } from "@vueuse/core";
 import { setScrolling } from "@utils/setScrolling.ts";
-import * as wasi from "wasi";
+import hotkeys from "hotkeys-js";
 
 const draftStore = useDraftsStore();
 
 const prompt = ref<InputGenericPart[]>([
   { type: "text", content: "", id: nanoid(3) },
 ]);
+
+onMounted(() => {
+  hotkeys("cmd+backspace", () => {
+    hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
+  });
+});
 
 function onCreateDraft() {
   if (!prompt.value) return;
