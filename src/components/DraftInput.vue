@@ -441,6 +441,7 @@ function handleProjectArrows(evt: KeyboardEvent) {
             v-for="(p, idx) in projectSelectOptions"
             :active="projectOptionSelected === idx"
             :project="p"
+            :check="false"
             @click="onClickProject(p.id)"
           />
         </template>

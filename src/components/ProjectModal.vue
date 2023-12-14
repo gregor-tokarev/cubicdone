@@ -56,12 +56,13 @@ function onArrow(evt: KeyboardEvent) {
 function onEnter(_evt: KeyboardEvent) {
   const selectedProject = projectOptions.value[selectedProjectIdx.value];
 
-  projectModalStore.resolveFn(selectedProject.id);
+  projectModalStore.resolveFn &&
+    projectModalStore.resolveFn(selectedProject.id);
   projectModalStore.close();
 }
 
 function onClick(projectId: string) {
-  projectModalStore.resolveFn(projectId);
+  projectModalStore.resolveFn && projectModalStore.resolveFn(projectId);
   projectModalStore.close();
 }
 </script>
@@ -72,7 +73,10 @@ function onClick(projectId: string) {
       v-if="projectModalStore.open"
       class="fixed left-1/2 top-[100px] z-10 w-[600px] -translate-x-1/2 rounded-md bg-gray-100 pb-4 pt-1.5 shadow-xl"
     >
-      <div class="mx-2 mb-2 inline-block rounded bg-gray-300 px-2 text-xs">
+      <div
+        v-if="projectModalStore.modalOptions"
+        class="mx-2 mb-2 inline-block rounded bg-gray-300 px-2 text-xs"
+      >
         {{ projectModalStore.modalOptions.draft.title }}
       </div>
       <input
@@ -83,7 +87,7 @@ function onClick(projectId: string) {
         class="w-full border-b border-gray-150 bg-transparent p-2 placeholder-gray-500 outline-0"
         placeholder="Change project..."
       />
-      <div class="">
+      <div v-if="projectModalStore.modalOptions" class="">
         <ProjectOption
           v-for="(p, idx) in projectOptions"
           :project="p"
