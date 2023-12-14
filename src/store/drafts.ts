@@ -54,7 +54,6 @@ export const useDraftsStore = defineStore("drafts", {
 
         this.drafts.splice(draftIdx, 1);
       } else if (Array.isArray(id)) {
-        console.log(id);
         this.drafts = this.drafts.filter((d) => {
           if (id.includes(d.id)) {
             this.descOrders(d.id);
