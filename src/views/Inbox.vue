@@ -20,7 +20,7 @@ const prompt = ref<InputGenericPart[]>([
 
 onMounted(() => {
   hotkeys("cmd+backspace", () => {
-    hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
+    removeDraft();
   });
   hotkeys("shift+p", () => {
     selectProject();
@@ -135,12 +135,23 @@ const hoveredDraftId = ref<string | null>(null);
 const projectModalStore = useProjectModalStore();
 async function onSelectContextMenu(action: string) {
   if (action === "del") {
-    hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
+    removeDraft();
     contextMenuOpen.value = false;
   } else if (action === "proj") {
-    contextMenuOpen.value = false;
     selectProject();
+    contextMenuOpen.value = false;
   }
+}
+
+function removeDraft() {
+  if (selectedDraftIds.value.length) {
+    draftStore.remove(selectedDraftIds.value);
+    selectedDraftIds.value = [];
+
+    return;
+  }
+
+  hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
 }
 
 function selectProject() {
@@ -225,7 +236,11 @@ function onListLeave() {
   </teleport>
   <teleport to="[data-scroll-container]">
     <InboxCommand
+      v-if="selectedDraftIds.length"
       class="fixed bottom-5 left-1/2 -translate-x-1/2"
+      @discard="selectedDraftIds = []"
+      @setProject="selectProject"
+      @remove="removeDraft"
     ></InboxCommand>
   </teleport>
 </template>
