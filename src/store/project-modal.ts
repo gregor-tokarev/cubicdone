@@ -3,7 +3,8 @@ import { Project } from "@models/project.model.ts";
 import { Draft } from "@models/draft.model.ts";
 
 interface ProjectModalOptions {
-  draft: Draft;
+  draft?: Draft;
+  hintText: string;
 }
 
 interface Fn {

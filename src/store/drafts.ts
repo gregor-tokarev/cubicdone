@@ -100,7 +100,16 @@ export const useDraftsStore = defineStore("drafts", {
 
       return draft;
     },
-    setProject(draftId: string, projectId: string) {
+    setProject(draftId: string | string[], projectId: string) {
+      if (Array.isArray(draftId)) {
+        this.drafts
+          .filter((d) => draftId.includes(d.id))
+          .forEach((d) => {
+            d.projectId = projectId;
+          });
+
+        return;
+      }
       const draft = this.getOne(draftId);
       if (!draft) return;
 

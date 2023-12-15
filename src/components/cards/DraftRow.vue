@@ -5,13 +5,16 @@ import ProjectTag from "../UI/ProjectTag.vue";
 import { ref } from "vue";
 import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
+import Icon from "../../components/Icon.vue";
 
 const props = defineProps<{
   draft: Draft;
+  selected: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "update:title", value: string): void;
+  (e: "update:selected", value: boolean): void;
 }>();
 
 const mode = ref<"view" | "edit">("view");
@@ -48,9 +51,17 @@ function onKeydown(evt: KeyboardEvent) {
   <div
     ref="rootEl"
     class="flex cursor-grab items-center border-b border-gray-400 p-2.5 transition-colors duration-75 hover:bg-gray-50 active:cursor-grabbing"
+    :class="{ '!border-black bg-gray-50': selected }"
   >
     <!--    checkbox-->
-    <div class="mr-1.5 h-4 w-4 cursor-pointer"></div>
+    <div
+      class="mr-1.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded border border-transparent hover:border-black"
+      :class="{ 'bg-black': selected }"
+      v-hint.bottom="'x'"
+      @click="emit('update:selected', !selected)"
+    >
+      <Icon v-show="selected" class="text-white" name="check"></Icon>
+    </div>
     <div class="flex items-baseline">
       <!--    Title-->
       <div

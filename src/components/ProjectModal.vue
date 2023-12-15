@@ -37,6 +37,7 @@ const projectOptions = computed(() => {
 function onKeydown(evt: KeyboardEvent) {
   if (evt.key === "ArrowDown" || evt.key === "ArrowUp") onArrow(evt);
   else if (evt.key === "Enter") onEnter(evt);
+  else if (evt.key === "Escape") projectModalStore.close();
 }
 
 function onArrow(evt: KeyboardEvent) {
@@ -77,7 +78,7 @@ function onClick(projectId: string) {
         v-if="projectModalStore.modalOptions"
         class="mx-2 mb-2 inline-block rounded bg-gray-300 px-2 text-xs"
       >
-        {{ projectModalStore.modalOptions.draft.title }}
+        {{ projectModalStore.modalOptions.hintText }}
       </div>
       <input
         type="text"
@@ -91,7 +92,10 @@ function onClick(projectId: string) {
         <ProjectOption
           v-for="(p, idx) in projectOptions"
           :project="p"
-          :check="p.id === projectModalStore.modalOptions.draft.projectId"
+          :check="
+            !!projectModalStore.modalOptions.draft &&
+            p.id === projectModalStore.modalOptions.draft.projectId
+          "
           :active="selectedProjectIdx === idx"
           @click="onClick(p.id)"
         ></ProjectOption>

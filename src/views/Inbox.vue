@@ -10,6 +10,7 @@ import ContextMenu from "@components/ContextMenu.vue";
 import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
 import { useProjectModalStore } from "@store/project-modal.ts";
+import InboxCommand from "@components/InboxCommand.vue";
 
 const draftStore = useDraftsStore();
 
@@ -23,6 +24,14 @@ onMounted(() => {
   });
   hotkeys("shift+p", () => {
     selectProject();
+  });
+  hotkeys("x,shift+x", () => {
+    hoveredDraftId.value && onUpdateSelect(hoveredDraftId.value);
+  });
+  hotkeys("esc", () => {
+    if (selectedDraftIds.value.length) {
+      selectedDraftIds.value = [];
+    }
   });
 });
 
@@ -56,6 +65,47 @@ function onChangeOrder(evt: any) {
     const newIdx = evt["moved"].newIndex;
 
     draftStore.changeOrder(item.id, oldIdx, newIdx);
+  }
+}
+
+const selectedDraftIds = ref<string[]>([]);
+function onUpdateSelect(draftId: string) {
+  if (hotkeys.isPressed("shift") && selectedDraftIds.value.length > 0) {
+    const draft = draftStore.getOne(draftId);
+    if (!draft) return;
+
+    const selectedDrafts = selectedDraftIds.value.map(
+      (d) => draftStore.getOne(d)!,
+    );
+    const selectedOrders = selectedDrafts.map((d) => d.order);
+
+    const minSelectedOrder = Math.min(...selectedOrders);
+    const maxSelectedOrder = Math.max(...selectedOrders);
+
+    if (draft.order > maxSelectedOrder) {
+      const draftsToAdd = draftStore.drafts.filter(
+        (d) => d.order < draft.order && d.order > maxSelectedOrder,
+      );
+
+      selectedDraftIds.value = selectedDraftIds.value.concat(
+        draftsToAdd.map((d) => d.id),
+      );
+    } else if (draft.order < minSelectedOrder) {
+      const draftsToAdd = draftStore.drafts.filter(
+        (d) => d.order > draft.order && d.order < minSelectedOrder,
+      );
+
+      selectedDraftIds.value = selectedDraftIds.value.concat(
+        draftsToAdd.map((d) => d.id),
+      );
+    }
+  }
+
+  if (selectedDraftIds.value.includes(draftId)) {
+    const idx = selectedDraftIds.value.findIndex((did) => did === draftId);
+    selectedDraftIds.value.splice(idx, 1);
+  } else {
+    selectedDraftIds.value.push(draftId);
   }
 }
 
@@ -94,6 +144,20 @@ async function onSelectContextMenu(action: string) {
 }
 
 function selectProject() {
+  if (selectedDraftIds.value.length > 0) {
+    projectModalStore
+      .use({
+        hintText: `${selectedDraftIds.value.length} drafts`,
+      })
+      .then((projectId) => {
+        draftStore.setProject(selectedDraftIds.value, projectId);
+
+        selectedDraftIds.value = [];
+      });
+
+    return;
+  }
+
   if (!hoveredDraftId.value) return;
   const draft = draftStore.getOne(hoveredDraftId.value);
   if (!draft) return;
@@ -101,6 +165,7 @@ function selectProject() {
   projectModalStore
     .use({
       draft,
+      hintText: draft.title,
     })
     .then((projectId) => {
       draftStore.setProject(draft.id, projectId);
@@ -135,8 +200,10 @@ function onListLeave() {
         v-for="d in draftStore.sortedDrafts"
         :key="d.id"
         :class="{ 'bg-gray-50': hoveredDraftId === d.id }"
+        :selected="selectedDraftIds.includes(d.id)"
         @mouseenter="hoveredDraftId = d.id"
         @update:title="onEditDraft(d.id, $event)"
+        @update:selected="onUpdateSelect(d.id)"
       ></DraftRow>
     </VueDraggableNext>
   </div>
@@ -155,6 +222,11 @@ function onListLeave() {
       }"
       @option="onSelectContextMenu($event)"
     ></ContextMenu>
+  </teleport>
+  <teleport to="[data-scroll-container]">
+    <InboxCommand
+      class="fixed bottom-5 left-1/2 -translate-x-1/2"
+    ></InboxCommand>
   </teleport>
 </template>
 
