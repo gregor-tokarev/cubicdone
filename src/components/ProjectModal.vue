@@ -11,6 +11,8 @@ const projectStore = useProjectStore();
 watch(
   () => projectModalStore.open,
   (value) => {
+    selectedProjectIdx.value = 0;
+
     if (value) {
       setTimeout(() => {
         if (!searchEl.value) return;
@@ -24,6 +26,9 @@ watch(
 const selectedProjectIdx = ref(0);
 const searchEl = ref<HTMLInputElement | null>(null);
 const query = ref("");
+watch(query, (_value) => {
+  selectedProjectIdx.value = 0;
+});
 
 const projectOptions = computed(() => {
   const searchIndex = projectStore.getIndex;
