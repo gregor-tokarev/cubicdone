@@ -11,6 +11,7 @@ import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
 import { useProjectModalStore } from "@store/project-modal.ts";
 import InboxCommand from "@components/InboxCommand.vue";
+// @ts-ignore
 import { TransitionSlide } from "@morev/vue-transitions";
 
 const draftStore = useDraftsStore();
