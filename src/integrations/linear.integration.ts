@@ -49,9 +49,7 @@ export class LinearIntegration implements Integration {
 
     let fetches: Promise<any>[] = [];
 
-    console.log(this.apiKeys);
     const req = this.apiKeys.map((apiKey) => {
-      console.log(apiKey);
       return fetch(`/api/linear/get_tasks`, {
         headers: { Authorization: apiKey },
       }).then((r) => r.json());

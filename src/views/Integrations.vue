@@ -21,10 +21,14 @@ const openIntegration = computed<Integration | undefined>(() => {
     (i) => i.id === openIntegrationId.value,
   );
 });
+watch(openIntegration, (value) => {
+  if (value) formState.apiKeys = (value.apiKeys ?? []).concat([""]);
+});
 
 const formState = reactive({
   apiKeys: (openIntegration.value?.apiKeys ?? []).concat([""]),
 });
+
 const v$ = useVuelidate(
   {
     apiKeys: {
