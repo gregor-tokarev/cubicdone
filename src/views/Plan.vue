@@ -38,7 +38,7 @@ const allDrafts = computed(() => {
 
 onMounted(async () => {
   const activatedIntegrations = integrationStore.mappedIntegrations.filter(
-    (i) => i.apiKey,
+    (i) => i.apiKeys.length,
   );
 
   if (activatedIntegrations.length) {

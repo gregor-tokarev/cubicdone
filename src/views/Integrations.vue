@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import IntegrationCard from "@components/cards/IntegrationCard.vue";
 import BaseModal from "@components/BaseModal.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
@@ -23,38 +23,61 @@ const openIntegration = computed<Integration | undefined>(() => {
 });
 
 const formState = reactive({
-  apiKey: "",
+  apiKeys: (openIntegration.value?.apiKeys ?? []).concat([""]),
 });
 const v$ = useVuelidate(
-  { apiKey: { required: helpers.withMessage("Required field", required) } },
+  {
+    apiKeys: {
+      each$: helpers.forEach({
+        required: helpers.withMessage("Required field", required),
+      }),
+    },
+  },
   formState,
 );
+
 function onConnect(id: string) {
   openIntegrationId.value = id;
 }
 
 function onDisconnect(id: string) {
-  openIntegrationId.value = "";
-  integrationStore.disconnect(id);
+  openIntegrationId.value = id;
 }
 
 const loading = ref(false);
 const showError = ref(false);
+
+function onUpdateApikey(key: string, idx: number) {
+  if (idx === formState.apiKeys.length - 1) {
+    if (key) {
+      formState.apiKeys.push("");
+    }
+  } else {
+    if (!key) {
+      formState.apiKeys.splice(idx, 1);
+    }
+  }
+  formState.apiKeys[idx] = key;
+}
 async function onSubmit() {
   if (v$.value.$error || !openIntegration.value) return;
 
   loading.value = true;
   showError.value = false;
   try {
-    const res = await openIntegration.value.checkToken(v$.value.apiKey.$model);
-    if (!res) {
-      openIntegration.value.apiKey = "";
+    const res: boolean[] = await Promise.all(
+      formState.apiKeys
+        .filter(Boolean)
+        .map((apiKey: string) => openIntegration.value.checkToken(apiKey)),
+    );
+    if (res.some((r) => !r)) {
+      openIntegration.value.apiKeys = [];
       showError.value = true;
 
       return;
     }
 
-    integrationStore.connect(openIntegration.value.id, v$.value.apiKey.$model);
+    integrationStore.connect(openIntegration.value.id, v$.value.apiKeys.$model);
 
     openIntegrationId.value = "";
   } finally {
@@ -99,15 +122,15 @@ async function onSubmit() {
               <p class="text-xs capitalize text-gray-500">
                 {{ openIntegration.name }} apiKey
               </p>
-              <p v-if="v$.apiKey.$errors[0]" class="text-xs text-red-400">
-                {{ v$.apiKey.$errors[0].$message }}
+              <p v-if="v$.apiKeys.$errors[0]" class="text-xs text-red-400">
+                {{ v$.apiKeys.$errors[0].$message }}
               </p>
             </div>
             <BaseInput
-              v-model="v$.apiKey.$model"
-              :error="v$.apiKey.$error"
-              @blur="v$.apiKey.$touch"
+              v-for="(key, idx) in v$.apiKeys.$model"
               @enter="onSubmit"
+              :model-value="key"
+              @update:modelValue="onUpdateApikey($event, idx)"
               type="password"
               placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
             ></BaseInput>

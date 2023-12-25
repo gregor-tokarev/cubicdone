@@ -1,16 +1,15 @@
-import { Issue, ProjectConnection } from "@linear/sdk";
 import {
   Integration,
   IntegrationProject,
   IntegrationTask,
 } from "@models/integration.model.ts";
+import { Issue, ProjectConnection } from "@linear/sdk";
 
 export class LinearIntegration implements Integration {
   name = "linear";
   description =
     "Linear is a better way to build products\nMeet the new standard for modern software development.Streamline issues, sprints, and product roadmaps.";
   iconURL = "/img/integrations/linear.svg";
-  apiKey?: string;
 
   constructor(public id: string) {}
 
@@ -27,28 +26,37 @@ export class LinearIntegration implements Integration {
   }
 
   projectsCache: IntegrationProject[] = [];
+  apiKeys: string[] = [];
+
   async fetchProjects(): Promise<IntegrationProject[]> {
-    if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
+    if (!this.apiKeys.length) throw new Error(`${this.name} apiKey is missing`);
 
-    const req = await fetch(`/api/linear/get_projects`, {
-      headers: { Authorization: this.apiKey },
-    });
-    const res: ProjectConnection = await req.json();
+    const req = this.apiKeys.map((apiKey) =>
+      fetch(`/api/linear/get_projects`, {
+        headers: { Authorization: apiKey },
+      }).then((r) => r.json()),
+    );
+    const res: ProjectConnection[] = await Promise.all(req);
 
-    this.projectsCache = res.nodes;
+    const projects = res.map((r) => r.nodes).flat();
+    this.projectsCache = projects;
 
-    return res.nodes.map((p) => ({ name: p.name, id: p.id }));
+    return projects.map((p) => ({ name: p.name, id: p.id }));
   }
 
   async fetchTasks(): Promise<IntegrationTask[]> {
-    if (!this.apiKey) throw new Error(`${this.name} apiKey is missing`);
+    if (!this.apiKeys.length) throw new Error(`${this.name} apiKey is missing`);
 
-    const fetches: Promise<any>[] = [];
+    let fetches: Promise<any>[] = [];
 
-    const req = fetch(`/api/linear/get_tasks`, {
-      headers: { Authorization: this.apiKey },
+    console.log(this.apiKeys);
+    const req = this.apiKeys.map((apiKey) => {
+      console.log(apiKey);
+      return fetch(`/api/linear/get_tasks`, {
+        headers: { Authorization: apiKey },
+      }).then((r) => r.json());
     });
-    fetches.push(req.then((r) => r.json()));
+    fetches = fetches.concat(req);
 
     if (!this.projectsCache.length) {
       fetches.push(this.fetchProjects());
@@ -56,20 +64,23 @@ export class LinearIntegration implements Integration {
 
     const [tasks] = await Promise.all(fetches);
 
-    return tasks.map((t: Issue) => {
-      // @ts-ignore
-      const project = this.projectsCache.find((p) => p.id === t._project?.id);
-      return {
-        id: t.id,
-        title: t.title,
-        createdAt: t.createdAt as unknown as string,
-        updatedAt: t.updatedAt as unknown as string,
-        link: t.url,
-        iconURL: this.iconURL,
-        integrationName: this.name,
-        projectTitle: project?.name ?? "",
-        projectId: project?.id ?? "",
-      };
-    });
+    return tasks
+      .map((r) => r.nodes)
+      .flat()
+      .map((t: Issue) => {
+        // @ts-ignore
+        const project = this.projectsCache.find((p) => p.id === t._project?.id);
+        return {
+          id: t.id,
+          title: t.title,
+          createdAt: t.createdAt as unknown as string,
+          updatedAt: t.updatedAt as unknown as string,
+          link: t.url,
+          iconURL: this.iconURL,
+          integrationName: this.name,
+          projectTitle: project?.name ?? "",
+          projectId: project?.id ?? "",
+        };
+      });
   }
 }

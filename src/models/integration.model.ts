@@ -20,7 +20,7 @@ export interface Integration {
   name: string;
   description: string;
   iconURL: string;
-  apiKey?: string;
+  apiKeys: string[];
 
   checkToken(apiKey: any): Promise<boolean>;
   fetchTasks(): Promise<IntegrationTask[]>;

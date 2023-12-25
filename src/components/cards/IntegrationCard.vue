@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>();
 
 function onClickAction() {
-  if (props.integration.apiKey) emit("disconnect");
+  if (props.integration.apiKeys.length) emit("disconnect");
   else emit("connect");
 }
 </script>
@@ -22,8 +22,8 @@ function onClickAction() {
   <div
     class="flex flex-col rounded-lg border"
     :class="{
-      'border-gray-300': !integration.apiKey,
-      'border-black': integration.apiKey,
+      'border-gray-300': !integration.apiKeys.length,
+      'border-black': integration.apiKeys.length,
     }"
   >
     <div class="p-5 pb-8">
@@ -50,12 +50,12 @@ function onClickAction() {
     <div
       class="mt-auto flex cursor-pointer select-none items-center justify-center space-x-1 border-t py-4"
       :class="{
-        'border-gray-300': !integration.apiKey,
-        'border-black': integration.apiKey,
+        'border-gray-300': !integration.apiKeys.length,
+        'border-black': integration.apiKeys.length,
       }"
       @click="onClickAction"
     >
-      <template v-if="!integration.apiKey">
+      <template v-if="!integration.apiKeys.length">
         <Icon name="integrations"></Icon>
         <span>Connect</span>
       </template>
