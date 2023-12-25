@@ -11,6 +11,7 @@ import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
 import { useProjectModalStore } from "@store/project-modal.ts";
 import InboxCommand from "@components/InboxCommand.vue";
+import { TransitionSlide } from "@morev/vue-transitions";
 
 const draftStore = useDraftsStore();
 
@@ -235,13 +236,15 @@ function onListLeave() {
     ></ContextMenu>
   </teleport>
   <teleport to="[data-scroll-container]">
-    <InboxCommand
-      v-if="selectedDraftIds.length"
-      class="fixed bottom-5 left-1/2 -translate-x-1/2"
-      @discard="selectedDraftIds = []"
-      @setProject="selectProject"
-      @remove="removeDraft"
-    ></InboxCommand>
+    <transition-slide :offset="[0, 40]">
+      <InboxCommand
+        v-if="selectedDraftIds.length"
+        class="fixed bottom-5 left-1/2 -translate-x-1/2"
+        @discard="selectedDraftIds = []"
+        @setProject="selectProject"
+        @remove="removeDraft"
+      ></InboxCommand>
+    </transition-slide>
   </teleport>
 </template>
 
