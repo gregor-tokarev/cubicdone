@@ -162,7 +162,11 @@ function handleBackticks(evt: KeyboardEvent) {
 function handleTextEnter(evt: KeyboardEvent) {
   evt.preventDefault();
 
-  if (props.modelValue[currentPartIdx.value].content === "") return;
+  const totalStr = props.modelValue
+    .filter((p) => p.type === "text")
+    .reduce((acc, a) => (acc += a.content), "");
+
+  if (totalStr === "") return;
   setTimeout(() => {
     emit("enter");
 
