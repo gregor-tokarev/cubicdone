@@ -108,6 +108,8 @@ function handleText(evt: KeyboardEvent) {
     handleTextBackspace(evt);
   } else if (evt.key === "Enter") {
     handleTextEnter(evt);
+  } else if (evt.key === "Escape") {
+    handleTextEscape(evt);
   }
 }
 
@@ -129,6 +131,8 @@ function handleProject(evt: KeyboardEvent) {
     handleProjectEnter(evt);
   } else if (evt.code === "ArrowUp" || evt.code === "ArrowDown") {
     handleProjectArrows(evt);
+  } else if (evt.key === "Escape") {
+    handleProjectEscape(evt);
   }
 }
 
@@ -198,6 +202,14 @@ function handleTextHashtag(evt: KeyboardEvent) {
 
     focusOnEditableElement(nextNode);
   });
+}
+
+function handleTextEscape(_evt: KeyboardEvent) {
+  if (!partsContainer.value) return;
+
+  const currentPart = partsContainer.value.children[currentPartIdx.value];
+  // @ts-ignore
+  currentPart.blur();
 }
 
 /**
@@ -273,6 +285,21 @@ function handleProjectBackspace(_evt: KeyboardEvent) {
       projectQuery.value = "";
       openProjectSearch.value = false;
     }
+  });
+}
+
+function handleProjectEscape(_evt: KeyboardEvent) {
+  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+  tempValue.splice(currentPartIdx.value, 1);
+
+  emit("update:modelValue", tempValue);
+
+  const idx = currentPartIdx.value;
+  setTimeout(() => {
+    if (!partsContainer.value) return;
+    focusOnEditableElement(
+      partsContainer.value.children[idx - 1] as HTMLElement,
+    );
   });
 }
 
