@@ -21,7 +21,7 @@ const dateColumns = computed(() => {
   const count = 3;
   const res = [];
 
-  for (let i = -2; i < count; i++) {
+  for (let i = 0; i < count; i++) {
     res.push(dayjs().add(i, "day"));
   }
 
