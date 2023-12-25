@@ -70,9 +70,10 @@ async function onSubmit() {
   showError.value = false;
   try {
     const res: boolean[] = await Promise.all(
-      formState.apiKeys
-        .filter(Boolean)
-        .map((apiKey: string) => openIntegration.value.checkToken(apiKey)),
+      formState.apiKeys.filter(Boolean).map((apiKey: string) => {
+        if (!openIntegration.value) return false;
+        return openIntegration.value.checkToken(apiKey);
+      }),
     );
     if (res.some((r) => !r)) {
       openIntegration.value.apiKeys = [];

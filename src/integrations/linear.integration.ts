@@ -3,7 +3,7 @@ import {
   IntegrationProject,
   IntegrationTask,
 } from "@models/integration.model.ts";
-import { Issue, ProjectConnection } from "@linear/sdk";
+import { Issue, IssueConnection, ProjectConnection } from "@linear/sdk";
 
 export class LinearIntegration implements Integration {
   name = "linear";
@@ -63,7 +63,7 @@ export class LinearIntegration implements Integration {
     const [tasks] = await Promise.all(fetches);
 
     return tasks
-      .map((r) => r.nodes)
+      .map((r: IssueConnection) => r.nodes)
       .flat()
       .map((t: Issue) => {
         // @ts-ignore
