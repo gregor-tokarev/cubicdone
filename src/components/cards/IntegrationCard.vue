@@ -59,7 +59,7 @@ function onClickAction() {
         <Icon name="integrations"></Icon>
         <span>Connect</span>
       </template>
-      <span v-else class="text-red-400">Disconnect</span>
+      <span v-else class="text-red-400">Manage</span>
     </div>
   </div>
 </template>
