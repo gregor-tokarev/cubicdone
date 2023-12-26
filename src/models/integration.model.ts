@@ -1,3 +1,5 @@
+import { ApiKey } from "@models/api-key.model.ts";
+
 export interface IntegrationTask {
   id: string;
   title: string;
@@ -20,7 +22,7 @@ export interface Integration {
   name: string;
   description: string;
   iconURL: string;
-  apiKeys: string[];
+  apiKeys: ApiKey[];
 
   checkToken(apiKey: any): Promise<boolean>;
   fetchTasks(): Promise<IntegrationTask[]>;

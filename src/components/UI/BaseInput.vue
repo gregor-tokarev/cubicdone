@@ -5,11 +5,13 @@ withDefaults(
     placeholder: string;
     type: string;
     error: boolean;
+    autocomplete: boolean;
   }>(),
   {
     modelValue: "",
     placeholder: "",
     type: "text",
+    autocomplete: false,
     error: false,
   },
 );
@@ -35,6 +37,7 @@ function onInput(event: Event) {
       :type="type"
       class="w-full border-0 bg-transparent placeholder-gray-500 outline-0"
       :value="modelValue"
+      :autocomplete="autocomplete ? 'on' : 'off'"
       :placeholder="placeholder"
       @input="onInput"
       @blur="emit('blur')"

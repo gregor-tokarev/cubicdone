@@ -4,6 +4,7 @@ import {
   IntegrationTask,
 } from "@models/integration.model.ts";
 import { Issue, IssueConnection, ProjectConnection } from "@linear/sdk";
+import { ApiKey } from "@models/api-key.model.ts";
 
 export class LinearIntegration implements Integration {
   name = "linear";
@@ -26,14 +27,14 @@ export class LinearIntegration implements Integration {
   }
 
   projectsCache: IntegrationProject[] = [];
-  apiKeys: string[] = [];
+  apiKeys: ApiKey[] = [];
 
   async fetchProjects(): Promise<IntegrationProject[]> {
     if (!this.apiKeys.length) throw new Error(`${this.name} apiKey is missing`);
 
     const req = this.apiKeys.map((apiKey) =>
       fetch(`/api/linear/get_projects`, {
-        headers: { Authorization: apiKey },
+        headers: { Authorization: apiKey.key },
       }).then((r) => r.json()),
     );
     const res: ProjectConnection[] = await Promise.all(req);
@@ -51,7 +52,7 @@ export class LinearIntegration implements Integration {
 
     const req = this.apiKeys.map((apiKey) => {
       return fetch(`/api/linear/get_tasks`, {
-        headers: { Authorization: apiKey },
+        headers: { Authorization: apiKey.key },
       }).then((r) => r.json());
     });
     fetches = fetches.concat(req);

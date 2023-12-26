@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from "vue";
+import { computed, reactive, ref } from "vue";
 import IntegrationCard from "@components/cards/IntegrationCard.vue";
 import BaseModal from "@components/BaseModal.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
@@ -11,6 +11,7 @@ import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
 import { useRouter } from "vue-router";
 import ErrorMessage from "@components/ErrorMessage.vue";
+import ApiKeyCard from "@components/ApiKeyCard.vue";
 
 const integrationStore = useIntegrationStore();
 const router = useRouter();
@@ -21,21 +22,16 @@ const openIntegration = computed<Integration | undefined>(() => {
     (i) => i.id === openIntegrationId.value,
   );
 });
-watch(openIntegration, (value) => {
-  if (value) formState.apiKeys = (value.apiKeys ?? []).concat([""]);
-});
 
 const formState = reactive({
-  apiKeys: (openIntegration.value?.apiKeys ?? []).concat([""]),
+  label: "",
+  key: "",
 });
 
 const v$ = useVuelidate(
   {
-    apiKeys: {
-      each$: helpers.forEach({
-        required: helpers.withMessage("Required field", required),
-      }),
-    },
+    label: { required: helpers.withMessage("is required", required) },
+    key: { required: helpers.withMessage("is required", required) },
   },
   formState,
 );
@@ -51,43 +47,34 @@ function onDisconnect(id: string) {
 const loading = ref(false);
 const showError = ref(false);
 
-function onUpdateApikey(key: string, idx: number) {
-  if (idx === formState.apiKeys.length - 1) {
-    if (key) {
-      formState.apiKeys.push("");
-    }
-  } else {
-    if (!key) {
-      formState.apiKeys.splice(idx, 1);
-    }
-  }
-  formState.apiKeys[idx] = key;
-}
 async function onSubmit() {
+  v$.value.$touch();
   if (v$.value.$error || !openIntegration.value) return;
 
   loading.value = true;
   showError.value = false;
   try {
-    const res: boolean[] = await Promise.all(
-      formState.apiKeys.filter(Boolean).map((apiKey: string) => {
-        if (!openIntegration.value) return false;
-        return openIntegration.value.checkToken(apiKey);
-      }),
-    );
-    if (res.some((r) => !r)) {
+    const res = await openIntegration.value.checkToken(v$.value.key);
+    if (res) {
       openIntegration.value.apiKeys = [];
       showError.value = true;
 
       return;
     }
 
-    integrationStore.connect(openIntegration.value.id, v$.value.apiKeys.$model);
+    integrationStore.connect(openIntegration.value.id, formState);
 
-    openIntegrationId.value = "";
+    formState.label = "";
+    formState.key = "";
+    v$.value.$reset();
   } finally {
     loading.value = false;
   }
+}
+
+function onRevoke(apiKeyId: string) {
+  if (!openIntegration.value) return;
+  integrationStore.disconnect(openIntegration.value.id, apiKeyId);
 }
 </script>
 
@@ -121,22 +108,46 @@ async function onSubmit() {
           />
           <h2 class="text-xl">{{ openIntegration.name }}</h2>
         </div>
-        <div class="mb-6 space-y-2">
-          <div class="space-y-1">
+        <div class="mb-9 space-y-3">
+          <ApiKeyCard
+            v-for="apiKey in openIntegration.apiKeys"
+            :api-key="apiKey"
+            :key="apiKey.id"
+            @revoke="onRevoke(apiKey.id)"
+          ></ApiKeyCard>
+        </div>
+        <div class="mb-5 space-y-3">
+          <div class="space-y-0.5">
+            <div class="flex items-center space-x-1">
+              <p class="text-xs capitalize text-gray-500">Label</p>
+              <p v-if="v$.label.$errors[0]" class="text-xs text-red-400">
+                {{ v$.label.$errors[0].$message }}
+              </p>
+            </div>
+            <BaseInput
+              v-model="v$.label.$model"
+              :error="v$.label.$error"
+              :autocomplete="false"
+              @blur="v$.label.$touch"
+              type="text"
+              placeholder="your_workspace"
+            ></BaseInput>
+          </div>
+          <div class="space-y-0.5">
             <div class="flex items-center space-x-1">
               <p class="text-xs capitalize text-gray-500">
                 {{ openIntegration.name }} apiKey
               </p>
-              <p v-if="v$.apiKeys.$errors[0]" class="text-xs text-red-400">
-                {{ v$.apiKeys.$errors[0].$message }}
+              <p v-if="v$.key.$errors[0]" class="text-xs text-red-400">
+                {{ v$.key.$errors[0].$message }}
               </p>
             </div>
             <BaseInput
-              v-for="(key, idx) in v$.apiKeys.$model"
-              @enter="onSubmit"
-              :model-value="key"
-              @update:modelValue="onUpdateApikey($event, idx)"
+              v-model="v$.key.$model"
               type="password"
+              :autocomplete="false"
+              :error="v$.key.$error"
+              @blur="v$.key.$touch"
               placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
             ></BaseInput>
           </div>
