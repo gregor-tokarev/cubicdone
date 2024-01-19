@@ -63,27 +63,20 @@ export class LinearIntegration implements Integration {
 
     const [tasks] = await Promise.all(fetches);
 
-    return tasks
-      .map((r: IssueConnection) => r.nodes)
-      .flat()
-      .map((t: Issue) => {
-        // @ts-ignore
-        const project = t._project
-          ? // @ts-ignore
-            this.projectsCache.find((p) => p.id === t._project?.id)
-          : undefined;
+    return tasks.map((t: Issue) => {
+      const project = this.projectsCache.find((p) => p.id === t._project?.id);
 
-        return {
-          id: t.id,
-          title: t.title,
-          createdAt: t.createdAt as unknown as string,
-          updatedAt: t.updatedAt as unknown as string,
-          link: t.url,
-          iconURL: this.iconURL,
-          integrationName: this.name,
-          projectTitle: project?.name ?? "",
-          projectId: project?.id ?? "",
-        };
-      });
+      return {
+        id: t.id,
+        title: t.title,
+        createdAt: t.createdAt as unknown as string,
+        updatedAt: t.updatedAt as unknown as string,
+        link: t.url,
+        iconURL: this.iconURL,
+        integrationName: this.name,
+        projectTitle: project?.name ?? "",
+        projectId: project?.id ?? "",
+      };
+    });
   }
 }
