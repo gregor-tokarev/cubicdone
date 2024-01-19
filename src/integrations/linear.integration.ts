@@ -3,7 +3,7 @@ import {
   IntegrationProject,
   IntegrationTask,
 } from "@models/integration.model.ts";
-import { Issue, IssueConnection, ProjectConnection } from "@linear/sdk";
+import { Issue, ProjectConnection } from "@linear/sdk";
 import { ApiKey } from "@models/api-key.model.ts";
 
 export class LinearIntegration implements Integration {
@@ -64,6 +64,7 @@ export class LinearIntegration implements Integration {
     const [tasks] = await Promise.all(fetches);
 
     return tasks.map((t: Issue) => {
+      // @ts-ignore
       const project = this.projectsCache.find((p) => p.id === t._project?.id);
 
       return {
