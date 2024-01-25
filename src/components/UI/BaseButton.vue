@@ -17,7 +17,8 @@ withDefaults(
   <button
     class="relative rounded-xl border px-7 py-1.5 transition-colors"
     :class="{
-      'bg-black text-white hover:bg-gray-900': color === 'black',
+      'bg-black text-white ring-gray-900 hover:bg-gray-900  focus:ring-2':
+        color === 'black',
       'border-gray-150 bg-gray-100 text-black hover:bg-gray-150':
         color === 'gray',
     }"

@@ -13,6 +13,7 @@ import { useProjectModalStore } from "@store/project-modal.ts";
 import InboxCommand from "@components/InboxCommand.vue";
 // @ts-ignore
 import { TransitionSlide } from "@morev/vue-transitions";
+import { useDeleteModalStore } from "@store/delete-modal.ts";
 
 const draftStore = useDraftsStore();
 
@@ -145,15 +146,34 @@ async function onSelectContextMenu(action: string) {
   }
 }
 
-function removeDraft() {
+const deleteModalStore = useDeleteModalStore();
+async function removeDraft() {
   if (selectedDraftIds.value.length) {
+    const res = await deleteModalStore.use({
+      titleText: `Are you sure you want to delete ${selectedDraftIds.value.length} drafts?`,
+      descriptionText:
+        "Delete would be permanent, you can’t restore issues later.",
+    });
+    if (!res) return;
+
     draftStore.remove(selectedDraftIds.value);
     selectedDraftIds.value = [];
 
     return;
   }
 
-  hoveredDraftId.value && draftStore.remove(hoveredDraftId.value);
+  const draft = hoveredDraftId.value
+    ? draftStore.getOne(hoveredDraftId.value)
+    : null;
+  if (!draft) return;
+
+  const res = await deleteModalStore.use({
+    titleText: `Are you sure you want to delete “${draft.title}”?`,
+    descriptionText:
+      "Delete would be permanent, you can’t restore issues later.",
+  });
+
+  res && draftStore.remove(draft.id);
 }
 
 function selectProject() {

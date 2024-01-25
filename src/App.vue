@@ -4,6 +4,7 @@ import { onMounted } from "vue";
 import hotkeys from "hotkeys-js";
 import { useRouter } from "vue-router";
 import ProjectModal from "@components/ProjectModal.vue";
+import DeleteModal from "@components/DeleteModal.vue";
 
 const router = useRouter();
 
@@ -54,6 +55,7 @@ onMounted(() => {
     </div>
   </div>
   <ProjectModal></ProjectModal>
+  <DeleteModal></DeleteModal>
 </template>
 
 <style scoped></style>
