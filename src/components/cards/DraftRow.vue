@@ -6,6 +6,7 @@ import { ref } from "vue";
 import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
 import Icon from "../../components/Icon.vue";
+import { replaceAt } from "@utils/replaceAt.ts";
 
 const props = defineProps<{
   draft: Draft;
@@ -36,10 +37,12 @@ function onKeydown(evt: KeyboardEvent) {
     const range = sel?.getRangeAt(0);
     const offset = range?.startOffset;
 
-    emit("update:title", props.draft.title + "``");
+    if (offset === undefined) return;
+
+    emit("update:title", replaceAt(props.draft.title, offset, "``"));
 
     setTimeout(() => {
-      if (!editEl.value || !offset) return;
+      if (!editEl.value || offset === undefined) return;
 
       setCursorPosition(editEl.value, offset + 1);
     });
