@@ -153,7 +153,7 @@ function handleBackticks(evt: KeyboardEvent) {
   ] as HTMLElement;
 
   setTimeout(() => {
-    if (!offset) return;
+    if (offset === undefined) return;
 
     setCursorPosition(currentNode, offset + 1);
   });
