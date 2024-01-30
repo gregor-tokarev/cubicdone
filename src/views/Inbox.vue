@@ -14,6 +14,7 @@ import InboxCommand from "@components/InboxCommand.vue";
 // @ts-ignore
 import { TransitionSlide } from "@morev/vue-transitions";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
+import { onStartTyping } from "@vueuse/core";
 
 const draftStore = useDraftsStore();
 
@@ -210,11 +211,20 @@ function onListLeave() {
     hoveredDraftId.value = null;
   }
 }
+
+const draftInput = ref<InstanceType<typeof DraftInput> | null>(null);
+
+onStartTyping(() => {
+  if (!draftInput.value) return;
+
+  draftInput.value.focusOnCurrentNode();
+});
 </script>
 
 <template>
   <div class="pt-8">
     <DraftInput
+      ref="draftInput"
       placeholder="todo text"
       v-model="prompt"
       @enter="onCreateDraft()"

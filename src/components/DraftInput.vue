@@ -9,8 +9,8 @@ import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
 import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
 import ProjectOption from "@components/ProjectOption.vue";
-import FuseResult = Fuse.FuseResult;
 import { replaceAt } from "@utils/replaceAt.ts";
+import FuseResult = Fuse.FuseResult;
 
 const props = defineProps<{
   placeholder: string;
@@ -412,6 +412,17 @@ function handleProjectArrows(evt: KeyboardEvent) {
     emit("update:modelValue", tempValue);
   }
 }
+
+function focusOnCurrentNode() {
+  if (!partsContainer.value) return;
+
+  const node = partsContainer.value.children[currentPartIdx.value];
+  focusOnEditableElement(node as HTMLElement);
+}
+
+defineExpose({
+  focusOnCurrentNode,
+});
 </script>
 
 <template>
