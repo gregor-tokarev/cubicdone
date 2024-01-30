@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SpeedInsights } from "@vercel/speed-insights/vue";
 import Sidebar from "./components/Sidebar.vue";
 import { onMounted } from "vue";
 import hotkeys from "hotkeys-js";
@@ -56,6 +57,7 @@ onMounted(() => {
   </div>
   <ProjectModal></ProjectModal>
   <DeleteModal></DeleteModal>
+  <SpeedInsights></SpeedInsights>
 </template>
 
 <style scoped></style>
