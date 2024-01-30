@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 import IntegrationCard from "@components/cards/IntegrationCard.vue";
 import BaseModal from "@components/BaseModal.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
@@ -12,6 +12,7 @@ import { helpers, required } from "@vuelidate/validators";
 import { useRouter } from "vue-router";
 import ErrorMessage from "@components/ErrorMessage.vue";
 import ApiKeyCard from "@components/ApiKeyCard.vue";
+import hotkeys from "hotkeys-js";
 
 const integrationStore = useIntegrationStore();
 const router = useRouter();
@@ -22,6 +23,18 @@ const openIntegration = computed<Integration | undefined>(() => {
     (i) => i.id === openIntegrationId.value,
   );
 });
+
+onMounted(() => {
+  hotkeys("esc", onCancelModel);
+});
+
+onUnmounted(() => {
+  hotkeys.unbind("esc", onCancelModel);
+});
+
+function onCancelModel() {
+  openIntegrationId.value = null;
+}
 
 const formState = reactive({
   label: "",
