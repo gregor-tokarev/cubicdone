@@ -10,6 +10,7 @@ import Fuse from "fuse.js";
 import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
 import ProjectOption from "@components/ProjectOption.vue";
 import FuseResult = Fuse.FuseResult;
+import { replaceAt } from "@utils/replaceAt.ts";
 
 const props = defineProps<{
   placeholder: string;
@@ -139,13 +140,18 @@ function handleProject(evt: KeyboardEvent) {
 function handleBackticks(evt: KeyboardEvent) {
   evt.preventDefault();
 
-  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
-  tempValue[currentPartIdx.value].content += "``";
-  emit("update:modelValue", tempValue);
-
   const sel = window.getSelection();
   const range = sel?.getRangeAt(0);
   const offset = range?.startOffset;
+  if (offset === undefined) return;
+
+  const tempValue = JSON.parse(JSON.stringify(props.modelValue));
+  tempValue[currentPartIdx.value].content = replaceAt(
+    tempValue[currentPartIdx.value].content,
+    offset,
+    "``",
+  );
+  emit("update:modelValue", tempValue);
 
   if (!partsContainer.value) return;
   const currentNode = partsContainer.value.children[
@@ -153,8 +159,6 @@ function handleBackticks(evt: KeyboardEvent) {
   ] as HTMLElement;
 
   setTimeout(() => {
-    if (offset === undefined) return;
-
     setCursorPosition(currentNode, offset + 1);
   });
 }
