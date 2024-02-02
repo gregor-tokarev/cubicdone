@@ -48,7 +48,7 @@ window.addEventListener("resize", (_) => {
 <template>
   <div
     class="flex w-[250px] flex-col rounded-br-2xl rounded-tr-2xl bg-black px-[18px] py-4"
-    :class="{ '!w-[60px] px-[13px]': compact }"
+    :class="{ '!w-[60px] !px-[13px]': compact }"
   >
     <!--    title block-->
     <div class="flex items-center justify-between">
@@ -75,7 +75,7 @@ window.addEventListener("resize", (_) => {
       ></Icon>
     </div>
     <!--  navigation block-->
-    <nav class="mt-8 space-y-1.5">
+    <nav class="mt-6 space-y-1.5">
       <router-link
         class="flex items-center space-x-2 rounded text-base text-gray-200 xl:px-1.5 xl:py-1"
         :class="{ 'h-unset w-full ': !compact, 'h-[32px] w-[32px]': compact }"
