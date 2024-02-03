@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import Icon from "./Icon.vue";
-import {
-  breakpointsTailwind,
-  onKeyStroke,
-  useBreakpoints,
-} from "@vueuse/core/index.cjs";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
+import hotkeys from "hotkeys-js";
 
 const navItems = ref([
   {
@@ -35,9 +32,17 @@ const navItems = ref([
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 
-onKeyStroke("[", () => {
-  compact.value = !compact.value;
+onMounted(() => {
+  hotkeys("[", onBracket);
 });
+
+onUnmounted(() => {
+  hotkeys.unbind("[", onBracket);
+});
+
+function onBracket() {
+  compact.value = !compact.value;
+}
 
 const compact = ref(breakpoints.isSmaller("xl"));
 window.addEventListener("resize", (_) => {
