@@ -82,7 +82,7 @@ window.addEventListener("resize", (_) => {
     <!--  navigation block-->
     <nav class="mt-6 space-y-1.5">
       <router-link
-        class="flex items-center space-x-2 rounded text-base text-gray-200 xl:px-1.5 xl:py-1"
+        class="flex items-center space-x-2 rounded px-1.5 py-1 text-base text-gray-200"
         :class="{
           'h-unset w-full': !compact,
           'h-[32px] w-[32px] justify-center': compact,
