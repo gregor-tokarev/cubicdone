@@ -65,7 +65,7 @@ onMounted(async () => {
             );
             taskStore.updateFromIntegrations(draftsToUpdate);
 
-            await new Promise((resolve) => setTimeout(resolve, 200));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
             if (idx === activatedIntegrations.length - 1) loading.value = false;
           }
