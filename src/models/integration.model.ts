@@ -25,6 +25,6 @@ export interface Integration {
   apiKeys: ApiKey[];
 
   checkToken(apiKey: any): Promise<boolean>;
-  fetchTasks(): Promise<IntegrationTask[]>;
+  fetchTasks(): AsyncGenerator<IntegrationTask[]>;
   fetchProjects(): Promise<IntegrationProject[]>;
 }

@@ -42,23 +42,29 @@ onMounted(async () => {
   );
 
   if (activatedIntegrations.length) {
-    loading.value = true;
-    const taskPromises = activatedIntegrations.map((i) => i.fetchTasks());
     try {
-      const externalDrafts = (await Promise.all(taskPromises)).flat();
+      loading.value = true;
+      activatedIntegrations
+        .map((i) => i.fetchTasks())
+        .forEach(async (taskGenerator) => {
+          for await (const tasksFromKey of taskGenerator) {
+            const draftedTasks = draftsFromIntegration(
+              tasksFromKey,
+              draftStore.maxOrder,
+              taskStore.tasks,
+            );
 
-      integrationDrafts.value = draftsFromIntegration(
-        externalDrafts,
-        draftStore.maxOrder,
-        taskStore.tasks,
-      );
+            integrationDrafts.value =
+              integrationDrafts.value.concat(draftedTasks);
 
-      const taskIds = taskStore.tasks.map((t) => t.draftId);
+            const taskIds = taskStore.tasks.map((t) => t.draftId);
 
-      const draftsToUpdate = externalDrafts.filter(
-        (d) => taskIds.indexOf(d.id) !== -1,
-      );
-      taskStore.updateFromIntegrations(draftsToUpdate);
+            const draftsToUpdate = tasksFromKey.filter(
+              (d) => taskIds.indexOf(d.id) !== -1,
+            );
+            taskStore.updateFromIntegrations(draftsToUpdate);
+          }
+        });
     } finally {
       loading.value = false;
     }
