@@ -39,7 +39,6 @@ export class LinearIntegration implements Integration {
     const res: ProjectConnection[] = await Promise.all(req);
 
     const projects = res.map((r) => r.nodes).flat();
-    this.projectsCache = projects;
 
     return projects.map((p) => ({ name: p.name, id: p.id }));
   }
