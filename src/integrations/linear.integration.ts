@@ -45,6 +45,26 @@ export class LinearIntegration implements Integration {
     return projects.map((p) => ({ name: p.name, id: p.id }));
   }
 
+  async getProject(apiKey: string): Promise<IntegrationProject[]> {
+    if (!this.apiKeys.length) throw new Error(`${this.name} apiKey is missing`);
+
+    const projects: ProjectConnection = await fetch(
+      `/api/linear/get_projects`,
+      {
+        headers: { Authorization: apiKey },
+      },
+    ).then((r) => r.json());
+
+    const integrationProjects = projects.nodes.map((p) => ({
+      name: p.name,
+      id: p.id,
+    }));
+
+    this.projectsCache = integrationProjects;
+
+    return integrationProjects;
+  }
+
   async *fetchTasks(): AsyncGenerator<IntegrationTask[]> {
     if (!this.apiKeys.length) throw new Error(`${this.name} apiKey is missing`);
 
@@ -52,6 +72,10 @@ export class LinearIntegration implements Integration {
       const chunk = await fetch(`/api/linear/get_tasks`, {
         headers: { Authorization: apiKey.key },
       }).then((r) => r.json());
+
+      if (!this.projectsCache.length) {
+        await this.getProject(apiKey.key);
+      }
 
       yield chunk.map((t: Issue) => {
         // @ts-ignore
