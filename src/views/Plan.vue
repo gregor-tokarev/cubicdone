@@ -42,11 +42,12 @@ onMounted(async () => {
   );
 
   if (activatedIntegrations.length) {
+    loading.value = true;
+
     try {
-      loading.value = true;
       activatedIntegrations
         .map((i) => i.fetchTasks())
-        .forEach(async (taskGenerator) => {
+        .forEach(async (taskGenerator, idx) => {
           for await (const tasksFromKey of taskGenerator) {
             const draftedTasks = draftsFromIntegration(
               tasksFromKey,
@@ -63,10 +64,12 @@ onMounted(async () => {
               (d) => taskIds.indexOf(d.id) !== -1,
             );
             taskStore.updateFromIntegrations(draftsToUpdate);
+
+            if (idx === activatedIntegrations.length - 1) loading.value = false;
           }
         });
-    } finally {
-      loading.value = false;
+    } catch (e) {
+      console.error(e);
     }
   }
 });
