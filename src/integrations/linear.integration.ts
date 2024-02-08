@@ -26,7 +26,6 @@ export class LinearIntegration implements Integration {
     }
   }
 
-  projectsCache: IntegrationProject[] = [];
   apiKeys: ApiKey[] = [];
 
   async fetchProjects(): Promise<IntegrationProject[]> {
@@ -55,14 +54,10 @@ export class LinearIntegration implements Integration {
       },
     ).then((r) => r.json());
 
-    const integrationProjects = projects.nodes.map((p) => ({
+    return projects.nodes.map((p) => ({
       name: p.name,
       id: p.id,
     }));
-
-    this.projectsCache = integrationProjects;
-
-    return integrationProjects;
   }
 
   async *fetchTasks(): AsyncGenerator<IntegrationTask[]> {
@@ -73,13 +68,12 @@ export class LinearIntegration implements Integration {
         headers: { Authorization: apiKey.key },
       }).then((r) => r.json());
 
-      if (!this.projectsCache.length) {
-        await this.getProject(apiKey.key);
-      }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const projects = await this.getProject(apiKey.key);
 
       yield chunk.map((t: Issue) => {
         // @ts-ignore
-        const project = this.projectsCache.find((p) => p.id === t._project?.id);
+        const project = projects.find((p) => p.id === t._project?.id);
 
         return {
           id: t.id,
