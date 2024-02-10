@@ -42,32 +42,36 @@ onMounted(async () => {
   );
 
   if (activatedIntegrations.length) {
-    loading.value = true;
-
     try {
+      loading.value = true;
+      let genCount = 0;
+
       activatedIntegrations
         .map((i) => i.fetchTasks())
-        .forEach(async (taskGenerator, idx) => {
-          for await (const tasksFromKey of taskGenerator) {
-            const draftedTasks = draftsFromIntegration(
-              tasksFromKey,
-              draftStore.maxOrder,
-              taskStore.tasks,
-            );
+        .forEach(async (taskGenerator) => {
+          try {
+            for await (const tasksFromKey of taskGenerator) {
+              const draftedTasks = draftsFromIntegration(
+                tasksFromKey,
+                draftStore.maxOrder,
+                taskStore.tasks,
+              );
 
-            integrationDrafts.value =
-              integrationDrafts.value.concat(draftedTasks);
+              integrationDrafts.value =
+                integrationDrafts.value.concat(draftedTasks);
 
-            const taskIds = taskStore.tasks.map((t) => t.draftId);
+              const taskIds = taskStore.tasks.map((t) => t.draftId);
 
-            const draftsToUpdate = tasksFromKey.filter(
-              (d) => taskIds.indexOf(d.id) !== -1,
-            );
-            taskStore.updateFromIntegrations(draftsToUpdate);
+              const draftsToUpdate = tasksFromKey.filter(
+                (d) => taskIds.indexOf(d.id) !== -1,
+              );
+              taskStore.updateFromIntegrations(draftsToUpdate);
+            }
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            if (idx === activatedIntegrations.length - 1) loading.value = false;
+            genCount++;
+            if (genCount >= activatedIntegrations.length) loading.value = false;
+          } catch (err) {
+            console.error(err);
           }
         });
     } catch (e) {
