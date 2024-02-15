@@ -68,9 +68,10 @@ async function onSubmit() {
   showError.value = false;
   try {
     const res = await openIntegration.value.checkToken(v$.value.key);
-    if (res) {
-      openIntegration.value.apiKeys = [];
+
+    if (!res) {
       showError.value = true;
+      v$.value.key.$model = "";
 
       return;
     }
