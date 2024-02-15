@@ -67,10 +67,10 @@ export class LinearIntegration implements Integration {
         headers: { Authorization: apiKey.key },
       }).then((r) => r.json());
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
       const projects = await this.getProject(apiKey.key);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
       yield chunk.map((t: Issue) => {
         // @ts-ignore
         const project = projects.find((p) => p.id === t._project?.id);

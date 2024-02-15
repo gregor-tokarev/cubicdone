@@ -72,6 +72,7 @@ onMounted(async () => {
             if (genCount >= activatedIntegrations.length) loading.value = false;
           } catch (err) {
             console.error(err);
+            loading.value = false;
           }
         });
     } catch (e) {
