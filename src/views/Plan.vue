@@ -18,15 +18,17 @@ const taskStore = useTaskStore();
 const integrationStore = useIntegrationStore();
 
 const dateColumns = computed(() => {
-  const count = 20;
+  const count = 30;
   const res = [];
 
-  for (let i = 0; i < count; i++) {
+  for (let i = -15; i < count; i++) {
     res.push(dayjs().add(i, "day"));
   }
 
   return res;
 });
+
+const columnEls = ref<HTMLElement[]>([]);
 
 const loading = ref(false);
 const integrationDrafts = ref<Draft[]>([]);
@@ -37,6 +39,12 @@ const allDrafts = computed(() => {
 });
 
 onMounted(async () => {
+  const currentDayIdx = dateColumns.value.findIndex((date) => {
+    return dayjs().isSame(date, "day");
+  });
+
+  columnEls.value[currentDayIdx + 2].scrollIntoView();
+
   const activatedIntegrations = integrationStore.mappedIntegrations.filter(
     (i) => i.apiKeys.length,
   );
@@ -180,15 +188,18 @@ function onChangeDraft(event: any) {
       </VueDraggableNext>
     </div>
     <!--    Date columns-->
-    <div class="mt-5 flex grow snap-x snap-proximity overflow-x-auto">
+    <div class="mt-5 flex grow snap-x snap-proximity space-x-5 overflow-x-auto">
       <div
+        ref="columnEls"
         class="column-w flex shrink-0 grow snap-start flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
         v-for="(c, idx) in dateColumns"
         :key="idx"
+        :data-date="c"
       >
         <div class="mb-5 text-base text-black">
-          <template v-if="idx === 0">Today,</template>
-          <template v-else-if="idx === 1">Tomorrow,</template>
+          <!--          TODO: make it align with dates later-->
+          <!--          <template v-if="idx === 0">Today,</template>-->
+          <!--          <template v-else-if="idx === 1">Tomorrow,</template>-->
           {{ dayjs(c).format("DD MMM") }}
         </div>
         <VueDraggableNext
