@@ -18,7 +18,7 @@ const taskStore = useTaskStore();
 const integrationStore = useIntegrationStore();
 
 const dateColumns = computed(() => {
-  const count = 3;
+  const count = 20;
   const res = [];
 
   for (let i = 0; i < count; i++) {
@@ -180,9 +180,9 @@ function onChangeDraft(event: any) {
       </VueDraggableNext>
     </div>
     <!--    Date columns-->
-    <div class="mt-5 flex grow space-x-5">
+    <div class="mt-5 flex grow snap-x snap-proximity overflow-x-auto">
       <div
-        class="flex w-1/3 grow flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
+        class="column-w flex shrink-0 grow snap-start flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
         v-for="(c, idx) in dateColumns"
         :key="idx"
       >
@@ -211,4 +211,8 @@ function onChangeDraft(event: any) {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.column-w {
+  width: calc(33% - 13px);
+}
+</style>
