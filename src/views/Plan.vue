@@ -27,6 +27,7 @@ for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
   initialDayColumns.push(dayjs().add(i, "day"));
 }
 const dayColumns = ref<Dayjs[]>(initialDayColumns);
+console.log(dayColumns.value);
 
 const todayIndex = computed(() => {
   return dayColumns.value.findIndex((date) => {
@@ -53,11 +54,11 @@ async function loadAfterColumns() {
 
   for (let i = 1; i < COLUMNS_PER_PAGE + 1; i++) {
     newColumns.push(
-      dayColumns.value[dayColumns.value.length - 1].add(-i, "day"),
+      dayColumns.value[dayColumns.value.length - 1].add(i, "day"),
     );
   }
 
-  dayColumns.value = newColumns.concat(dayColumns.value);
+  dayColumns.value = dayColumns.value.concat(newColumns);
 }
 
 useIntersectionObserver(
@@ -84,7 +85,6 @@ useIntersectionObserver(
         const scrollPosition =
           widthAfterUpdate - widthBeforeUpdate + scrollLeft;
 
-        console.log("scroll TO");
         columnsRoot.value.scrollTo({ left: scrollPosition });
       });
     } else if (
@@ -109,7 +109,6 @@ const allDrafts = computed(() => {
   );
 });
 onMounted(async () => {
-  console.log("mounted scroll");
   columnEls.value[todayIndex.value + 2].scrollIntoView();
 
   const activatedIntegrations = integrationStore.mappedIntegrations.filter(
