@@ -65,9 +65,10 @@ useIntersectionObserver(
   async (entries, _observer) => {
     if (entries.some((ent) => !ent.isIntersecting)) return;
 
-    const intersectedDays = entries.map((ent) =>
-      dayjs(ent.target.dataset.date),
-    );
+    const intersectedDays = entries.map((ent) => {
+      const target = ent.target as HTMLElement;
+      return dayjs(target.dataset.date);
+    });
 
     if (!columnsRoot.value) return;
     const widthBeforeUpdate = columnsRoot.value.scrollWidth;
