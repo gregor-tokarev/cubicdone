@@ -74,9 +74,6 @@ useIntersectionObserver(
     const widthBeforeUpdate = columnsRoot.value.scrollWidth;
     const scrollLeft = columnsRoot.value.scrollLeft;
 
-    console.log(
-      intersectedDays.some((day) => dayColumns.value[0].isSame(day, "day")),
-    );
     if (intersectedDays.some((day) => dayColumns.value[0].isSame(day, "day"))) {
       await loadBeforeColumns();
 
@@ -87,6 +84,7 @@ useIntersectionObserver(
         const scrollPosition =
           widthAfterUpdate - widthBeforeUpdate + scrollLeft;
 
+        console.log("scroll TO");
         columnsRoot.value.scrollTo({ left: scrollPosition });
       });
     } else if (
@@ -111,6 +109,7 @@ const allDrafts = computed(() => {
   );
 });
 onMounted(async () => {
+  console.log("mounted scroll");
   columnEls.value[todayIndex.value + 2].scrollIntoView();
 
   const activatedIntegrations = integrationStore.mappedIntegrations.filter(
