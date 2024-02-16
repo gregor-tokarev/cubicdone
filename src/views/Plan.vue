@@ -74,6 +74,9 @@ useIntersectionObserver(
     const widthBeforeUpdate = columnsRoot.value.scrollWidth;
     const scrollLeft = columnsRoot.value.scrollLeft;
 
+    console.log(
+      intersectedDays.some((day) => dayColumns.value[0].isSame(day, "day")),
+    );
     if (intersectedDays.some((day) => dayColumns.value[0].isSame(day, "day"))) {
       await loadBeforeColumns();
 
