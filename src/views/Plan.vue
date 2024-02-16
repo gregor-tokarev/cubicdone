@@ -12,38 +12,102 @@ import { VueSpinner } from "vue3-spinners";
 import { Draft } from "@models/draft.model.ts";
 import { useIntegrationStore } from "@store/integration.ts";
 import { draftsFromIntegration } from "@utils/draftsFromIntegration.ts";
+import { useIntersectionObserver } from "@vueuse/core";
 
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();
 const integrationStore = useIntegrationStore();
 
-const dateColumns = computed(() => {
-  const count = 30;
-  const res = [];
+// Initial Day columns generation
+const INITIAL_COLUMNS_COUNT = 10;
+const COLUMNS_PER_PAGE = 5;
 
-  for (let i = -15; i < count; i++) {
-    res.push(dayjs().add(i, "day"));
+const initialDayColumns = [];
+for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
+  initialDayColumns.push(dayjs().add(i, "day"));
+}
+const dayColumns = ref<Dayjs[]>(initialDayColumns);
+
+const todayIndex = computed(() => {
+  return dayColumns.value.findIndex((date) => {
+    return dayjs().isSame(date, "day");
+  });
+});
+// End of initial Day colum generation
+
+// let observer: IntersectionObserver | null = null;
+const columnEls = ref<HTMLElement[]>([]);
+const columnsRoot = ref<HTMLElement | null>(null);
+
+async function loadBeforeColumns() {
+  const newColumns = [];
+
+  for (let i = 1; i < COLUMNS_PER_PAGE + 1; i++) {
+    newColumns.push(dayColumns.value[0].add(-i, "day"));
   }
 
-  return res;
-});
+  dayColumns.value = newColumns.reverse().concat(dayColumns.value);
+}
+async function loadAfterColumns() {
+  const newColumns = [];
 
-const columnEls = ref<HTMLElement[]>([]);
+  for (let i = 1; i < COLUMNS_PER_PAGE + 1; i++) {
+    newColumns.push(
+      dayColumns.value[dayColumns.value.length - 1].add(-i, "day"),
+    );
+  }
 
-const loading = ref(false);
+  dayColumns.value = newColumns.concat(dayColumns.value);
+}
+
+useIntersectionObserver(
+  columnEls,
+  async (entries, _observer) => {
+    if (entries.some((ent) => !ent.isIntersecting)) return;
+
+    const intersectedDays = entries.map((ent) =>
+      dayjs(ent.target.dataset.date),
+    );
+
+    if (!columnsRoot.value) return;
+    const widthBeforeUpdate = columnsRoot.value.scrollWidth;
+    const scrollLeft = columnsRoot.value.scrollLeft;
+
+    if (intersectedDays.some((day) => dayColumns.value[0].isSame(day, "day"))) {
+      await loadBeforeColumns();
+
+      setTimeout(() => {
+        if (!columnsRoot.value) return;
+
+        const widthAfterUpdate = columnsRoot.value.scrollWidth;
+        const scrollPosition =
+          widthAfterUpdate - widthBeforeUpdate + scrollLeft;
+
+        columnsRoot.value.scrollTo({ left: scrollPosition });
+      });
+    } else if (
+      intersectedDays.some((day) =>
+        dayColumns.value[dayColumns.value.length - 1].isSame(day, "day"),
+      )
+    ) {
+      await loadAfterColumns();
+    }
+  },
+  {
+    root: columnsRoot,
+    threshold: 0.7,
+  },
+);
+
+const loadingDrafts = ref(false);
 const integrationDrafts = ref<Draft[]>([]);
 const allDrafts = computed(() => {
   return JSON.parse(
     JSON.stringify([...integrationDrafts.value, ...draftStore.drafts]),
   );
 });
-
 onMounted(async () => {
-  const currentDayIdx = dateColumns.value.findIndex((date) => {
-    return dayjs().isSame(date, "day");
-  });
-
-  columnEls.value[currentDayIdx + 2].scrollIntoView();
+  columnEls.value[todayIndex.value + 2].scrollIntoView();
 
   const activatedIntegrations = integrationStore.mappedIntegrations.filter(
     (i) => i.apiKeys.length,
@@ -51,7 +115,7 @@ onMounted(async () => {
 
   if (activatedIntegrations.length) {
     try {
-      loading.value = true;
+      loadingDrafts.value = true;
       let genCount = 0;
 
       activatedIntegrations
@@ -77,10 +141,11 @@ onMounted(async () => {
             }
 
             genCount++;
-            if (genCount >= activatedIntegrations.length) loading.value = false;
+            if (genCount >= activatedIntegrations.length)
+              loadingDrafts.value = false;
           } catch (err) {
             console.error(err);
-            loading.value = false;
+            loadingDrafts.value = false;
           }
         });
     } catch (e) {
@@ -151,7 +216,10 @@ function onChangeDraft(event: any) {
           <Icon name="inbox"></Icon>
           <span>Inbox</span>
         </div>
-        <div v-if="loading" class="flex items-center space-x-1.5 text-gray-600">
+        <div
+          v-if="loadingDrafts"
+          class="flex items-center space-x-1.5 text-gray-600"
+        >
           <VueSpinner size="16px"></VueSpinner>
           <span>Loading...</span>
         </div>
@@ -176,7 +244,7 @@ function onChangeDraft(event: any) {
         ></DraftCard>
         <div
           v-if="!allDrafts.length"
-          class="flex h-full grow items-center justify-center text-sm text-gray-600"
+          class="flex h-full grow items-center justify-center text-sm text-gray-600 scrollbar-none"
         >
           <span>
             You plan all your Inbox Tasks. Start working or
@@ -188,11 +256,11 @@ function onChangeDraft(event: any) {
       </VueDraggableNext>
     </div>
     <!--    Date columns-->
-    <div class="mt-5 flex grow snap-x snap-proximity space-x-5 overflow-x-auto">
+    <div ref="columnsRoot" class="mt-5 flex grow space-x-5 overflow-x-auto">
       <div
         ref="columnEls"
-        class="column-w flex shrink-0 grow snap-start flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
-        v-for="(c, idx) in dateColumns"
+        class="column-w flex shrink-0 grow flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
+        v-for="(c, idx) in dayColumns"
         :key="idx"
         :data-date="c"
       >
