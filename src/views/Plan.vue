@@ -27,7 +27,6 @@ for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
   initialDayColumns.push(dayjs().add(i, "day"));
 }
 const dayColumns = ref<Dayjs[]>(initialDayColumns);
-console.log(dayColumns.value);
 
 const todayIndex = computed(() => {
   return dayColumns.value.findIndex((date) => {
@@ -246,7 +245,7 @@ function onChangeDraft(event: any) {
         ></DraftCard>
         <div
           v-if="!allDrafts.length"
-          class="flex h-full grow items-center justify-center text-sm text-gray-600 scrollbar-none"
+          class="scrollbar-none flex h-full grow items-center justify-center text-sm text-gray-600"
         >
           <span>
             You plan all your Inbox Tasks. Start working or
