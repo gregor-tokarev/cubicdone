@@ -44,12 +44,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-[100vh] items-start">
+  <div class="flex h-[100vh] items-start bg-red-100">
     <Sidebar class="h-full"></Sidebar>
-    <div
-      class="relative max-h-screen grow resize-none overflow-y-auto"
-      data-scroll-container
-    >
+    <div class="relative h-full grow overflow-y-auto" data-scroll-container>
       <div class="mx-auto max-w-[980px]">
         <router-view></router-view>
       </div>

@@ -6,7 +6,7 @@ export const hint: Directive = {
 
     const tooltip = document.createElement("div");
     tooltip.className =
-      "flex absolute py-0.5 px-1.5  transition-opacity rounded-lg bg-gray-900 translate-x-[10px] text-gray-300 text-xs";
+      "flex absolute py-0.5 px-1.5 top-0 transition-opacity rounded-lg bg-gray-900 translate-x-[10px] text-gray-300 text-xs";
 
     tooltip.innerHTML = binding.value;
     tooltip.insertAdjacentHTML(
