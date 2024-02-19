@@ -12,7 +12,7 @@ import { VueSpinner } from "vue3-spinners";
 import { Draft } from "@models/draft.model.ts";
 import { useIntegrationStore } from "@store/integration.ts";
 import { draftsFromIntegration } from "@utils/draftsFromIntegration.ts";
-import { useIntersectionObserver } from "@vueuse/core";
+import { useIntersectionObserver, useOnline } from "@vueuse/core";
 
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();
@@ -107,6 +107,8 @@ const allDrafts = computed(() => {
     JSON.stringify([...integrationDrafts.value, ...draftStore.drafts]),
   );
 });
+
+const isOnline = useOnline();
 onMounted(async () => {
   columnEls.value[todayIndex.value + 2].scrollIntoView();
 
@@ -114,7 +116,7 @@ onMounted(async () => {
     (i) => i.apiKeys.length,
   );
 
-  if (activatedIntegrations.length) {
+  if (activatedIntegrations.length && isOnline.value) {
     try {
       loadingDrafts.value = true;
       let genCount = 0;
