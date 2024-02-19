@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import TaskCard from "@components/cards/TaskCard.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { useTaskStore } from "@store/task.ts";
@@ -7,11 +7,11 @@ import { ref } from "vue";
 import { Task } from "@models/task.model.ts";
 
 defineProps<{
-  date: string;
+  date: Dayjs;
 }>();
 
 const emit = defineEmits<{
-  (e: "move", value: [string, any]): void;
+  (e: "move", value: [Dayjs, any]): void;
 }>();
 
 const taskStore = useTaskStore();
