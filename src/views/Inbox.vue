@@ -265,15 +265,13 @@ onStartTyping(() => {
     ></ContextMenu>
   </teleport>
   <teleport to="[data-scroll-container]">
-    <transition-slide :offset="[0, 40]">
-      <InboxCommand
-        v-if="selectedDraftIds.length"
-        class="fixed bottom-5 left-1/2 -translate-x-1/2"
-        @discard="selectedDraftIds = []"
-        @setProject="selectProject"
-        @remove="removeDraft"
-      ></InboxCommand>
-    </transition-slide>
+    <InboxCommand
+      v-if="selectedDraftIds.length"
+      class="fixed bottom-5 left-1/2 -translate-x-1/2"
+      @discard="selectedDraftIds = []"
+      @setProject="selectProject"
+      @remove="removeDraft"
+    ></InboxCommand>
   </teleport>
 </template>
 
