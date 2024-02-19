@@ -44,8 +44,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-start">
-    <Sidebar class="h-[100vh]"></Sidebar>
+  <div class="flex h-[100vh] items-start">
+    <Sidebar class="h-full"></Sidebar>
     <div
       class="relative max-h-screen grow resize-none overflow-y-auto"
       data-scroll-container

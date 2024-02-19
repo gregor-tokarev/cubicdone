@@ -34,6 +34,10 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 
 onMounted(() => {
   hotkeys("[", onBracket);
+
+  window.addEventListener("resize", (_) => {
+    compact.value = breakpoints.isSmaller("xl");
+  });
 });
 
 onUnmounted(() => {
@@ -45,9 +49,6 @@ function onBracket() {
 }
 
 const compact = ref(breakpoints.isSmaller("xl"));
-window.addEventListener("resize", (_) => {
-  compact.value = breakpoints.isSmaller("xl");
-});
 </script>
 
 <template>
