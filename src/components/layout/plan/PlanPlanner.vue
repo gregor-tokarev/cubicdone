@@ -11,7 +11,6 @@ const props = defineProps<{
   integrationDrafts: Draft[];
 }>();
 
-// const integrationStore = useIntegrationStore();
 const taskStore = useTaskStore();
 
 // Initial Day columns generation
@@ -103,7 +102,6 @@ onMounted(async () => {
 });
 
 function onMove([date, evt]: [Dayjs, any]) {
-  console.log();
   if ("added" in evt) {
     const item = evt["added"].element;
 
