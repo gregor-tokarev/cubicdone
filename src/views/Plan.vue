@@ -12,6 +12,9 @@ const integrationDrafts = ref<Draft[]>([]);
     <!--  Inbox section-->
     <PlanInbox v-model:integration-drafts="integrationDrafts"></PlanInbox>
     <!--    Date columns-->
-    <PlanPlanner :integration-drafts="integrationDrafts"></PlanPlanner>
+    <PlanPlanner
+      class="grow"
+      :integration-drafts="integrationDrafts"
+    ></PlanPlanner>
   </div>
 </template>

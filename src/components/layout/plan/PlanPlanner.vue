@@ -146,7 +146,7 @@ function onMove([date, evt]: [Dayjs, any]) {
 </script>
 
 <template>
-  <div ref="columnsRoot" class="mt-5 flex grow space-x-5 overflow-x-auto">
+  <div ref="columnsRoot" class="mt-5 flex space-x-5 overflow-x-auto">
     <PlanColumn
       ref="columnComponents"
       v-for="(c, idx) in dayColumns"
