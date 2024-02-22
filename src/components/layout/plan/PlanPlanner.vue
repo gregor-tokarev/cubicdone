@@ -3,9 +3,10 @@ import dayjs, { Dayjs } from "dayjs";
 import { useTaskStore } from "@store/task.ts";
 import { Task } from "@models/task.model.ts";
 import { Draft } from "@models/draft.model.ts";
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import PlanColumn from "@components/layout/plan/PlanColumn.vue";
 
+// @ts-ignore
 import { RecycleScroller } from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
@@ -25,11 +26,11 @@ for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
 }
 const dayColumns = ref<Dayjs[]>(initialDayColumns);
 
-const todayIndex = computed(() => {
-  return dayColumns.value.findIndex((date) => {
-    return dayjs().isSame(date, "day");
-  });
-});
+// const todayIndex = computed(() => {
+//   return dayColumns.value.findIndex((date) => {
+//     return dayjs().isSame(date, "day");
+//   });
+// });
 // End of initial Day colum generation
 
 const columnComponents = ref<InstanceType<typeof PlanColumn>[]>([]);
