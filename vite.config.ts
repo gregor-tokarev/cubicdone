@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
+import * as path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,12 +14,15 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      "@components": "src/components",
-      "@store": "src/store",
-      "@models": "src/models",
-      "@utils": "src/utils",
-      "@assets": "src/assets",
-    },
+    alias: [
+      {
+        find: "@components",
+        replacement: path.resolve(__dirname, "./src/components"),
+      },
+      { find: "@store", replacement: path.resolve(__dirname, "./src/store") },
+      { find: "@models", replacement: path.resolve(__dirname, "./src/models") },
+      { find: "@utils", replacement: path.resolve(__dirname, "./src/utils") },
+      { find: "@assets", replacement: path.resolve(__dirname, "./src/assets") },
+    ],
   },
 });
