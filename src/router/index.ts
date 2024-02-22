@@ -23,5 +23,9 @@ export const router = createRouter({
       path: "/integrations",
       component: Integrations,
     },
+    {
+      path: "/auth/signup",
+      component: () => import("../views/auth/signup.vue"),
+    },
   ],
 });
