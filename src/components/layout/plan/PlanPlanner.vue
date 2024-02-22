@@ -128,7 +128,7 @@ function onMove([date, evt]: [Dayjs, any]) {
   <RecycleScroller
     ref="columnsRoot"
     :items="dayColumns"
-    :item-size="330"
+    :item-size="320"
     key-field="$d"
     direction="horizontal"
     emit-update
