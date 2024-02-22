@@ -91,7 +91,7 @@ const compact = ref(breakpoints.isSmaller("xl"));
         v-for="item in navItems"
         :to="item.link"
         v-hint="item.hint"
-        active-class="!text-white bg-gradient-to-r from-[#1A1A1A] to-[#141414]"
+        exact-active-class="!text-white bg-gradient-to-r from-[#1A1A1A] to-[#141414]"
       >
         <Icon :name="item.icon"></Icon>
         <span v-if="!compact">{{ item.title }}</span>
