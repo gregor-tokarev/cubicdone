@@ -3,9 +3,11 @@ import dayjs, { Dayjs } from "dayjs";
 import { useTaskStore } from "@store/task.ts";
 import { Task } from "@models/task.model.ts";
 import { Draft } from "@models/draft.model.ts";
-import { useIntersectionObserver } from "@vueuse/core";
 import { computed, onMounted, ref } from "vue";
 import PlanColumn from "@components/layout/plan/PlanColumn.vue";
+
+import { RecycleScroller } from "vue-virtual-scroller";
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
 const props = defineProps<{
   integrationDrafts: Draft[];
@@ -31,50 +33,24 @@ const todayIndex = computed(() => {
 // End of initial Day colum generation
 
 const columnComponents = ref<InstanceType<typeof PlanColumn>[]>([]);
-const columnEls = computed(() => {
-  return columnComponents.value.map((col) => col.root);
-});
-const columnsRoot = ref<HTMLElement | null>(null);
+const columnsRoot = ref<InstanceType<typeof RecycleScroller> | null>(null);
 
-useIntersectionObserver(
-  columnEls,
-  async (entries, _observer) => {
-    if (entries.some((ent) => !ent.isIntersecting)) return;
+function onScroll(_evt: Event) {
+  const scroll: { start: number; end: number } = columnsRoot.value.getScroll();
+  const totalSize: number = columnsRoot.value.totalSize;
 
-    const intersectedDays = entries.map((ent) => {
-      const target = ent.target as HTMLElement;
-      return dayjs(target.dataset.date);
+  if (scroll.end === totalSize) {
+    loadAfterColumns();
+  } else if (scroll.start === 0) {
+    loadBeforeColumns();
+
+    setTimeout(() => {
+      const newSize: number = columnsRoot.value.totalSize;
+
+      columnsRoot.value.scrollToPosition(newSize - totalSize);
     });
-
-    if (!columnsRoot.value) return;
-    const widthBeforeUpdate = columnsRoot.value.scrollWidth;
-    const scrollLeft = columnsRoot.value.scrollLeft;
-
-    if (intersectedDays.some((day) => dayColumns.value[1].isSame(day, "day"))) {
-      await loadBeforeColumns();
-
-      setTimeout(() => {
-        if (!columnsRoot.value) return;
-
-        const widthAfterUpdate = columnsRoot.value.scrollWidth;
-        const scrollPosition =
-          widthAfterUpdate - widthBeforeUpdate + scrollLeft;
-
-        columnsRoot.value.scrollTo({ left: scrollPosition });
-      });
-    } else if (
-      intersectedDays.some((day) =>
-        dayColumns.value[dayColumns.value.length - 2].isSame(day, "day"),
-      )
-    ) {
-      await loadAfterColumns();
-    }
-  },
-  {
-    root: columnsRoot,
-    threshold: 0.7,
-  },
-);
+  }
+}
 
 async function loadBeforeColumns() {
   const newColumns = [];
@@ -98,7 +74,9 @@ async function loadAfterColumns() {
 }
 
 onMounted(async () => {
-  columnEls.value[todayIndex.value + 2]?.scrollIntoView();
+  setTimeout(() => {
+    columnsRoot.value?.scrollToItem(INITIAL_COLUMNS_COUNT / 2);
+  });
 });
 
 function onMove([date, evt]: [Dayjs, any]) {
@@ -146,20 +124,23 @@ function onMove([date, evt]: [Dayjs, any]) {
 </script>
 
 <template>
-  <div ref="columnsRoot" class="mt-5 flex space-x-5 overflow-x-auto">
+  <RecycleScroller
+    ref="columnsRoot"
+    :items="dayColumns"
+    :item-size="330"
+    key-field="$d"
+    direction="horizontal"
+    emit-update
+    @scroll="onScroll"
+    v-slot="{ item }"
+  >
     <PlanColumn
       ref="columnComponents"
-      v-for="(c, idx) in dayColumns"
-      :date="c"
-      :key="idx"
+      :date="item"
       @move="onMove"
-      class="column-w"
+      class="w-[310px] pr-2.5"
     ></PlanColumn>
-  </div>
+  </RecycleScroller>
 </template>
 
-<style scoped>
-.column-w {
-  width: calc(33% - 13px);
-}
-</style>
+<style scoped></style>

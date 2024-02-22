@@ -30,7 +30,7 @@ defineExpose({
 <template>
   <div
     ref="root"
-    class="column-w flex shrink-0 grow flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
+    class="flex flex-col rounded-lg bg-gray-50 px-2.5 py-1.5"
     :data-date="date"
   >
     <div class="mb-5 text-base text-black">

@@ -27,6 +27,7 @@
     "vue": "^3.3.4",
     "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.2.5",
+    "vue-virtual-scroller": "^2.0.0-beta.8",
     "vue3-spinners": "^1.2.2"
   },
   "devDependencies": {
