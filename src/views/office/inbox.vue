@@ -12,6 +12,8 @@ import hotkeys from "hotkeys-js";
 import { useProjectModalStore } from "@store/project-modal.ts";
 import InboxCommand from "@components/InboxCommand.vue";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
+import { animate } from "motion";
+import { resolveConfig } from "vite";
 
 const draftStore = useDraftsStore();
 
@@ -69,7 +71,26 @@ function onChangeOrder(evt: any) {
   }
 }
 
+const inboxCommandEl = ref<InstanceType<typeof InboxCommand> | null>(null);
 const selectedDraftIds = ref<string[]>([]);
+watch(
+  selectedDraftIds,
+  (ids) => {
+    if (!inboxCommandEl.value) return;
+
+    if (ids.length > 0) {
+      animate(inboxCommandEl.value.$el, {
+        transform: "translateY(-50%) translateX(-50%)",
+      });
+    } else {
+      animate(inboxCommandEl.value.$el, {
+        transform: "translateY(100%) translateX(-50%)",
+      });
+    }
+  },
+  { deep: true },
+);
+
 function onUpdateSelect(draftId: string) {
   if (hotkeys.isPressed("shift") && selectedDraftIds.value.length > 0) {
     const draft = draftStore.getOne(draftId);
@@ -228,8 +249,8 @@ function onListLeave() {
     >
       <DraftRow
         :draft="d"
-        v-for="d in draftStore.sortedDrafts"
-        :key="d.id"
+        v-for="(d, idx) in draftStore.sortedDrafts"
+        :key="idx"
         :class="{ 'bg-gray-50': hoveredDraftId === d.id }"
         :selected="selectedDraftIds.includes(d.id)"
         @mouseenter="hoveredDraftId = d.id"
@@ -254,15 +275,14 @@ function onListLeave() {
       @option="onSelectContextMenu($event)"
     ></ContextMenu>
   </teleport>
-  <teleport to="[data-scroll-container]">
-    <InboxCommand
-      v-if="selectedDraftIds.length"
-      class="fixed bottom-5 left-1/2 -translate-x-1/2"
-      @discard="selectedDraftIds = []"
-      @setProject="selectProject"
-      @remove="removeDraft"
-    ></InboxCommand>
-  </teleport>
+  <InboxCommand
+    ref="inboxCommandEl"
+    data-inbox
+    class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full"
+    @discard="selectedDraftIds = []"
+    @setProject="selectProject"
+    @remove="removeDraft"
+  ></InboxCommand>
 </template>
 
 <style scoped></style>

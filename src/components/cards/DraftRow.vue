@@ -5,7 +5,7 @@ import ProjectTag from "../UI/ProjectTag.vue";
 import { ref } from "vue";
 import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
-import Icon from "../../components/Icon.vue";
+import Icon from "../Icon.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
 
 const props = defineProps<{
