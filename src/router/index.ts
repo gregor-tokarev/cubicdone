@@ -1,37 +1,31 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Plan from "../views/office/plan.vue";
-import Inbox from "../views/office/inbox.vue";
-import Projects from "../views/office/projects.vue";
-import Integrations from "../views/office/integrations.vue";
-import Office from "../views/layout/office.vue";
-import Profile from "../views/office/profile.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: "/",
-      component: Office,
+      component: () => import("../views/layout/office.vue"),
       children: [
         {
           path: "/",
-          component: Plan,
+          component: () => import("../views/office/plan.vue"),
         },
         {
           path: "/inbox",
-          component: Inbox,
+          component: () => import("../views/office/inbox.vue"),
         },
         {
           path: "/projects",
-          component: Projects,
+          component: () => import("../views/office/projects.vue"),
         },
         {
           path: "/integrations",
-          component: Integrations,
+          component: () => import("../views/office/integrations.vue"),
         },
         {
           path: "/profile",
-          component: Profile,
+          component: () => import("../views/office/profile.vue"),
         },
       ],
     },
