@@ -3,7 +3,6 @@ import dayjs, { Dayjs } from "dayjs";
 import TaskCard from "@components/cards/TaskCard.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { useTaskStore } from "@store/task.ts";
-import { ref } from "vue";
 import { Task } from "@models/task.model.ts";
 
 defineProps<{
@@ -19,12 +18,6 @@ const taskStore = useTaskStore();
 async function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });
 }
-
-const root = ref<HTMLElement | null>(null);
-
-defineExpose({
-  root,
-});
 </script>
 
 <template>
@@ -40,7 +33,7 @@ defineExpose({
       {{ dayjs(date).format("DD MMM") }}
     </div>
     <VueDraggableNext
-      class="grow space-y-2.5"
+      class="grow space-y-2.5 overflow-y-auto"
       @change="emit('move', [date, $event])"
       :list="taskStore.getByDate(date.toString())"
       :group="{ name: 'tasks' }"

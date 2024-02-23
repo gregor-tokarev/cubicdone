@@ -139,7 +139,7 @@ function onMove([date, evt]: [Dayjs, any]) {
       ref="columnComponents"
       :date="item"
       @move="onMove"
-      class="w-[310px] pr-2.5"
+      class="h-full w-[310px] pr-2.5"
     ></PlanColumn>
   </RecycleScroller>
 </template>
