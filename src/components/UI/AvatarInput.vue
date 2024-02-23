@@ -32,7 +32,7 @@ function onInput(evt: Event) {
   uploadImage(file);
 }
 
-async function uploadImage(file: File) {
+async function uploadImage(_file: File) {
   let url = "";
 
   // do upload stuff here
