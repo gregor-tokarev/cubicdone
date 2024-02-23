@@ -4,6 +4,7 @@ import Inbox from "../views/office/inbox.vue";
 import Projects from "../views/office/projects.vue";
 import Integrations from "../views/office/integrations.vue";
 import Office from "../views/layout/office.vue";
+import Profile from "../views/office/profile.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +28,10 @@ export const router = createRouter({
         {
           path: "/integrations",
           component: Integrations,
+        },
+        {
+          path: "/profile",
+          component: Profile,
         },
       ],
     },
