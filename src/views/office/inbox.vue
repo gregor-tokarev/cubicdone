@@ -277,7 +277,6 @@ function onListLeave() {
   </teleport>
   <InboxCommand
     ref="inboxCommandEl"
-    data-inbox
     class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full"
     @discard="selectedDraftIds = []"
     @setProject="selectProject"
