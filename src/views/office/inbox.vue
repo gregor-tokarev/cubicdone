@@ -13,7 +13,6 @@ import { useProjectModalStore } from "@store/project-modal.ts";
 import InboxCommand from "@components/InboxCommand.vue";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
 import { animate } from "motion";
-import { resolveConfig } from "vite";
 
 const draftStore = useDraftsStore();
 
