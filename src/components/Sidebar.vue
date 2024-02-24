@@ -5,7 +5,7 @@ import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { useUser } from "vue-clerk";
+import { useClerk, useSession, useUser } from "vue-clerk";
 
 const navItems = ref([
   {
@@ -70,7 +70,18 @@ async function gotoProfile() {
   openPanel.value = false;
 }
 
+const { session } = useSession();
+async function onSignOut() {
+  if (!session.value) return;
+
+  await signOut({ sessionId: session.value.id });
+
+  await router.push("/auth");
+  location.reload();
+}
+
 const { user, isLoaded } = useUser();
+const { signOut } = useClerk();
 </script>
 
 <template>
@@ -117,6 +128,7 @@ const { user, isLoaded } = useUser();
           <span>⌘ + O</span>
         </button>
         <button
+          @click="onSignOut"
           class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-red-400 transition-colors hover:bg-black"
         >
           <span class="">Sign out</span>

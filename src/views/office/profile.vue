@@ -7,15 +7,7 @@ import { email, helpers, required, url } from "@vuelidate/validators";
 import { useUser } from "vue-clerk";
 
 const { user, isLoaded } = useUser();
-console.log(isLoaded.value);
-watch(isLoaded, (value) => {
-  console.log(value);
-  if (value && user.value) {
-    // formState.avatarUrl = ;
-    formState.email = user.value.primaryEmailAddress?.emailAddress ?? "";
-    formState.displayedName = user.value.fullName ?? "";
-  }
-});
+console.log(user.value);
 
 const formState = reactive({
   avatarUrl: user.value?.imageUrl,
