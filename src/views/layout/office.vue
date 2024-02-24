@@ -36,9 +36,14 @@ onMounted(() => {
     router.push("/");
   });
 
-  hotkeys("cmd+P", (evt) => {
+  hotkeys("cmd+p", (evt) => {
     evt.preventDefault();
     router.push("/projects");
+  });
+
+  hotkeys("cmd+o", (evt) => {
+    evt.preventDefault();
+    router.push("/profile");
   });
 });
 </script>

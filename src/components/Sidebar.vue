@@ -3,6 +3,8 @@ import { onMounted, onUnmounted, ref } from "vue";
 import Icon from "./Icon.vue";
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
+import { onClickOutside } from "@vueuse/core";
+import { useRouter } from "vue-router";
 
 const navItems = ref([
   {
@@ -31,6 +33,7 @@ const navItems = ref([
 ]);
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
+const router = useRouter();
 
 onMounted(() => {
   hotkeys("[", onBracket);
@@ -49,6 +52,22 @@ function onBracket() {
 }
 
 const compact = ref(breakpoints.isSmaller("xl"));
+
+const openPanel = ref(false);
+const panelEl = ref<HTMLElement | null>(null);
+const userEl = ref<HTMLElement | null>(null);
+onClickOutside(
+  panelEl,
+  () => {
+    openPanel.value = false;
+  },
+  { ignore: [userEl] },
+);
+
+async function gotoProfile() {
+  await router.push("/profile");
+  openPanel.value = false;
+}
 </script>
 
 <template>
@@ -57,8 +76,10 @@ const compact = ref(breakpoints.isSmaller("xl"));
     :class="{ '!w-[60px] !px-[13px]': compact }"
   >
     <!--    title block-->
-    <div class="flex items-center justify-between">
+    <div class="relative flex items-center justify-between">
       <div
+        ref="userEl"
+        @click="openPanel = !openPanel"
         class="!hover:text-white flex cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
         :class="{
           'space-x-2 px-[1px] py-0.5 ': !compact,
@@ -79,6 +100,25 @@ const compact = ref(breakpoints.isSmaller("xl"));
         class="cursor-pointer text-gray-200"
         @click="compact = !compact"
       ></Icon>
+      <div
+        ref="panelEl"
+        class="absolute bottom-0 left-0 right-0 translate-y-[calc(100%+4px)] space-y-2 rounded-md border border-gray-900 bg-gradient-to-r from-[#1A1A1A] to-[#141414] px-2 py-1.5"
+        v-if="openPanel"
+      >
+        <button
+          @click="gotoProfile"
+          class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-gray-200 transition-colors hover:bg-black hover:text-gray-50"
+        >
+          <span class="">Open profile</span>
+          <span>⌘ + O</span>
+        </button>
+        <button
+          class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-red-400 transition-colors hover:bg-black"
+        >
+          <span class="">Sign out</span>
+          <Icon name="exit" class="!h-4 !w-4"></Icon>
+        </button>
+      </div>
     </div>
     <!--  navigation block-->
     <nav class="mt-6 space-y-1.5">
