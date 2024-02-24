@@ -3,10 +3,11 @@ import ProjectModal from "@components/ProjectModal.vue";
 import DeleteModal from "@components/DeleteModal.vue";
 import Sidebar from "@components/Sidebar.vue";
 import { SpeedInsights } from "@vercel/speed-insights/vue";
-import { onMounted, watchEffect } from "vue";
+import { onMounted } from "vue";
 import hotkeys from "hotkeys-js";
 import { useRouter } from "vue-router";
 import { useUser } from "vue-clerk";
+import { VueSpinnerPuff } from "vue3-spinners";
 
 const router = useRouter();
 
@@ -47,16 +48,21 @@ onMounted(() => {
     router.push("/profile");
   });
 });
+
+const { isLoaded } = useUser();
 </script>
 
 <template>
-  <div class="flex h-[100vh] items-start">
+  <div v-if="isLoaded" class="flex h-[100vh] items-start">
     <Sidebar class="h-full"></Sidebar>
     <div class="relative h-full grow overflow-y-auto" data-scroll-container>
       <div class="mx-auto max-w-[980px]">
         <router-view></router-view>
       </div>
     </div>
+  </div>
+  <div v-else class="fixed inset-0 flex items-center justify-center bg-white">
+    <VueSpinnerPuff size="200px" color="#333"></VueSpinnerPuff>
   </div>
   <ProjectModal></ProjectModal>
   <DeleteModal></DeleteModal>

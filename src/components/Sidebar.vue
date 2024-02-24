@@ -5,6 +5,7 @@ import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
+import { useUser } from "vue-clerk";
 
 const navItems = ref([
   {
@@ -68,6 +69,8 @@ async function gotoProfile() {
   await router.push("/profile");
   openPanel.value = false;
 }
+
+const { user, isLoaded } = useUser();
 </script>
 
 <template>
@@ -78,6 +81,7 @@ async function gotoProfile() {
     <!--    title block-->
     <div class="relative flex items-center justify-between">
       <div
+        v-if="isLoaded && user"
         ref="userEl"
         @click="openPanel = !openPanel"
         class="!hover:text-white flex cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
@@ -87,11 +91,11 @@ async function gotoProfile() {
         }"
       >
         <img
-          src="@assets/img/gregor.png"
-          alt="gregor tokarev"
+          :src="user.imageUrl"
+          :alt="user.fullName ?? undefined"
           class="!h-[34px] !w-[34px] overflow-hidden rounded-full"
         />
-        <p v-if="!compact" class="text-gray-200">Gregor</p>
+        <p v-if="!compact" class="text-gray-200">{{ user.fullName }}</p>
       </div>
       <Icon
         v-if="!compact"
