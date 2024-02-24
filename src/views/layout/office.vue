@@ -3,9 +3,10 @@ import ProjectModal from "@components/ProjectModal.vue";
 import DeleteModal from "@components/DeleteModal.vue";
 import Sidebar from "@components/Sidebar.vue";
 import { SpeedInsights } from "@vercel/speed-insights/vue";
-import { onMounted } from "vue";
+import { onMounted, watchEffect } from "vue";
 import hotkeys from "hotkeys-js";
 import { useRouter } from "vue-router";
+import { useUser } from "vue-clerk";
 
 const router = useRouter();
 

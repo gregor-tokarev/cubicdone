@@ -1,6 +1,30 @@
 <script setup lang="ts">
 import AuthButton from "@components/UI/AuthButton.vue";
 import Icon from "../../components/Icon.vue";
+import { useSignUp } from "vue-clerk";
+import { OAuthStrategy } from "@clerk/types/dist/strategies";
+
+const { signUp } = useSignUp();
+
+async function onSignup(strategy: OAuthStrategy) {
+  if (!signUp.value) return;
+
+  const redirectUrl = import.meta.env.DEV
+    ? `${import.meta.env.VITE_BASE_DEV_URL}/inbox`
+    : `${import.meta.env.VITE_BASE_URL}/inbox`;
+
+  const res = await signUp.value.create({
+    strategy,
+    redirectUrl,
+    actionCompleteRedirectUrl: redirectUrl,
+  });
+
+  const oauthLink =
+    res.verifications.externalAccount.externalVerificationRedirectURL;
+  if (!oauthLink) return;
+
+  location.href = oauthLink.href;
+}
 </script>
 
 <template>
@@ -9,15 +33,15 @@ import Icon from "../../components/Icon.vue";
       Login in to personal_todo
     </h1>
     <div class="space-y-4">
-      <AuthButton>
+      <AuthButton @click="onSignup('oauth_google')">
         <Icon name="google"></Icon>
         <span>Continue with google</span>
       </AuthButton>
-      <AuthButton>
+      <AuthButton @click="onSignup('oauth_notion')">
         <Icon name="notion"></Icon>
         <span>Continue with notion</span></AuthButton
       >
-      <AuthButton>
+      <AuthButton @click="onSignup('oauth_linear')">
         <Icon name="linear"></Icon>
         <span>Continue with linear</span></AuthButton
       >
