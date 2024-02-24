@@ -62,6 +62,7 @@ async function uploadImage(_file: File) {
       v-if="tempImgUrl || modelValue"
       :src="tempImgUrl || modelValue"
       alt="user avatar"
+      class="h-full w-full object-cover"
     />
   </label>
 </template>

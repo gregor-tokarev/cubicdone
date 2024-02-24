@@ -1,14 +1,26 @@
 <script setup lang="ts">
 import AvatarInput from "@components/UI/AvatarInput.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, helpers, required, url } from "@vuelidate/validators";
+import { useUser } from "vue-clerk";
+
+const { user, isLoaded } = useUser();
+console.log(isLoaded.value);
+watch(isLoaded, (value) => {
+  console.log(value);
+  if (value && user.value) {
+    // formState.avatarUrl = ;
+    formState.email = user.value.primaryEmailAddress?.emailAddress ?? "";
+    formState.displayedName = user.value.fullName ?? "";
+  }
+});
 
 const formState = reactive({
-  avatarUrl: "src/assets/img/gregor.png",
-  displayedName: "Egor",
-  email: "e@tokarev.work",
+  avatarUrl: user.value?.imageUrl,
+  displayedName: user.value?.primaryEmailAddress?.emailAddress ?? "",
+  email: user.value?.fullName ?? "",
 });
 
 const v$ = useVuelidate(
