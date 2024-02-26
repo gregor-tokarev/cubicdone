@@ -4,10 +4,9 @@ import BaseInput from "@components/UI/BaseInput.vue";
 import { reactive, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, helpers, required, url } from "@vuelidate/validators";
-import { useUser } from "vue-clerk";
+import { useClerk, useUser } from "vue-clerk";
 
-const { user, isLoaded } = useUser();
-console.log(user.value);
+const { user } = useUser();
 
 const formState = reactive({
   avatarUrl: user.value?.imageUrl,
@@ -26,6 +25,10 @@ const v$ = useVuelidate(
   },
   formState,
 );
+
+const { user: userRes } = useClerk();
+console.log(userRes?.createEmailAddress(""));
+// console.log(buildUserProfileUrl());
 </script>
 
 <template>
@@ -36,7 +39,7 @@ const v$ = useVuelidate(
         class="flex items-center justify-between border-b border-gray-150 py-5"
       >
         <p class="text-[20px] text-gray-700">Avatar</p>
-        <AvatarInput v-model="v$.avatarUrl.$model"></AvatarInput>
+        <AvatarInput disabled v-model="v$.avatarUrl.$model"></AvatarInput>
       </div>
       <div
         class="flex items-center justify-between border-b border-gray-150 py-5"

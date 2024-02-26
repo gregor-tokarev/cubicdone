@@ -5,6 +5,7 @@ import { ref } from "vue";
 
 defineProps<{
   modelValue: string; // avatar-url
+  disabled: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -51,9 +52,11 @@ async function uploadImage(_file: File) {
   />
   <label
     :for="id"
-    class="group relative block h-[108px] w-[108px] cursor-pointer overflow-clip rounded-full bg-gray-100"
+    class="group relative block h-[108px] w-[108px] overflow-clip rounded-full bg-gray-100"
+    :class="{ 'cursor-pointer': !disabled }"
   >
     <div
+      v-if="!disabled"
       class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
     >
       <Icon name="pen" class="!h-6 !w-6 text-white"></Icon>
