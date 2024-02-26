@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useIntegrationStore } from "@store/integration.ts";
 import { computed, onMounted, ref } from "vue";
 import { Integration, IntegrationProject } from "@models/integration.model.ts";
-import Icon from "../../components/Icon.vue";
+import Icon from "@components/Icon.vue";
 import ProjectSelect from "@components/UI/ProjectSelect.vue";
 import BaseSelect from "@components/UI/BaseSelect.vue";
 import SkeletonLoader from "@components/UI/SkeletonLoader.vue";

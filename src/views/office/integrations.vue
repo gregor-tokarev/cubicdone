@@ -4,7 +4,7 @@ import IntegrationCard from "@components/cards/IntegrationCard.vue";
 import BaseModal from "@components/BaseModal.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
 import BaseButton from "@components/UI/BaseButton.vue";
-import Icon from "../../components/Icon.vue";
+import Icon from "@components/Icon.vue";
 import { useIntegrationStore } from "@store/integration.ts";
 import { Integration } from "@models/integration.model.ts";
 import useVuelidate from "@vuelidate/core";

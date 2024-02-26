@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "./Icon.vue";
+import Icon from "@components/Icon.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { InputGenericPart } from "@models/input-part.model.ts";
 import { nanoid } from "nanoid";

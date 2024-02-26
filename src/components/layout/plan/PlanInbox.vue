@@ -2,7 +2,7 @@
 import DraftCard from "@components/cards/DraftCard.vue";
 import { VueSpinner } from "vue3-spinners";
 import { VueDraggableNext } from "vue-draggable-next";
-import Icon from "../../Icon.vue";
+import Icon from "@components/Icon.vue";
 import { computed, onMounted, ref } from "vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import { useOnline } from "@vueuse/core";

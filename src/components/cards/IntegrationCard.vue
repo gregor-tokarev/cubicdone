@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "../Icon.vue";
+import Icon from "@components/Icon.vue";
 import { Integration } from "@models/integration.model.ts";
 
 const props = defineProps<{

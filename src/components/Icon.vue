@@ -6,7 +6,6 @@ const props = defineProps<{ name: string }>();
 const icon = defineAsyncComponent(
   () => import(`/src/assets/svg/${props.name}.vue`),
 );
-console.log(icon);
 </script>
 
 <template>

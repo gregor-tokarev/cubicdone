@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Project } from "@models/project.model.ts";
-import Icon from "./Icon.vue";
+import Icon from "@components/Icon.vue";
 
 defineProps<{
   project: Project;
