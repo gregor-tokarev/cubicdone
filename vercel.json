@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "master": false
+    }
+  },
   "routes": [
     {
       "src": "/((?!api)\\w)",
