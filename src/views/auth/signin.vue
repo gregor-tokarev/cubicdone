@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthButton from "@components/UI/AuthButton.vue";
 import Icon from "../../components/Icon.vue";
-import { useSignIn, useSignUp } from "vue-clerk";
+import { useSignIn } from "vue-clerk";
 import { OAuthStrategy } from "@clerk/types/dist/strategies";
 
 const { signIn } = useSignIn();

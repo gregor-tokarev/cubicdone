@@ -4,15 +4,14 @@ import BaseInput from "@components/UI/BaseInput.vue";
 import { computed, reactive, ref, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, helpers, required, url } from "@vuelidate/validators";
-import { useClerk, useUser } from "vue-clerk";
+import { useUser } from "vue-clerk";
 import { animate } from "motion";
-import BaseButton from "@components/UI/BaseButton.vue";
 import UpdateProfile from "@components/UpdateProfile.vue";
 
 const { user } = useUser();
 
 const formState = reactive({
-  avatarUrl: user.value?.imageUrl,
+  avatarUrl: user.value?.imageUrl ?? "",
   email: user.value?.primaryEmailAddress?.emailAddress ?? "",
   firstName: user.value?.firstName ?? "",
   lastName: user.value?.lastName ?? "",

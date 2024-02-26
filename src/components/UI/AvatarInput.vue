@@ -3,7 +3,7 @@ import Icon from "@components/Icon.vue";
 import { nanoid } from "nanoid";
 import { ref } from "vue";
 
-const props = defineProps<{
+defineProps<{
   modelValue: string; // avatar-url
   disabled: boolean;
 }>();
