@@ -97,16 +97,21 @@ const { signOut } = useClerk();
         @click="openPanel = !openPanel"
         class="!hover:text-white flex cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
         :class="{
-          'space-x-2 px-[1px] py-0.5 ': !compact,
+          'max-w-[85%] space-x-2 px-[1px] py-0.5': !compact,
           'w-full p-0.5': compact,
         }"
       >
         <img
           :src="user.imageUrl"
           :alt="user.fullName ?? undefined"
-          class="!h-[34px] !w-[34px] overflow-hidden rounded-full"
+          class="!h-[34px] !w-[34px] shrink-0 overflow-hidden rounded-full"
         />
-        <p v-if="!compact" class="text-gray-200">{{ user.fullName }}</p>
+        <p
+          v-if="!compact"
+          class="overflow-hidden text-ellipsis whitespace-nowrap text-gray-200"
+        >
+          {{ user.fullName }}
+        </p>
       </div>
       <Icon
         v-if="!compact"

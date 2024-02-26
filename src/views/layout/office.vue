@@ -62,7 +62,7 @@ const { isLoaded } = useUser();
   <div v-if="isLoaded" class="flex h-[100vh] items-start">
     <Sidebar class="h-full"></Sidebar>
     <div class="relative h-full grow overflow-y-auto" data-scroll-container>
-      <div class="mx-auto max-w-[980px]">
+      <div class="relative mx-auto h-full max-w-[980px]" data-office-wrapper>
         <router-view></router-view>
       </div>
     </div>

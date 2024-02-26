@@ -3,7 +3,7 @@ import Icon from "@components/Icon.vue";
 import { nanoid } from "nanoid";
 import { ref } from "vue";
 
-defineProps<{
+const props = defineProps<{
   modelValue: string; // avatar-url
   disabled: boolean;
 }>();
@@ -47,6 +47,7 @@ async function uploadImage(_file: File) {
     type="file"
     accept="image/*"
     :id="id"
+    :disabled="disabled"
     class="absolute hidden"
     @change="onInput"
   />
