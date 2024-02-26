@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
-import Icon from "./Icon.vue";
+import Icon from "@components/Icon.vue";
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
@@ -10,25 +10,25 @@ import { useClerk, useSession, useUser } from "vue-clerk";
 const navItems = ref([
   {
     title: "Plan",
-    icon: "plan",
+    icon: "sidebar/plan",
     link: "/",
     hint: "⌘ + G",
   },
   {
     title: "Inbox",
-    icon: "inbox",
+    icon: "sidebar/inbox",
     link: "/inbox",
     hint: "⌘ + I",
   },
   {
     title: "Projects",
-    icon: "folder",
+    icon: "sidebar/folder",
     link: "/projects",
     hint: "⌘ + P",
   },
   {
     title: "Integrations",
-    icon: "integrations",
+    icon: "sidebar/integrations",
     link: "/integrations",
   },
 ]);
@@ -111,7 +111,7 @@ const { signOut } = useClerk();
       <Icon
         v-if="!compact"
         v-hint="'['"
-        name="sidebar-left"
+        name="sidebar/sidebar-left"
         class="cursor-pointer text-gray-200"
         @click="compact = !compact"
       ></Icon>
