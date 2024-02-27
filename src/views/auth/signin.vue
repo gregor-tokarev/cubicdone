@@ -9,7 +9,7 @@ const { signIn } = useSignIn();
 async function onSignin(strategy: OAuthStrategy) {
   if (!signIn.value) return;
 
-  const redirectUrl = `${location.host}/inbox`;
+  const redirectUrl = `${location.origin}/inbox`;
 
   const res = await signIn.value?.create({
     strategy,
