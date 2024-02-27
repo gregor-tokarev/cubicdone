@@ -102,7 +102,7 @@ const { signOut } = useClerk();
         }"
       >
         <img
-          src="@assets/img/gregor.png"
+          :src="user.imageUrl"
           :alt="user.fullName ?? undefined"
           class="!h-[34px] !w-[34px] shrink-0 overflow-hidden rounded-full"
         />
