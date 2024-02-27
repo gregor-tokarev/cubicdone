@@ -6,13 +6,9 @@ import * as path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  assetsInclude: path.resolve(__dirname, "./src/assets"),
   plugins: [
     vue(),
     svgLoader(),
-    // viteStaticCopy({
-    //   targets: [{ src: "src/assets", dest: "assets" }],
-    // }),
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
