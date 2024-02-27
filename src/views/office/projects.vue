@@ -113,6 +113,8 @@ function onSort(field: string, direction: "desc" | "asc") {
           <Icon
             class="cursor-pointer transition-colors hover:text-black"
             name="arrow"
+            :height="6"
+            :width="10"
             @click="onSort('taskActiveCount', 'asc')"
             :class="{
               'text-black':
@@ -122,6 +124,8 @@ function onSort(field: string, direction: "desc" | "asc") {
           <Icon
             class="rotate-180 cursor-pointer transition-colors hover:text-black"
             name="arrow"
+            :height="6"
+            :width="10"
             @click="onSort('taskActiveCount', 'desc')"
             :class="{
               'text-black':
@@ -136,6 +140,8 @@ function onSort(field: string, direction: "desc" | "asc") {
           <Icon
             class="cursor-pointer transition-colors hover:text-black"
             name="arrow"
+            :height="6"
+            :width="10"
             @click="onSort('taskCompletedCount', 'asc')"
             :class="{
               'text-black':
@@ -145,6 +151,8 @@ function onSort(field: string, direction: "desc" | "asc") {
           <Icon
             class="rotate-180 cursor-pointer transition-colors hover:text-black"
             name="arrow"
+            :height="6"
+            :width="10"
             @click="onSort('taskCompletedCount', 'desc')"
             :class="{
               'text-black':
@@ -159,6 +167,8 @@ function onSort(field: string, direction: "desc" | "asc") {
           <Icon
             class="cursor-pointer transition-colors hover:text-black"
             name="arrow"
+            :height="6"
+            :width="10"
             @click="onSort('draftCount', 'asc')"
             :class="{
               'text-black':
@@ -168,6 +178,8 @@ function onSort(field: string, direction: "desc" | "asc") {
           <Icon
             class="rotate-180 cursor-pointer transition-colors hover:text-black"
             name="arrow"
+            :height="6"
+            :width="10"
             @click="onSort('draftCount', 'desc')"
             :class="{
               'text-black':

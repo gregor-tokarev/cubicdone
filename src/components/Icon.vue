@@ -1,12 +1,26 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ name: string; size: number }>(), {
-  name: "",
-  size: 16,
-});
+import { computed } from "vue";
+
+const props = withDefaults(
+  defineProps<{ name: string; size: number; height: number; width: number }>(),
+  {
+    name: "",
+    size: 16,
+    height: 16,
+    width: 16,
+  },
+);
+
+const finalHeight = computed(() => props.height ?? props.size);
+const finalWidth = computed(() => props.width ?? props.size);
 </script>
 
 <template>
-  <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
+  <svg
+    :width="finalWidth"
+    :height="finalHeight"
+    :viewBox="`0 0 ${finalWidth} ${finalHeight}`"
+  >
     <!--    <use :xlinkHref="'#' + name"></use>-->
     <use :xlink:href="'#' + name"></use>
   </svg>
