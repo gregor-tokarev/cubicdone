@@ -50,12 +50,6 @@ onMounted(() => {
 });
 
 const { isLoaded } = useUser();
-// watchEffect(() => {
-// to ensure, that it's not undefined which will mean that it's still fetching
-// if (isSignedIn.value === false) {
-//   router.replace("/auth");
-// }
-// });
 </script>
 
 <template>
