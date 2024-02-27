@@ -88,7 +88,7 @@ function onChangeDraft(event: any) {
   <div class="space-y-2.5">
     <div class="flex items-center space-x-5">
       <div class="flex items-center space-x-2 text-base text-black">
-        <Icon name="sidebar/inbox"></Icon>
+        <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
       <div

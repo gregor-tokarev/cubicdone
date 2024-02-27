@@ -116,7 +116,7 @@ const { signOut } = useClerk();
       <Icon
         v-if="!compact"
         v-hint="'['"
-        name="sidebar/sidebar-left"
+        name="sidebar-left"
         class="cursor-pointer text-gray-200"
         @click="compact = !compact"
       ></Icon>
