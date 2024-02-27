@@ -5,9 +5,9 @@ const props = withDefaults(
   defineProps<{ name: string; size: number; height: number; width: number }>(),
   {
     name: "",
-    size: undefined,
+    size: 16,
     height: undefined,
-    width: 16,
+    width: undefined,
   },
 );
 
