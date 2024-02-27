@@ -1,14 +1,12 @@
-<template>
-  <svg
-    width="10"
-    height="6"
-    viewBox="0 0 10 6"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+<svg
+  width="10"
+  height="6"
+  viewBox="0 0 10 6"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
     <path
       d="M4.99979 2.51184L2.9374 4.57426L2.34814 3.98501L4.99979 1.33334L7.65146 3.98501L7.06221 4.57426L4.99979 2.51184Z"
       fill="currentColor"
     />
   </svg>
-</template>

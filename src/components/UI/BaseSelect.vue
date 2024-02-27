@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "@components/Icon.vue";
+import Icon from "../Icon.vue";
 import { computed, onMounted, ref } from "vue";
 import { useEventListener, onClickOutside } from "@vueuse/core";
 import Fuse from "fuse.js";

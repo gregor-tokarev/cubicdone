@@ -9,9 +9,7 @@ const { signIn } = useSignIn();
 async function onSignin(strategy: OAuthStrategy) {
   if (!signIn.value) return;
 
-  const redirectUrl = import.meta.env.DEV
-    ? `${import.meta.env.VITE_BASE_DEV_URL}/inbox`
-    : `${import.meta.env.VITE_BASE_URL}/inbox`;
+  const redirectUrl = `${location.host}/inbox`;
 
   const res = await signIn.value?.create({
     strategy,

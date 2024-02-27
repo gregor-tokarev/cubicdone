@@ -2,7 +2,6 @@
 import DraftCard from "@components/cards/DraftCard.vue";
 import { VueSpinner } from "vue3-spinners";
 import { VueDraggableNext } from "vue-draggable-next";
-import Icon from "@components/Icon.vue";
 import { computed, onMounted, ref } from "vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import { useOnline } from "@vueuse/core";
@@ -88,7 +87,6 @@ function onChangeDraft(event: any) {
   <div class="space-y-2.5">
     <div class="flex items-center space-x-5">
       <div class="flex items-center space-x-2 text-base text-black">
-        <Icon name="inbox"></Icon>
         <span>Inbox</span>
       </div>
       <div

@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
 import { useProjectStore } from "@store/project.ts";
-import Icon from "@components/Icon.vue";
+import Icon from "../Icon.vue";
 import FuseResult = Fuse.FuseResult;
 
 const projectStore = useProjectStore();

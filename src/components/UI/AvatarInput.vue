@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from "@components/Icon.vue";
+import Icon from "../Icon.vue";
 import { nanoid } from "nanoid";
 import { ref } from "vue";
 

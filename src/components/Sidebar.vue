@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
-import Icon from "@components/Icon.vue";
+import Icon from "./Icon.vue";
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
