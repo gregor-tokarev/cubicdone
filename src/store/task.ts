@@ -173,17 +173,6 @@ export const useTaskStore = defineStore("task", {
         return state.tasks.filter((t) => t.projectId === projectId);
       };
     },
-    // groupByDates(state): { [date: string]: Task[] } {
-    //     const res = {}
-    //     this.tasks.forEach(t => {
-    //         if (dayjs.unix(t.dateTodo).format("DD-MM") in res) {
-    //             res[dayjs.unix(t.dateTodo).format("DD-MM")].push(t)
-    //         } else {
-    //             res[dayjs.unix(t.dateTodo).format("DD-MM")] = [t]
-    //         }
-    //     })
-    //     return res
-    // },
     getOne(state) {
       return (taskId: string): Task | undefined => {
         return state.tasks.find((t) => t.id === taskId);
