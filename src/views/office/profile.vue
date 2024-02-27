@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AvatarInput from "@components/UI/AvatarInput.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, helpers, required, url } from "@vuelidate/validators";
 import { useUser } from "vue-clerk";
@@ -29,6 +29,13 @@ const v$ = useVuelidate(
   },
   formState,
 );
+
+const root = ref<HTMLElement | null>(null);
+const containerBound = computed(() => {
+  if (!root.value) return;
+
+  return root.value.getBoundingClientRect();
+});
 
 const updateBadgeEl = ref<InstanceType<typeof UpdateProfile> | null>(null);
 const hasChanges = computed(() => {
@@ -69,7 +76,7 @@ async function onSave() {
 </script>
 
 <template>
-  <div class="pt-[90px]">
+  <div ref="root" class="pt-[90px]">
     <h1 class="text-[32px]">Account Settings</h1>
     <div class="space-y-10">
       <div
@@ -109,13 +116,20 @@ async function onSave() {
         ></BaseInput>
       </div>
     </div>
+  </div>
+  <teleport to="body">
     <UpdateProfile
+      v-if="containerBound"
       ref="updateBadgeEl"
       :loading="saving"
       @save="onSave()"
-      class="absolute bottom-0 left-0 right-0"
+      class="absolute bottom-0"
+      :style="{
+        left: `${containerBound.left}px`,
+        width: `${containerBound.width}px`,
+      }"
     ></UpdateProfile>
-  </div>
+  </teleport>
 </template>
 
 <style scoped></style>
