@@ -1,9 +1,7 @@
 {
-  "routes": [
-    {
-      "src": "/((?!api)\\w)",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/linear/*.ts": {
