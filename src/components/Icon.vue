@@ -8,7 +8,7 @@ const icon = defineAsyncComponent(
     import(
       import.meta.env.DEV
         ? `/src/assets/svg/${props.name}.vue`
-        : `/assets/svg/${props.name}.vue`
+        : `../assets/svg/${props.name}.vue`
     ),
 );
 </script>
