@@ -4,7 +4,12 @@ import { defineAsyncComponent } from "vue";
 const props = defineProps<{ name: string }>();
 
 const icon = defineAsyncComponent(
-  () => import(`/src/assets/svg/${props.name}.vue`),
+  () =>
+    import(
+      import.meta.env.DEV
+        ? `/src/assets/svg/${props.name}.vue`
+        : `/assets/svg/${props.name}.vue`
+    ),
 );
 </script>
 
