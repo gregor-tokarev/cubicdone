@@ -6,9 +6,10 @@ import * as path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  assetsInclude: "**/*.svg",
   plugins: [
     vue(),
-    svgLoader(),
+    svgLoader({ svgo: false }),
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
