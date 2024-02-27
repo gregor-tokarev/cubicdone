@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import { VitePWA } from "vite-plugin-pwa";
 import svgLoader from "vite-svg-loader";
 import * as path from "path";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -14,11 +13,11 @@ export default defineConfig({
       targets: [{ src: "./src/assets", dest: "." }],
     }),
     svgLoader({ svgo: false }),
-    VitePWA({
-      registerType: "autoUpdate",
-      injectRegister: "auto",
-      workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
-    }),
+    // VitePWA({
+    //   registerType: "autoUpdate",
+    //   injectRegister: "auto",
+    //   workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
+    // }),
   ],
   resolve: {
     alias: [

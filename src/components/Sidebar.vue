@@ -10,25 +10,25 @@ import { useClerk, useSession, useUser } from "vue-clerk";
 const navItems = ref([
   {
     title: "Plan",
-    icon: "sidebar/plan",
+    icon: "plan",
     link: "/",
     hint: "⌘ + G",
   },
   {
     title: "Inbox",
-    icon: "sidebar/inbox",
+    icon: "inbox",
     link: "/inbox",
     hint: "⌘ + I",
   },
   {
     title: "Projects",
-    icon: "sidebar/folder",
+    icon: "folder",
     link: "/projects",
     hint: "⌘ + P",
   },
   {
     title: "Integrations",
-    icon: "sidebar/integrations",
+    icon: "integrations",
     link: "/integrations",
   },
 ]);
@@ -110,7 +110,7 @@ const { signOut } = useClerk();
           v-if="!compact"
           class="overflow-hidden text-ellipsis whitespace-nowrap text-gray-200"
         >
-          {{ user.fullName }}
+          {{ user?.fullName }}
         </p>
       </div>
       <Icon
