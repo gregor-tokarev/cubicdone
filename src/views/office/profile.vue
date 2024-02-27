@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AvatarInput from "@components/UI/AvatarInput.vue";
 import BaseInput from "@components/UI/BaseInput.vue";
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, helpers, required, url } from "@vuelidate/validators";
 import { useUser } from "vue-clerk";
