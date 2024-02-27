@@ -9,6 +9,7 @@ import { draftsFromIntegration } from "@utils/draftsFromIntegration.ts";
 import { useIntegrationStore } from "@store/integration.ts";
 import { useTaskStore } from "@store/task.ts";
 import { Draft } from "@models/draft.model.ts";
+import Icon from "@components/Icon.vue";
 
 const props = defineProps<{
   integrationDrafts: Draft[];
@@ -87,6 +88,7 @@ function onChangeDraft(event: any) {
   <div class="space-y-2.5">
     <div class="flex items-center space-x-5">
       <div class="flex items-center space-x-2 text-base text-black">
+        <Icon name="sidebar/inbox"></Icon>
         <span>Inbox</span>
       </div>
       <div
