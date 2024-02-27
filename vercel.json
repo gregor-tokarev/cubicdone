@@ -6,7 +6,7 @@
   "functions": {
     "api/linear/*.ts": {
       "memory": 1024,
-      "maxDuration": 2
+      "maxDuration": 4
     }
   }
 }
