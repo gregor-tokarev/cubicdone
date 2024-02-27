@@ -44,6 +44,7 @@
     "typescript": "^5.0.2",
     "vite": "5.0.12",
     "vite-plugin-static-copy": "^1.0.1",
+    "vite-plugin-svg-spriter": "^1.0.0",
     "vite-svg-loader": "^5.1.0",
     "vue-tsc": "^1.8.5"
   },

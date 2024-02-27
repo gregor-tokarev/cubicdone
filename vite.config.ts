@@ -1,16 +1,17 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import * as path from "path";
-import svgLoader from "vite-svg-loader";
-import { viteStaticCopy } from "vite-plugin-static-copy";
+import createSVGSpritePlugin from "vite-plugin-svg-spriter";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    svgLoader({ svgo: false }),
-    viteStaticCopy({
-      targets: [{ src: "./src/assets", dest: "." }],
+    createSVGSpritePlugin({
+      svgFolder: "./src/assets/svg",
+      transformIndexHtmlTag: {
+        injectTo: "body",
+      },
     }),
     // VitePWA({
     //   registerType: "autoUpdate",

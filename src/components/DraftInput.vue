@@ -429,7 +429,7 @@ defineExpose({
   <div class="relative" ref="root">
     <!--    Input box-->
     <div class="flex items-center rounded-lg bg-gray-100 px-2.5 py-1">
-      <Icon name="plus" class="mr-1.5 text-gray-600"></Icon>
+      <Icon name="plus" :size="24" class="mr-1.5 text-gray-600"></Icon>
       <div
         class="flex grow items-center space-x-1"
         @keydown="onUpdate($event)"

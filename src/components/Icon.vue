@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
-
-const props = defineProps<{ name: string }>();
-
-const icons = import.meta.glob("../assets/svg/**");
-console.log(icons);
-const iconPath = Object.keys(icons).find((key) => key.includes(props.name));
-console.log(iconPath);
-
-const icon = defineAsyncComponent(() => import(iconPath ?? ""));
+withDefaults(defineProps<{ name: string; size: number }>(), {
+  name: "",
+  size: 16,
+});
 </script>
 
 <template>
-  <component :is="icon"></component>
+  <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
+    <!--    <use :xlinkHref="'#' + name"></use>-->
+    <use :xlink:href="'#' + name"></use>
+  </svg>
   <!--  <svg-icon :path="`/src/assets/svg/${name}.svg`"></svg-icon>-->
 </template>
