@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import * as path from "path";
 import createSVGSpritePlugin from "vite-plugin-svg-spriter";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,11 +14,11 @@ export default defineConfig({
         injectTo: "body",
       },
     }),
-    // VitePWA({
-    //   registerType: "autoUpdate",
-    //   injectRegister: "auto",
-    //   workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
-    // }),
+    VitePWA({
+      registerType: "autoUpdate",
+      injectRegister: "auto",
+      workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
+    }),
   ],
   resolve: {
     alias: [
