@@ -4,12 +4,9 @@ import App from "./App.vue";
 import { router } from "./router";
 import { createPinia } from "pinia";
 import { hint } from "./directives/hint.ts";
-import { inject } from "@vercel/analytics";
 import { clerkPlugin } from "vue-clerk/plugin";
 
 const pinia = createPinia();
-
-inject();
 
 createApp(App)
   .directive("hint", hint)
