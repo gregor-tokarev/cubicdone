@@ -13,6 +13,15 @@ watch(isLoaded, () => {
     router.replace("/auth");
   }
 });
+
+router.onError((error, to) => {
+  if (
+    error.message.includes("Failed to fetch dynamically imported module") ||
+    error.message.includes("Importing a module script failed")
+  ) {
+    location.href = to.fullPath;
+  }
+});
 </script>
 
 <template>
