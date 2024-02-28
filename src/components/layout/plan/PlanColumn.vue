@@ -33,7 +33,7 @@ async function onUpdateStatus(id: string, status: Task["status"]) {
       {{ dayjs(date).format("DD MMM") }}
     </div>
     <VueDraggableNext
-      class="grow space-y-2.5 overflow-y-auto"
+      class="grow space-y-2.5 overflow-y-auto overflow-x-hidden"
       @change="emit('move', [date, $event])"
       :list="taskStore.getByDate(date.toString())"
       :group="{ name: 'tasks' }"
