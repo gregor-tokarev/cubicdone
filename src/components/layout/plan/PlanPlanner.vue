@@ -150,7 +150,7 @@ function onIndexArrows(direction: "incr" | "decr") {
   columnsRoot.value.scrollToItem(
     direction === "incr"
       ? columnsRoot.value.$_startIndex + 2
-      : columnsRoot.value.$_startIndex - 2,
+      : columnsRoot.value.$_startIndex,
   );
 }
 </script>
