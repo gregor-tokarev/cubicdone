@@ -139,7 +139,6 @@ function onMove([date, evt]: [Dayjs, any]) {
 
 function onToday() {
   if (!columnsRoot.value) return;
-  console.log(columnsRoot.value);
 
   columnsRoot.value.scrollToItem(todayIndex.value);
 }
