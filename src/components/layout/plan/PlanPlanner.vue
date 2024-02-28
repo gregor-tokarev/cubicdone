@@ -3,12 +3,13 @@ import dayjs, { Dayjs } from "dayjs";
 import { useTaskStore } from "@store/task.ts";
 import { Task } from "@models/task.model.ts";
 import { Draft } from "@models/draft.model.ts";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import PlanColumn from "@components/layout/plan/PlanColumn.vue";
 
 // @ts-ignore
 import { RecycleScroller } from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import hotkeys from "hotkeys-js";
 
 const props = defineProps<{
   integrationDrafts: Draft[];
@@ -26,11 +27,11 @@ for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
 }
 const dayColumns = ref<Dayjs[]>(initialDayColumns);
 
-// const todayIndex = computed(() => {
-//   return dayColumns.value.findIndex((date) => {
-//     return dayjs().isSame(date, "day");
-//   });
-// });
+const todayIndex = computed(() => {
+  return dayColumns.value.findIndex((date) => {
+    return dayjs().isSame(date, "day");
+  });
+});
 // End of initial Day colum generation
 
 const columnComponents = ref<InstanceType<typeof PlanColumn>[]>([]);
@@ -78,6 +79,19 @@ onMounted(async () => {
   setTimeout(() => {
     columnsRoot.value?.scrollToItem(INITIAL_COLUMNS_COUNT / 2);
   });
+
+  hotkeys(".", () => {
+    onIndexArrows("incr");
+  });
+
+  hotkeys(",", () => {
+    onIndexArrows("decr");
+  });
+});
+
+onUnmounted(() => {
+  hotkeys.unbind(",");
+  hotkeys.unbind(".");
 });
 
 function onMove([date, evt]: [Dayjs, any]) {
@@ -122,26 +136,66 @@ function onMove([date, evt]: [Dayjs, any]) {
     taskStore.changeOrder(item.id, oldIdx, newIdx);
   }
 }
+
+function onToday() {
+  if (!columnsRoot.value) return;
+  console.log(columnsRoot.value);
+
+  columnsRoot.value.scrollToItem(todayIndex.value);
+}
+
+function onIndexArrows(direction: "incr" | "decr") {
+  if (!columnsRoot.value) return;
+
+  columnsRoot.value.scrollToItem(
+    direction === "incr"
+      ? columnsRoot.value.$_startIndex + 2
+      : columnsRoot.value.$_startIndex - 2,
+  );
+}
 </script>
 
 <template>
-  <RecycleScroller
-    ref="columnsRoot"
-    :items="dayColumns"
-    :item-size="320"
-    key-field="$d"
-    direction="horizontal"
-    emit-update
-    @scroll="onScroll"
-    v-slot="{ item }"
-  >
-    <PlanColumn
-      ref="columnComponents"
-      :date="item"
-      @move="onMove"
-      class="h-full w-[310px] pr-2.5"
-    ></PlanColumn>
-  </RecycleScroller>
+  <div class="space-y-3">
+    <div class="flex space-x-1.5">
+      <div
+        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
+        @click="onIndexArrows('decr')"
+      >
+        <
+      </div>
+      <div
+        @click="onToday()"
+        class="flex h-6 cursor-pointer items-center rounded bg-gray-100 px-2.5 text-[12px]"
+      >
+        Today
+      </div>
+      <div
+        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
+        @click="onIndexArrows('incr')"
+      >
+        >
+      </div>
+    </div>
+    <RecycleScroller
+      class="h-full"
+      ref="columnsRoot"
+      :items="dayColumns"
+      :item-size="320"
+      key-field="$d"
+      direction="horizontal"
+      emit-update
+      @scroll="onScroll"
+      v-slot="{ item }"
+    >
+      <PlanColumn
+        ref="columnComponents"
+        :date="item"
+        @move="onMove"
+        class="h-full w-[310px] pr-2.5"
+      ></PlanColumn>
+    </RecycleScroller>
+  </div>
 </template>
 
 <style scoped></style>

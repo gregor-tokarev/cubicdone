@@ -8,7 +8,7 @@ const integrationDrafts = ref<Draft[]>([]);
 </script>
 
 <template>
-  <div class="flex h-[100vh] flex-col py-8">
+  <div class="flex h-[100vh] flex-col space-y-4 py-8">
     <!--  Inbox section-->
     <PlanInbox v-model:integration-drafts="integrationDrafts"></PlanInbox>
     <!--    Date columns-->
