@@ -160,6 +160,7 @@ function onIndexArrows(direction: "incr" | "decr") {
       <div
         class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
         @click="onIndexArrows('decr')"
+        v-hint="','"
       >
         <
       </div>
@@ -172,6 +173,7 @@ function onIndexArrows(direction: "incr" | "decr") {
       <div
         class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
         @click="onIndexArrows('incr')"
+        v-hint="'.'"
       >
         >
       </div>
