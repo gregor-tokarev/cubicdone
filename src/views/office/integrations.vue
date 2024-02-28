@@ -67,7 +67,7 @@ async function onSubmit() {
   loading.value = true;
   showError.value = false;
   try {
-    const res = await openIntegration.value.checkToken(v$.value.key);
+    const res = await openIntegration.value.checkToken(v$.value.key.$model);
 
     if (!res) {
       showError.value = true;
