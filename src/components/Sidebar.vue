@@ -122,7 +122,7 @@ const { signOut } = useClerk();
       ></Icon>
       <div
         ref="panelEl"
-        class="absolute bottom-0 left-0 right-0 translate-y-[calc(100%+4px)] space-y-2 rounded-md border border-gray-900 bg-gradient-to-r from-[#1A1A1A] to-[#141414] px-2 py-1.5"
+        class="absolute bottom-0 left-0 w-[200px] translate-y-[calc(100%+4px)] space-y-2 rounded-md border border-gray-900 bg-gradient-to-r from-[#1A1A1A] to-[#141414] px-2 py-1.5"
         v-if="openPanel"
       >
         <button
