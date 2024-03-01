@@ -4,8 +4,9 @@ import TaskCard from "@components/cards/TaskCard.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { useTaskStore } from "@store/task.ts";
 import { Task } from "@models/task.model.ts";
+import { computed } from "vue";
 
-defineProps<{
+const props = defineProps<{
   date: Dayjs;
 }>();
 
@@ -18,6 +19,22 @@ const taskStore = useTaskStore();
 async function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });
 }
+
+const dateDescription = computed(() => {
+  if (dayjs().isSame(props.date, "d")) return "Today";
+  else if (dayjs().add(1, "d").isSame(props.date, "d")) return "Tomorrow";
+  else if (dayjs().add(-1, "d").isSame(props.date, "d")) return "Yesterday";
+  else
+    return [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][props.date.day()];
+});
 </script>
 
 <template>
@@ -27,10 +44,8 @@ async function onUpdateStatus(id: string, status: Task["status"]) {
     :data-date="date"
   >
     <div class="mb-5 text-base text-black">
-      <!--          TODO: make it align with dates later-->
-      <!--          <template v-if="idx === 0">Today,</template>-->
-      <!--          <template v-else-if="idx === 1">Tomorrow,</template>-->
       {{ dayjs(date).format("DD MMM") }}
+      <template v-if="dateDescription">, {{ dateDescription }}</template>
     </div>
     <VueDraggableNext
       class="grow space-y-2.5 overflow-y-auto overflow-x-hidden"
