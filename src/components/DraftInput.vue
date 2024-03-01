@@ -57,6 +57,8 @@ watch(currentPartIdx, (newValue) => {
 function onUpdate(event: Event) {
   const evt = event as KeyboardEvent;
 
+  evt.stopPropagation();
+
   const target = evt.target as HTMLElement;
   if (!target) return;
 
