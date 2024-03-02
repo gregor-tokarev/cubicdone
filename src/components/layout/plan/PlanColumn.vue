@@ -44,8 +44,8 @@ const dateDescription = computed(() => {
     :data-date="date"
   >
     <div class="mb-5 text-base text-black">
-      {{ dayjs(date).format("DD MMM") }}
-      <template v-if="dateDescription">, {{ dateDescription }}</template>
+      {{ dayjs(date).format("DD MMM")
+      }}<template v-if="dateDescription">, {{ dateDescription }}</template>
     </div>
     <VueDraggableNext
       class="grow space-y-2.5 overflow-y-auto overflow-x-hidden"
