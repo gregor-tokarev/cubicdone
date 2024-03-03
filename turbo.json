@@ -9,5 +9,9 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalDependencies": [
+    ".env.local",
+    "tsconfig.json"
+  ]
 }
