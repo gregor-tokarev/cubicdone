@@ -1,2 +1,2 @@
-export * from "./int";
+export * from "./integer";
 export * from "./string";

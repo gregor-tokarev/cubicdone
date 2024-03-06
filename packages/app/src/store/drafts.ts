@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core";
-import { Draft } from "@models/draft.model.ts";
+import { Draft, draftTable } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
+import { idbContextManager } from "../main.ts";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({
-    drafts: useLocalStorage<Draft[]>("drafts", []),
+    drafts: [] as Draft[],
   }),
   actions: {
     // revertFromTask(taskId: string) {
@@ -26,6 +26,9 @@ export const useDraftsStore = defineStore("drafts", {
     //
     //     taskStore.remove(taskId)
     // },
+    async loadDrafts() {
+      this.drafts = await idbContextManager.getItems(draftTable);
+    },
     create(title: string, projectId: string | null): Draft {
       const draft: Draft = {
         id: nanoid(3),
@@ -36,6 +39,7 @@ export const useDraftsStore = defineStore("drafts", {
         title,
       };
 
+      idbContextManager.putItem(draftTable, draft);
       this.drafts.push(draft);
 
       return draft;
@@ -46,8 +50,12 @@ export const useDraftsStore = defineStore("drafts", {
 
       draft.title = title;
       draft.dateUpdated = dayjs().toISOString();
+
+      idbContextManager.putItem(draftTable, draft);
     },
     remove(id: string | string[]): void {
+      idbContextManager.deleteItem(draftTable, id);
+
       if (typeof id === "string") {
         const draftIdx = this.drafts.findIndex((d) => d.id === id);
         this.descOrders(id);
@@ -71,6 +79,7 @@ export const useDraftsStore = defineStore("drafts", {
       this.drafts
         .filter((d) => d.order >= draft.order && d.id !== draftId)
         .forEach((d) => {
+          idbContextManager.putItem(draftTable, { ...d, order: d.order - 1 });
           d.order--;
         });
     },
@@ -87,16 +96,23 @@ export const useDraftsStore = defineStore("drafts", {
           (t) => t.order >= newIdx && t.order < oldIdx && t.id !== draftId,
         );
 
-        targetDrafts.forEach((t) => t.order++);
+        targetDrafts.forEach((t) => {
+          idbContextManager.putItem(draftTable, { ...t, order: t.order + 1 });
+          t.order++;
+        });
       } else if (oldIdx < newIdx) {
         const targetDrafts = this.drafts.filter(
           (t) => t.order <= newIdx && t.order > oldIdx && t.id !== draftId,
         );
 
-        targetDrafts.forEach((t) => t.order--);
+        targetDrafts.forEach((t) => {
+          idbContextManager.putItem(draftTable, { ...t, order: t.order - 1 });
+          t.order--;
+        });
       }
 
       draft.order = newIdx;
+      idbContextManager.putItem(draftTable, { ...draft, order: newIdx });
 
       return draft;
     },
@@ -106,6 +122,7 @@ export const useDraftsStore = defineStore("drafts", {
           .filter((d) => draftId.includes(d.id))
           .forEach((d) => {
             d.projectId = projectId;
+            idbContextManager.putItem(draftTable, { ...d, projectId });
           });
 
         return;
@@ -114,6 +131,7 @@ export const useDraftsStore = defineStore("drafts", {
       if (!draft) return;
 
       draft.projectId = projectId;
+      idbContextManager.putItem(draftTable, { ...draft, projectId });
     },
   },
   getters: {

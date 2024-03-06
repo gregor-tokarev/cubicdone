@@ -132,6 +132,13 @@ export async function connect<
         };
   }
 
+  async function getItems<
+    TColumn,
+    TDataSchema extends Record<string, ColumnBase<TColumn>>,
+  >(table: Table<TColumn, TDataSchema>) {
+    return DB.getAll(table.name);
+  }
+
   function putItem<
     TColumn,
     TDataSchema extends Record<string, ColumnBase<TColumn>>,
@@ -150,7 +157,8 @@ export async function connect<
       await createSync(action, table);
 
       const syncEvent = await mergeSyncEntries(defaultedObj["id"]);
-      onSyncCallback(syncEvent, resolveSyncs(defaultedObj["id"]));
+      onSyncCallback &&
+        onSyncCallback(syncEvent, resolveSyncs(defaultedObj["id"]));
     })();
 
     return object;
@@ -159,22 +167,29 @@ export async function connect<
   function deleteItem<
     TColumn extends StoreKey<unknown, any> | IDBKeyRange,
     TDataSchema extends Record<string, ColumnBase<TColumn>>,
-  >(table: Table<TColumn, TDataSchema>, key: string | number) {
+  >(
+    table: Table<TColumn, TDataSchema>,
+    key: string | number | string[] | number[],
+  ) {
     (async () => {
-      const exist = await DB.get(table.name, key);
-      if (!exist) return;
+      const iterable = Array.isArray(key) ? key : [key];
 
-      await DB.delete(table.name, key);
+      for await (const k of iterable) {
+        const exist = await DB.get(table.name, k);
+        if (!exist) return;
 
-      const deleteAction = new DeleteSyncAction(key);
-      await createSync(deleteAction, table);
+        await DB.delete(table.name, k);
 
-      const syncEvent = await mergeSyncEntries(key);
-      onSyncCallback(syncEvent, resolveSyncs(key));
+        const deleteAction = new DeleteSyncAction(k);
+        await createSync(deleteAction, table);
+
+        const syncEvent = await mergeSyncEntries(k);
+        onSyncCallback && onSyncCallback(syncEvent, resolveSyncs(k));
+      }
     })();
   }
 
-  return { db: DB, putItem, deleteItem, onSync };
+  return { db: DB, putItem, getItems, deleteItem, onSync };
 }
 
 function mapObjectToTable<
@@ -188,8 +203,12 @@ function mapObjectToTable<
     const column = Object.values(table.dataSchema).find(
       (c) => c.config.name === objKey,
     );
-    obj[objKey] =
-      object[objKey] ?? column.config.default ?? column.config.defaultFn();
+
+    const defaultValue =
+      column.config.default ?? column.config.defaultFn
+        ? column.config.defaultFn()
+        : null;
+    obj[objKey] = object[objKey] ?? defaultValue;
   }
 
   return obj;

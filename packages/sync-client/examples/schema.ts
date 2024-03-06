@@ -1,8 +1,8 @@
 import { defineSchema } from "../src";
-import { int } from "../src/columns/int";
-import { string } from "../src/columns/string";
+import { integer } from "../src";
+import { string } from "../src";
 
 const tasks = defineSchema("tasks", {
-  id: int("id").default(2234).primaryKey(),
+  id: integer("id").default(2234).primaryKey(),
   title: string("title").index(),
 });

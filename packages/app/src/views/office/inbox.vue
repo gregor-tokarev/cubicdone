@@ -20,7 +20,9 @@ const prompt = ref<InputGenericPart[]>([
   { type: "text", content: "", id: nanoid(3) },
 ]);
 
-onMounted(() => {
+onMounted(async () => {
+  await draftStore.loadDrafts();
+
   hotkeys("cmd+backspace", () => {
     removeDraft();
   });

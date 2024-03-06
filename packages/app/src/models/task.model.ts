@@ -1,3 +1,6 @@
+import { defineSchema, integer, string } from "sync-client";
+import { createdAt } from "sync-client/src/columns/createdAt.ts";
+
 export type Task = {
   id: string;
   draftId: string;
@@ -18,3 +21,17 @@ export type Task = {
     iconURL: string;
   };
 };
+
+export const taskTable = defineSchema("task", {
+  id: string("id").primaryKey(),
+  draftId: string("draftId"),
+  title: string("title"),
+  status: string<"todo" | "done">("status"),
+  order: integer("order"),
+  dateCreated: createdAt("dateCreated"),
+  dateUpdated: string("dateUpdated"),
+  dateCommitted: string("dateCommitted"),
+  dateCompleted: string("dateCompleted"),
+  dateTodo: string("dateTodo"),
+  projectId: string("projectId"),
+});
