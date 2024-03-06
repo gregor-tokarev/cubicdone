@@ -4,7 +4,7 @@
     "build": {
       "outputs": ["dist/**"]
     },
-    "dev": {
+    "dev-all": {
       "cache": false,
       "persistent": true
     }

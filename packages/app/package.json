@@ -6,8 +6,8 @@
   "scripts": {
     "build": "vite build",
     "type-check": "vue-tsc",
+    "dev-all": "vercel dev",
     "dev": "vite",
-    "dev:all": "vercel dev",
     "preview": "vite preview"
   },
   "repository": {

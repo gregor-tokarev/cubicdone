@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 import { Integration } from "@models/integration.model.ts";
-import { useLocalStorage } from "@vueuse/core";
 import { LinearIntegration } from "../integrations/linear.integration.ts";
 import { nanoid } from "nanoid";
-import { ApiKey } from "@models/api-key.model.ts";
+import { ApiKey, apiKeyTable } from "@models/api-key.model.ts";
+import { idbContextManager } from "../main.ts";
 
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
     integrations: [new LinearIntegration("lin_1")] satisfies Integration[],
-    apiKeys: useLocalStorage<Record<string, ApiKey[]>>("apiKeys", {}),
+    apiKeys: {} as Record<string, ApiKey[]>,
   }),
 
   actions: {
@@ -25,6 +25,8 @@ export const useIntegrationStore = defineStore("integrations", {
         ...apiKey,
       } satisfies ApiKey;
 
+      idbContextManager.putItem(apiKeyTable, key);
+
       int.apiKeys.push(key);
       this.apiKeys[integrationId] = int.apiKeys;
     },
@@ -36,6 +38,8 @@ export const useIntegrationStore = defineStore("integrations", {
       if (!int) return;
 
       const keyIdx = int.apiKeys.findIndex((key) => key.id === apiKeyId);
+
+      idbContextManager.deleteItem(apiKeyTable, apiKeyId);
 
       int.apiKeys.splice(keyIdx, 1);
       this.apiKeys[integrationId] = int.apiKeys;
