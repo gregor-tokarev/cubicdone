@@ -24,7 +24,9 @@ const openIntegration = computed<Integration | undefined>(() => {
   );
 });
 
-onMounted(() => {
+onMounted(async () => {
+  await integrationStore.loadKeys();
+
   hotkeys("esc", onCancelModel);
 });
 

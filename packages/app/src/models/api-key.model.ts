@@ -4,10 +4,12 @@ export interface ApiKey {
   id: string;
   label: string;
   key: string;
+  integrationId: string;
 }
 
 export const apiKeyTable = defineSchema("apikeys", {
   id: string("id").primaryKey(),
-  label: string("label").default(""),
+  label: string("label"),
   key: string("key"),
+  integrationId: string("integrationId"),
 });

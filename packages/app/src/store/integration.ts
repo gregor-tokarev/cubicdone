@@ -8,10 +8,13 @@ import { idbContextManager } from "../main.ts";
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
     integrations: [new LinearIntegration("lin_1")] satisfies Integration[],
-    apiKeys: {} as Record<string, ApiKey[]>,
+    apiKeys: [] as ApiKey[],
   }),
 
   actions: {
+    async loadKeys() {
+      this.apiKeys = await idbContextManager.getItems(apiKeyTable);
+    },
     connect(
       integrationId: string,
       apiKey: { label: string; key: string },
@@ -23,12 +26,13 @@ export const useIntegrationStore = defineStore("integrations", {
       const key = {
         id: keyId,
         ...apiKey,
+        integrationId: integrationId,
       } satisfies ApiKey;
 
       idbContextManager.putItem(apiKeyTable, key);
 
       int.apiKeys.push(key);
-      this.apiKeys[integrationId] = int.apiKeys;
+      this.apiKeys.push(key);
     },
     disconnect(
       integrationId: string,
@@ -42,13 +46,15 @@ export const useIntegrationStore = defineStore("integrations", {
       idbContextManager.deleteItem(apiKeyTable, apiKeyId);
 
       int.apiKeys.splice(keyIdx, 1);
-      this.apiKeys[integrationId] = int.apiKeys;
+
+      const inx2 = this.apiKeys.findIndex((key) => key.id === apiKeyId);
+      this.apiKeys.splice(inx2, 1);
     },
   },
   getters: {
     mappedIntegrations(state): Integration[] {
       return state.integrations.map((i: Integration) => {
-        i.apiKeys = state.apiKeys[i.id] ?? [];
+        i.apiKeys = state.apiKeys.filter((key) => key.integrationId === i.id);
         return i;
       });
     },

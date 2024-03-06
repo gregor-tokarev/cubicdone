@@ -6,8 +6,11 @@ import PlanPlanner from "@components/layout/plan/PlanPlanner.vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import { useTaskStore } from "@store/task.ts";
 import { useProjectStore } from "@store/project.ts";
+import { useIntegrationStore } from "@store/integration.ts";
 
 const integrationDrafts = ref<Draft[]>([]);
+
+const integrationStore = useIntegrationStore();
 const draftStore = useDraftsStore();
 const taskStore = useTaskStore();
 const projectStore = useProjectStore();
@@ -17,6 +20,7 @@ onMounted(async () => {
     draftStore.loadDrafts(),
     taskStore.loadTasks(),
     projectStore.loadProjects(),
+    integrationStore.loadKeys(),
   ]);
 });
 </script>
