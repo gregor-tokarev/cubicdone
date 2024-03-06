@@ -1,6 +1,10 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
-import { Project, ProjectStatistic } from "@models/project.model.ts";
+import {
+  Project,
+  ProjectStatistic,
+  projectTable,
+} from "@models/project.model.ts";
 import { randomInt } from "@utils/random.ts";
 import { nanoid } from "nanoid";
 import Fuse from "fuse.js";
@@ -8,12 +12,13 @@ import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
 import { useTaskStore } from "./task.ts";
+import { idbContextManager } from "../main.ts";
 
 dayjs.extend(minMax);
 
 export const useProjectStore = defineStore("project", {
   state: () => ({
-    projects: useLocalStorage<Project[]>("projects", []),
+    projects: [] as Project[],
     colors: [
       "red",
       "orange",
@@ -35,6 +40,9 @@ export const useProjectStore = defineStore("project", {
     ],
   }),
   actions: {
+    async loadProjects() {
+      this.projects = await idbContextManager.getItems(projectTable);
+    },
     create(title: string): Project {
       const proj: Project = {
         id: nanoid(4),
@@ -43,8 +51,12 @@ export const useProjectStore = defineStore("project", {
         order: 0,
       };
 
-      this.projects.forEach((p) => p.order++);
+      this.projects.forEach((p) => {
+        idbContextManager.putItem(projectTable, { ...p, order: p.order + 1 });
+        p.order++;
+      });
 
+      idbContextManager.putItem(projectTable, proj);
       this.projects.push(proj);
 
       return proj;
@@ -52,6 +64,8 @@ export const useProjectStore = defineStore("project", {
     edit(id: string, project: Partial<Project>): Project {
       const pIdx = this.projects.findIndex((p) => p.id === id);
       this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
+
+      idbContextManager.putItem(projectTable, this.projects[pIdx]);
 
       return this.projects[pIdx];
     },

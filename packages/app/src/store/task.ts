@@ -1,17 +1,20 @@
 import { defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core";
-import { Task } from "@models/task.model.ts";
+import { Task, taskTable } from "@models/task.model.ts";
 import { useDraftsStore } from "./drafts.ts";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import { Draft } from "@models/draft.model.ts";
 import { IntegrationTask } from "@models/integration.model.ts";
+import { idbContextManager } from "../main.ts";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
-    tasks: useLocalStorage<Task[]>("tasks", []),
+    tasks: [] as Task[],
   }),
   actions: {
+    async loadTasks() {
+      this.tasks = (await idbContextManager.getItems(taskTable)) as Task[];
+    },
     commitDraft(
       draftId: string,
       dateTodo: string,
@@ -36,6 +39,8 @@ export const useTaskStore = defineStore("task", {
         projectId: draft.projectId,
       };
 
+      idbContextManager.putItem(taskTable, task);
+
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
 
@@ -57,6 +62,8 @@ export const useTaskStore = defineStore("task", {
         external: JSON.parse(JSON.stringify(draft.external)),
       };
 
+      idbContextManager.putItem(taskTable, task);
+
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
 
@@ -70,7 +77,10 @@ export const useTaskStore = defineStore("task", {
 
       this.getByDate(date)
         .filter((t) => t.order >= order && t.id !== taskId)
-        .forEach((t) => t.order++);
+        .forEach((t) => {
+          idbContextManager.putItem(taskTable, { ...t, order: t.order + 1 });
+          t.order++;
+        });
 
       return task;
     },
@@ -88,15 +98,22 @@ export const useTaskStore = defineStore("task", {
         const targetTasks = dateTasks.filter(
           (t) => t.order >= newIdx && t.order < oldIdx && t.id !== taskId,
         );
-        targetTasks.forEach((t) => t.order++);
+        targetTasks.forEach((t) => {
+          idbContextManager.putItem(taskTable, { ...t, order: t.order + 1 });
+          t.order++;
+        });
       } else if (oldIdx < newIdx) {
         const targetTasks = dateTasks.filter(
           (t) => t.order <= newIdx && t.order > oldIdx && t.id !== taskId,
         );
-        targetTasks.forEach((t) => t.order--);
+        targetTasks.forEach((t) => {
+          idbContextManager.putItem(taskTable, { ...t, order: t.order - 1 });
+          t.order--;
+        });
       }
 
       task.order = newIdx;
+      idbContextManager.putItem(taskTable, task);
 
       return task;
     },
@@ -112,7 +129,10 @@ export const useTaskStore = defineStore("task", {
       );
       oldDateTasks
         .filter((t) => t.order > this.tasks[taskIdx].order)
-        .forEach((t) => t.order--);
+        .forEach((t) => {
+          idbContextManager.putItem(taskTable, { ...t, order: t.order - 1 });
+          t.order--;
+        });
 
       this.tasks[taskIdx].dateTodo = newDate;
       this.setOrder(taskId, newDate, newIdx);
@@ -122,6 +142,8 @@ export const useTaskStore = defineStore("task", {
     update(taskId: string, newTask: Partial<Task>): void {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1, { ...this.tasks[taskIdx], ...newTask });
+
+      idbContextManager.putItem(taskTable, this.tasks[taskIdx]);
     },
     updateFromIntegrations(draft: IntegrationTask[]): void {
       draft.forEach((d) => {
@@ -148,10 +170,13 @@ export const useTaskStore = defineStore("task", {
           },
         };
 
+        idbContextManager.putItem(taskTable, task);
         this.tasks.splice(taskIdx, 1, task);
       });
     },
     remove(taskId: string): void {
+      idbContextManager.deleteItem(taskTable, taskId);
+
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1);
     },

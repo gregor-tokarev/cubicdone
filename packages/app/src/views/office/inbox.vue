@@ -13,15 +13,17 @@ import { useProjectModalStore } from "@store/project-modal.ts";
 import InboxCommand from "@components/InboxCommand.vue";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
 import { animate } from "motion";
+import { useProjectStore } from "@store/project.ts";
 
 const draftStore = useDraftsStore();
+const projectStore = useProjectStore();
 
 const prompt = ref<InputGenericPart[]>([
   { type: "text", content: "", id: nanoid(3) },
 ]);
 
 onMounted(async () => {
-  await draftStore.loadDrafts();
+  await Promise.all([draftStore.loadDrafts(), projectStore.loadProjects()]);
 
   hotkeys("cmd+backspace", () => {
     removeDraft();
