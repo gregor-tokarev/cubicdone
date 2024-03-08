@@ -1,15 +1,23 @@
 {
+  "name": "backend",
   "main": "src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
+    "@clerk/backend": "^0.30.3",
+    "@hono/clerk-auth": "^1.0.1",
     "@hono/node-server": "^1.8.2",
-    "hono": "^4.0.9"
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.30.0",
+    "hono": "^4.0.10",
+    "postgres": "^3.4.3"
   },
   "private": true,
   "devDependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/node": "^20.11.17",
+    "drizzle-kit": "^0.20.14",
     "tsx": "^3.12.2"
   }
 }
