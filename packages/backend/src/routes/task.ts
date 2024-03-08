@@ -6,37 +6,10 @@ import { eq } from "drizzle-orm";
 const tasks = new Hono();
 
 tasks.post("", async (c) => {
-  const {
-    id,
-    draftId,
-    title,
-    status,
-    order,
-    dateCreated,
-    dateUpdated,
-    dateCommitted,
-    dateCompleted,
-    dateTodo,
-    projectId,
-  } = await c.req.json();
+  const body = await c.req.json();
 
   try {
-    const result = await db
-      .insert(taskTable)
-      .values({
-        id,
-        draftId,
-        title,
-        status,
-        order,
-        dateCreated,
-        dateUpdated,
-        dateCommitted,
-        dateCompleted,
-        dateTodo,
-        projectId,
-      })
-      .execute();
+    const result = await db.insert(taskTable).values(body).execute();
 
     return c.json(result);
   } catch (error) {
@@ -57,34 +30,12 @@ tasks.get("", async (c) => {
 
 tasks.put("/:id", async (c) => {
   const id = c.req.param("id");
-  const {
-    draftId,
-    title,
-    status,
-    order,
-    dateCreated,
-    dateUpdated,
-    dateCommitted,
-    dateCompleted,
-    dateTodo,
-    projectId,
-  } = await c.req.json();
+  const body = await c.req.json();
 
   try {
     const result = await db
       .update(taskTable)
-      .set({
-        draftId,
-        title,
-        status,
-        order,
-        dateCreated,
-        dateUpdated,
-        dateCommitted,
-        dateCompleted,
-        dateTodo,
-        projectId,
-      })
+      .set(body)
       .where(eq(taskTable.id, id))
       .execute();
     return c.json(result);
