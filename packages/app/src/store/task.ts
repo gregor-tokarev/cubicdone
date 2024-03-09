@@ -135,6 +135,8 @@ export const useTaskStore = defineStore("task", {
         });
 
       this.tasks[taskIdx].dateTodo = newDate;
+      idbContextManager.putItem(taskTable, this.tasks[taskIdx]);
+
       this.setOrder(taskId, newDate, newIdx);
 
       return this.tasks[taskIdx];

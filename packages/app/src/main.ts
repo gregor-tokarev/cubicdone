@@ -10,6 +10,8 @@ import { taskTable } from "@models/task.model.ts";
 import { projectTable } from "@models/project.model.ts";
 import { draftTable } from "@models/draft.model.ts";
 import { apiKeyTable } from "@models/api-key.model.ts";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import type { AppRouter } from "backend";
 
 const pinia = createPinia();
 
@@ -19,6 +21,27 @@ export const idbContextManager = await connect(1, [
   draftTable,
   apiKeyTable,
 ]);
+
+const trpc = createTRPCClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: "http://localhost:4000",
+      fetch(url, options) {
+        return fetch(url, {
+          ...options,
+          credentials: "include",
+        });
+      },
+    }),
+  ],
+});
+
+idbContextManager.onSync(async (sync, resolveFn) => {
+  if (sync.targetTable === taskTable.name) {
+    const res = await trpc.draftList.query();
+    console.log(res);
+  }
+});
 
 createApp(App)
   .directive("hint", hint)

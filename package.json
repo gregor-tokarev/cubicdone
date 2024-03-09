@@ -2,8 +2,12 @@
   "name": "personal_todo",
   "version": "0.0.0",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
+    "@trpc/client": "^11.0.0-next-beta.316",
+    "@trpc/server": "^11.0.0-next-beta.316",
     "nanoid": "^5.0.1"
   },
   "devDependencies": {

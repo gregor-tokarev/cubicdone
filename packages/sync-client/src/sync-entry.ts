@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 abstract class SyncAction {
   id: string | number;
   actionName: string;
+  data?: any;
 }
 
 export class UpdateSyncAction extends SyncAction {
