@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { Integration } from "@models/integration.model.ts";
 import { LinearIntegration } from "../integrations/linear.integration.ts";
 import { nanoid } from "nanoid";
-import { ApiKey, apiKeyTable } from "@models/api-key.model.ts";
+import { ApiKey, apiKeyStore } from "@models/api-key.model.ts";
 import { idbContextManager } from "../main.ts";
 
 export const useIntegrationStore = defineStore("integrations", {
@@ -13,7 +13,7 @@ export const useIntegrationStore = defineStore("integrations", {
 
   actions: {
     async loadKeys() {
-      this.apiKeys = await idbContextManager.getItems(apiKeyTable);
+      this.apiKeys = await idbContextManager.getItems(apiKeyStore);
     },
     connect(
       integrationId: string,
@@ -29,7 +29,7 @@ export const useIntegrationStore = defineStore("integrations", {
         integrationId: integrationId,
       } satisfies ApiKey;
 
-      idbContextManager.putItem(apiKeyTable, key);
+      idbContextManager.putItem(apiKeyStore, key);
 
       int.apiKeys.push(key);
       this.apiKeys.push(key);
@@ -43,7 +43,7 @@ export const useIntegrationStore = defineStore("integrations", {
 
       const keyIdx = int.apiKeys.findIndex((key) => key.id === apiKeyId);
 
-      idbContextManager.deleteItem(apiKeyTable, apiKeyId);
+      idbContextManager.deleteItem(apiKeyStore, apiKeyId);
 
       int.apiKeys.splice(keyIdx, 1);
 

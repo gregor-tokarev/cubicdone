@@ -22,7 +22,7 @@ export type Task = {
   };
 };
 
-export const taskTable = defineSchema("task", {
+export const taskStore = defineSchema("task", {
   id: string("id").primaryKey(),
   draftId: string("draftId"),
   title: string("title"),

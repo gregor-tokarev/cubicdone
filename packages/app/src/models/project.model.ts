@@ -7,7 +7,7 @@ export interface Project {
   order: number;
 }
 
-export const projectTable = defineSchema("project", {
+export const projectStore = defineSchema("project", {
   id: string("id").primaryKey(),
   title: string("title"),
   color: string("color"),

@@ -2,15 +2,13 @@ import postgres from "postgres";
 import * as schema from "./models/schema";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "dotenv";
-import {
-  publicProcedure,
-  router,
-  createContext,
-  authedProcedure,
-} from "./trpc";
-import { draft } from "./models/schema";
+import { createContext, router } from "./trpc";
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import cors from "cors";
+import { drafts } from "./router/draft.router";
+import { tasks } from "./router/tasks.router";
+import { projects } from "./router/project.router";
+import { apiKeys } from "./router/apikey.router";
 
 config({ path: ".env.local" });
 
@@ -18,11 +16,10 @@ const pg = postgres(process.env.DATABASE_URL ?? "");
 export const db = drizzle(pg, { schema });
 
 const appRouter = router({
-  draftList: authedProcedure.query(async () => {
-    const tasks = await db.select().from(draft);
-
-    return tasks;
-  }),
+  draft: drafts,
+  task: tasks,
+  project: projects,
+  apiKey: apiKeys,
 });
 
 export type AppRouter = typeof appRouter;

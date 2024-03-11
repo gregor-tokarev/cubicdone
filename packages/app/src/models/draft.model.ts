@@ -17,7 +17,7 @@ export interface Draft {
   };
 }
 
-export const draftTable = defineSchema("draft", {
+export const draftStore = defineSchema("draft", {
   id: string("id").primaryKey(),
   title: string("title"),
   dateCreated: createdAt("dateCreated").default(Date.now),

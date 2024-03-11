@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import {
   Project,
   ProjectStatistic,
-  projectTable,
+  projectStore,
 } from "@models/project.model.ts";
 import { randomInt } from "@utils/random.ts";
 import { nanoid } from "nanoid";
@@ -40,7 +40,7 @@ export const useProjectStore = defineStore("project", {
   }),
   actions: {
     async loadProjects() {
-      this.projects = await idbContextManager.getItems(projectTable);
+      this.projects = await idbContextManager.getItems(projectStore);
     },
     create(title: string): Project {
       const proj: Project = {
@@ -51,11 +51,11 @@ export const useProjectStore = defineStore("project", {
       };
 
       this.projects.forEach((p) => {
-        idbContextManager.putItem(projectTable, { ...p, order: p.order + 1 });
+        idbContextManager.putItem(projectStore, { ...p, order: p.order + 1 });
         p.order++;
       });
 
-      idbContextManager.putItem(projectTable, proj);
+      idbContextManager.putItem(projectStore, proj);
       this.projects.push(proj);
 
       return proj;
@@ -64,7 +64,7 @@ export const useProjectStore = defineStore("project", {
       const pIdx = this.projects.findIndex((p) => p.id === id);
       this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
 
-      idbContextManager.putItem(projectTable, this.projects[pIdx]);
+      idbContextManager.putItem(projectStore, this.projects[pIdx]);
 
       return this.projects[pIdx];
     },

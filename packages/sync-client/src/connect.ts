@@ -158,7 +158,7 @@ export async function connect<
 
       const syncEvent = await mergeSyncEntries(defaultedObj["id"]);
       onSyncCallback &&
-        onSyncCallback(syncEvent, resolveSyncs(defaultedObj["id"]));
+        onSyncCallback({ ...syncEvent }, resolveSyncs(defaultedObj["id"]));
     })();
 
     return object;

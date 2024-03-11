@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Task, taskTable } from "@models/task.model.ts";
+import { Task, taskStore } from "@models/task.model.ts";
 import { useDraftsStore } from "./drafts.ts";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
@@ -13,7 +13,7 @@ export const useTaskStore = defineStore("task", {
   }),
   actions: {
     async loadTasks() {
-      this.tasks = (await idbContextManager.getItems(taskTable)) as Task[];
+      this.tasks = (await idbContextManager.getItems(taskStore)) as Task[];
     },
     commitDraft(
       draftId: string,
@@ -39,7 +39,7 @@ export const useTaskStore = defineStore("task", {
         projectId: draft.projectId,
       };
 
-      idbContextManager.putItem(taskTable, task);
+      idbContextManager.putItem(taskStore, task);
 
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
@@ -62,7 +62,7 @@ export const useTaskStore = defineStore("task", {
         external: JSON.parse(JSON.stringify(draft.external)),
       };
 
-      idbContextManager.putItem(taskTable, task);
+      idbContextManager.putItem(taskStore, task);
 
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
@@ -78,7 +78,7 @@ export const useTaskStore = defineStore("task", {
       this.getByDate(date)
         .filter((t) => t.order >= order && t.id !== taskId)
         .forEach((t) => {
-          idbContextManager.putItem(taskTable, { ...t, order: t.order + 1 });
+          idbContextManager.putItem(taskStore, { ...t, order: t.order + 1 });
           t.order++;
         });
 
@@ -99,7 +99,7 @@ export const useTaskStore = defineStore("task", {
           (t) => t.order >= newIdx && t.order < oldIdx && t.id !== taskId,
         );
         targetTasks.forEach((t) => {
-          idbContextManager.putItem(taskTable, { ...t, order: t.order + 1 });
+          idbContextManager.putItem(taskStore, { ...t, order: t.order + 1 });
           t.order++;
         });
       } else if (oldIdx < newIdx) {
@@ -107,13 +107,13 @@ export const useTaskStore = defineStore("task", {
           (t) => t.order <= newIdx && t.order > oldIdx && t.id !== taskId,
         );
         targetTasks.forEach((t) => {
-          idbContextManager.putItem(taskTable, { ...t, order: t.order - 1 });
+          idbContextManager.putItem(taskStore, { ...t, order: t.order - 1 });
           t.order--;
         });
       }
 
       task.order = newIdx;
-      idbContextManager.putItem(taskTable, task);
+      idbContextManager.putItem(taskStore, task);
 
       return task;
     },
@@ -130,12 +130,12 @@ export const useTaskStore = defineStore("task", {
       oldDateTasks
         .filter((t) => t.order > this.tasks[taskIdx].order)
         .forEach((t) => {
-          idbContextManager.putItem(taskTable, { ...t, order: t.order - 1 });
+          idbContextManager.putItem(taskStore, { ...t, order: t.order - 1 });
           t.order--;
         });
 
       this.tasks[taskIdx].dateTodo = newDate;
-      idbContextManager.putItem(taskTable, this.tasks[taskIdx]);
+      idbContextManager.putItem(taskStore, this.tasks[taskIdx]);
 
       this.setOrder(taskId, newDate, newIdx);
 
@@ -145,7 +145,7 @@ export const useTaskStore = defineStore("task", {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1, { ...this.tasks[taskIdx], ...newTask });
 
-      idbContextManager.putItem(taskTable, this.tasks[taskIdx]);
+      idbContextManager.putItem(taskStore, this.tasks[taskIdx]);
     },
     updateFromIntegrations(draft: IntegrationTask[]): void {
       draft.forEach((d) => {
@@ -172,12 +172,12 @@ export const useTaskStore = defineStore("task", {
           },
         };
 
-        idbContextManager.putItem(taskTable, task);
+        idbContextManager.putItem(taskStore, task);
         this.tasks.splice(taskIdx, 1, task);
       });
     },
     remove(taskId: string): void {
-      idbContextManager.deleteItem(taskTable, taskId);
+      idbContextManager.deleteItem(taskStore, taskId);
 
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1);

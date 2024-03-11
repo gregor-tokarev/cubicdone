@@ -7,7 +7,7 @@ export interface ApiKey {
   integrationId: string;
 }
 
-export const apiKeyTable = defineSchema("apikeys", {
+export const apiKeyStore = defineSchema("apikeys", {
   id: string("id").primaryKey(),
   label: string("label"),
   key: string("key"),
