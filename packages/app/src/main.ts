@@ -22,7 +22,7 @@ export const idbContextManager = await connect(1, [
   apiKeyStore,
 ]);
 
-const trpc = createTRPCClient<AppRouter>({
+export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
       url: import.meta.env.VITE_SYNC_URL ?? "http://localhost:4000",

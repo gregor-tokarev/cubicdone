@@ -11,7 +11,7 @@ import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
 import { useTaskStore } from "./task.ts";
-import { idbContextManager } from "../main.ts";
+import { idbContextManager, trpc } from "../main.ts";
 
 dayjs.extend(minMax);
 
@@ -40,6 +40,12 @@ export const useProjectStore = defineStore("project", {
   }),
   actions: {
     async loadProjects() {
+      this.projects = await idbContextManager.getItems(projectStore);
+    },
+    async backwardSync() {
+      const projects = await trpc.project.getAll.query();
+
+      await idbContextManager.backwardSync(projectStore, projects);
       this.projects = await idbContextManager.getItems(projectStore);
     },
     create(title: string): Project {

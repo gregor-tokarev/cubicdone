@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { Draft, draftStore } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
-import { idbContextManager } from "../main.ts";
+import { idbContextManager, trpc } from "../main.ts";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({
@@ -27,6 +27,12 @@ export const useDraftsStore = defineStore("drafts", {
     //     taskStore.remove(taskId)
     // },
     async loadDrafts() {
+      this.drafts = await idbContextManager.getItems(draftStore);
+    },
+    async backwardSync() {
+      const drafts = await trpc.draft.getAll.query();
+
+      await idbContextManager.backwardSync(draftStore, drafts);
       this.drafts = await idbContextManager.getItems(draftStore);
     },
     create(title: string, projectId: string | null): Draft {

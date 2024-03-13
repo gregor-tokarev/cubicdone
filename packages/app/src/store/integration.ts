@@ -3,7 +3,7 @@ import { Integration } from "@models/integration.model.ts";
 import { LinearIntegration } from "../integrations/linear.integration.ts";
 import { nanoid } from "nanoid";
 import { ApiKey, apiKeyStore } from "@models/api-key.model.ts";
-import { idbContextManager } from "../main.ts";
+import { idbContextManager, trpc } from "../main.ts";
 
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
@@ -13,6 +13,12 @@ export const useIntegrationStore = defineStore("integrations", {
 
   actions: {
     async loadKeys() {
+      this.apiKeys = await idbContextManager.getItems(apiKeyStore);
+    },
+    async backwardSync() {
+      const apiKeys = await trpc.apiKey.getAll.query();
+
+      await idbContextManager.backwardSync(apiKeyStore, apiKeys);
       this.apiKeys = await idbContextManager.getItems(apiKeyStore);
     },
     connect(

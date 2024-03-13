@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import { Draft } from "@models/draft.model.ts";
 import { IntegrationTask } from "@models/integration.model.ts";
-import { idbContextManager } from "../main.ts";
+import { idbContextManager, trpc } from "../main.ts";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -14,6 +14,13 @@ export const useTaskStore = defineStore("task", {
   actions: {
     async loadTasks() {
       this.tasks = (await idbContextManager.getItems(taskStore)) as Task[];
+    },
+
+    async backwardSync() {
+      const tasks = await trpc.task.getAll.query();
+
+      await idbContextManager.backwardSync(taskStore, tasks);
+      this.tasks = await idbContextManager.getItems(taskStore);
     },
     commitDraft(
       draftId: string,

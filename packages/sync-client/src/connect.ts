@@ -132,6 +132,18 @@ export async function connect<
         };
   }
 
+  async function backwardSync<
+    TColumn,
+    TDataSchema extends Record<string, ColumnBase<TColumn>>,
+    R extends Record<keyof TDataSchema, any>,
+  >(table: Table<TColumn, TDataSchema>, records: R[]) {
+    return Promise.all(
+      records.map((r) => {
+        return DB.put(table.name, r);
+      }),
+    );
+  }
+
   async function getItems<
     TColumn,
     TDataSchema extends Record<string, ColumnBase<TColumn>>,
@@ -189,7 +201,7 @@ export async function connect<
     })();
   }
 
-  return { db: DB, putItem, getItems, deleteItem, onSync };
+  return { db: DB, putItem, getItems, deleteItem, onSync, backwardSync };
 }
 
 function mapObjectToTable<
