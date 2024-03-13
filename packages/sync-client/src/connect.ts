@@ -137,6 +137,8 @@ export async function connect<
     TDataSchema extends Record<string, ColumnBase<TColumn>>,
     R extends Record<keyof TDataSchema, any>,
   >(table: Table<TColumn, TDataSchema>, records: R[]) {
+    await DB.clear(table.name);
+
     return Promise.all(
       records.map((r) => {
         return DB.put(table.name, r);

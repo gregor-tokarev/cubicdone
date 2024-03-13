@@ -21,7 +21,7 @@ const projectStore = useProjectStore();
 const draftStore = useDraftsStore();
 
 const synced = ref(true);
-onMounted(() => {
+onMounted(async () => {
   hotkeys.filter = (event) => {
     if (event.metaKey) return true;
 
@@ -58,17 +58,17 @@ onMounted(() => {
     router.push("/profile");
   });
 
-  onMounted(async () => {
-    try {
-      await Promise.all([
-        integrationStore.backwardSync(),
-        taskStore.backwardSync(),
-        projectStore.backwardSync(),
-        draftStore.backwardSync(),
-      ]);
-      synced.value = true;
-    } catch (e) {}
-  });
+  try {
+    await Promise.all([
+      integrationStore.backwardSync(),
+      taskStore.backwardSync(),
+      projectStore.backwardSync(),
+      draftStore.backwardSync(),
+    ]);
+    synced.value = true;
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 const { isLoaded } = useUser();
