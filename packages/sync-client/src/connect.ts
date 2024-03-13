@@ -14,8 +14,15 @@ export const DB_NAME = "SYNC_DB";
 export const SYNC_STORE_NAME = "SYNC_STORE";
 export let DB: IDBPDatabase | null = null;
 
+let SYNC_COUNT = 0;
+let NETWORK_STATUS: "online" | "offline" | null = null;
+
 interface OnSyncFn {
   (entries: SyncEntry, resolveFn: () => void): void;
+}
+
+interface OnSyncStateFn {
+  (state: typeof NETWORK_STATUS, syncCount: number): void;
 }
 
 export async function connect<
@@ -24,7 +31,7 @@ export async function connect<
   TSchema extends Table<M, R>[],
 >(version: number, schema: TSchema) {
   DB = await openDB(DB_NAME, version, {
-    upgrade(database, oldVersion, newVersion, transaction, event) {
+    upgrade(database, oldVersion, newVersion, transaction, _event) {
       if (oldVersion >= newVersion) return;
 
       if (!database.objectStoreNames.contains(SYNC_STORE_NAME))
@@ -78,6 +85,24 @@ export async function connect<
     onSyncCallback = fn;
   }
 
+  let onSyncStateCallback: OnSyncStateFn | null = null;
+  function onSyncState(fn: OnSyncStateFn) {
+    onSyncStateCallback = fn;
+  }
+
+  window.addEventListener("load", () => {
+    NETWORK_STATUS = navigator.onLine ? "online" : "offline";
+    onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
+  });
+  window.addEventListener("online", () => {
+    NETWORK_STATUS = "online";
+    onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
+  });
+  window.addEventListener("offline", () => {
+    NETWORK_STATUS = "offline";
+    onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
+  });
+
   function resolveSyncs(targetId: string | number) {
     return async () => {
       const allSyncs = (await DB.getAll(SYNC_STORE_NAME)) as SyncEntry[];
@@ -87,6 +112,9 @@ export async function connect<
         DB.delete(SYNC_STORE_NAME, e.id),
       );
       await Promise.all(operations);
+
+      SYNC_COUNT -= operations.length;
+      onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
     };
   }
 
@@ -173,6 +201,9 @@ export async function connect<
       const syncEvent = await mergeSyncEntries(defaultedObj["id"]);
       onSyncCallback &&
         onSyncCallback({ ...syncEvent }, resolveSyncs(defaultedObj["id"]));
+
+      SYNC_COUNT++;
+      onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
     })();
 
     return object;
@@ -203,7 +234,15 @@ export async function connect<
     })();
   }
 
-  return { db: DB, putItem, getItems, deleteItem, onSync, backwardSync };
+  return {
+    db: DB,
+    putItem,
+    getItems,
+    deleteItem,
+    onSyncState,
+    onSync,
+    backwardSync,
+  };
 }
 
 function mapObjectToTable<

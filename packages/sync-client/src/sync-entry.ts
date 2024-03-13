@@ -3,7 +3,7 @@ import { ColumnBase } from "./column-base";
 import { DB, SYNC_STORE_NAME } from "./connect";
 import { nanoid } from "nanoid";
 
-abstract class SyncAction {
+export abstract class SyncAction {
   id: string | number;
   actionName: string;
   data?: any;

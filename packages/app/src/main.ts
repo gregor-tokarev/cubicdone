@@ -12,6 +12,7 @@ import { draftStore } from "@models/draft.model.ts";
 import { apiKeyStore } from "@models/api-key.model.ts";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
+import { useSyncStore } from "@store/sync.ts";
 
 const pinia = createPinia();
 
@@ -66,7 +67,14 @@ idbContextManager.onSync(async (sync, resolveFn) => {
     else if (sync.action.actionName === "delete")
       await trpc.project.delete.mutate(sync.action.id as string);
   }
+
   resolveFn();
+});
+
+const syncStore = useSyncStore();
+idbContextManager.onSyncState((networkState, syncCount) => {
+  syncStore.syncCount = syncCount;
+  syncStore.isOnline = networkState === "online";
 });
 
 createApp(App)

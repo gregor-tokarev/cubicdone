@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuth } from "vue-clerk";
-import { onMounted, watch } from "vue";
+import { watch } from "vue";
 import { useRouter } from "vue-router";
 
 const { isSignedIn, isLoaded } = useAuth();
