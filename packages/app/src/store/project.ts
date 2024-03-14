@@ -11,7 +11,8 @@ import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
 import { useTaskStore } from "./task.ts";
-import { idbContextManager, trpc } from "../main.ts";
+import { trpc } from "../main.ts";
+import { useIdbxConnectionManager } from "vue-sync-client/src";
 
 dayjs.extend(minMax);
 
@@ -40,15 +41,17 @@ export const useProjectStore = defineStore("project", {
   }),
   actions: {
     async loadProjects() {
-      this.projects = await idbContextManager.getItems(projectStore);
+      const connectionManager = await useIdbxConnectionManager();
+      this.projects = await connectionManager.getItems(projectStore);
     },
     async backwardSync() {
       const projects = await trpc.project.getAll.query();
 
-      await idbContextManager.backwardSync(projectStore, projects);
-      this.projects = await idbContextManager.getItems(projectStore);
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(projectStore, projects);
+      this.projects = await connectionManager.getItems(projectStore);
     },
-    create(title: string): Project {
+    async create(title: string): Promise<Project> {
       const proj: Project = {
         id: nanoid(4),
         color: this.colors[randomInt(0, this.colors.length)],
@@ -56,21 +59,24 @@ export const useProjectStore = defineStore("project", {
         order: 0,
       };
 
+      const connectionManager = await useIdbxConnectionManager();
+
       this.projects.forEach((p) => {
-        idbContextManager.putItem(projectStore, { ...p, order: p.order + 1 });
+        connectionManager.putItem(projectStore, { ...p, order: p.order + 1 });
         p.order++;
       });
 
-      idbContextManager.putItem(projectStore, proj);
+      connectionManager.putItem(projectStore, proj);
       this.projects.push(proj);
 
       return proj;
     },
-    edit(id: string, project: Partial<Project>): Project {
+    async edit(id: string, project: Partial<Project>): Promise<Project> {
       const pIdx = this.projects.findIndex((p) => p.id === id);
       this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
 
-      idbContextManager.putItem(projectStore, this.projects[pIdx]);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(projectStore, this.projects[pIdx]);
 
       return this.projects[pIdx];
     },

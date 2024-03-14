@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import { Draft, draftStore } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
-import { idbContextManager, trpc } from "../main.ts";
+import { trpc } from "../main.ts";
+import { useIdbxConnectionManager } from "vue-sync-client/src";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({
@@ -27,15 +28,17 @@ export const useDraftsStore = defineStore("drafts", {
     //     taskStore.remove(taskId)
     // },
     async loadDrafts() {
-      this.drafts = await idbContextManager.getItems(draftStore);
+      const connectionManager = await useIdbxConnectionManager();
+      this.drafts = await connectionManager.getItems(draftStore);
     },
     async backwardSync() {
       const drafts = await trpc.draft.getAll.query();
 
-      await idbContextManager.backwardSync(draftStore, drafts);
-      this.drafts = await idbContextManager.getItems(draftStore);
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(draftStore, drafts);
+      this.drafts = await connectionManager.getItems(draftStore);
     },
-    create(title: string, projectId: string | null): Draft {
+    async create(title: string, projectId: string | null): Promise<Draft> {
       const draft: Draft = {
         id: nanoid(3),
         dateCreated: dayjs().toISOString(),
@@ -45,22 +48,25 @@ export const useDraftsStore = defineStore("drafts", {
         title,
       };
 
-      idbContextManager.putItem(draftStore, draft);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(draftStore, draft);
       this.drafts.push(draft);
 
       return draft;
     },
-    edit(id: string, title: string): Draft | undefined {
+    async edit(id: string, title: string): Promise<Draft | undefined> {
       const draft = this.drafts.find((d) => d.id === id);
       if (!draft) return;
 
       draft.title = title;
       draft.dateUpdated = dayjs().toISOString();
 
-      idbContextManager.putItem(draftStore, draft);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(draftStore, draft);
     },
-    remove(id: string | string[]): void {
-      idbContextManager.deleteItem(draftStore, id);
+    async remove(id: string | string[]): Promise<void> {
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.deleteItem(draftStore, id);
 
       if (typeof id === "string") {
         const draftIdx = this.drafts.findIndex((d) => d.id === id);
@@ -78,24 +84,28 @@ export const useDraftsStore = defineStore("drafts", {
         });
       }
     },
-    descOrders(draftId: string) {
+    async descOrders(draftId: string) {
       const draft = this.getOne(draftId);
       if (!draft) return;
+
+      const connectionManager = await useIdbxConnectionManager();
 
       this.drafts
         .filter((d) => d.order >= draft.order && d.id !== draftId)
         .forEach((d) => {
-          idbContextManager.putItem(draftStore, { ...d, order: d.order - 1 });
+          connectionManager.putItem(draftStore, { ...d, order: d.order - 1 });
           d.order--;
         });
     },
-    changeOrder(
+    async changeOrder(
       draftId: string,
       oldIdx: number,
       newIdx: number,
-    ): Draft | undefined {
+    ): Promise<Draft | undefined> {
       const draft = this.getOne(draftId);
       if (!draft) return;
+
+      const connectionManager = await useIdbxConnectionManager();
 
       if (oldIdx > newIdx) {
         const targetDrafts = this.drafts.filter(
@@ -103,7 +113,7 @@ export const useDraftsStore = defineStore("drafts", {
         );
 
         targetDrafts.forEach((t) => {
-          idbContextManager.putItem(draftStore, { ...t, order: t.order + 1 });
+          connectionManager.putItem(draftStore, { ...t, order: t.order + 1 });
           t.order++;
         });
       } else if (oldIdx < newIdx) {
@@ -112,23 +122,25 @@ export const useDraftsStore = defineStore("drafts", {
         );
 
         targetDrafts.forEach((t) => {
-          idbContextManager.putItem(draftStore, { ...t, order: t.order - 1 });
+          connectionManager.putItem(draftStore, { ...t, order: t.order - 1 });
           t.order--;
         });
       }
 
       draft.order = newIdx;
-      idbContextManager.putItem(draftStore, { ...draft, order: newIdx });
+      connectionManager.putItem(draftStore, { ...draft, order: newIdx });
 
       return draft;
     },
-    setProject(draftId: string | string[], projectId: string) {
+    async setProject(draftId: string | string[], projectId: string) {
+      const connectionManager = await useIdbxConnectionManager();
+
       if (Array.isArray(draftId)) {
         this.drafts
           .filter((d) => draftId.includes(d.id))
           .forEach((d) => {
             d.projectId = projectId;
-            idbContextManager.putItem(draftStore, { ...d, projectId });
+            connectionManager.putItem(draftStore, { ...d, projectId });
           });
 
         return;
@@ -137,7 +149,7 @@ export const useDraftsStore = defineStore("drafts", {
       if (!draft) return;
 
       draft.projectId = projectId;
-      idbContextManager.putItem(draftStore, { ...draft, projectId });
+      connectionManager.putItem(draftStore, { ...draft, projectId });
     },
   },
   getters: {

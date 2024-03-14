@@ -15,13 +15,15 @@ export const SYNC_STORE_NAME = "SYNC_STORE";
 export let DB: IDBPDatabase | null = null;
 
 let SYNC_COUNT = 0;
-let NETWORK_STATUS: "online" | "offline" | null = null;
+let NETWORK_STATUS: "online" | "offline" = navigator.onLine
+  ? "online"
+  : "offline";
 
-interface OnSyncFn {
+export interface OnSyncFn {
   (entries: SyncEntry, resolveFn: () => void): void;
 }
 
-interface OnSyncStateFn {
+export interface OnSyncStateFn {
   (state: typeof NETWORK_STATUS, syncCount: number): void;
 }
 
@@ -90,13 +92,17 @@ export async function connect<
     onSyncStateCallback = fn;
   }
 
-  window.addEventListener("load", () => {
-    NETWORK_STATUS = navigator.onLine ? "online" : "offline";
-    onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
-  });
-  window.addEventListener("online", () => {
+  window.addEventListener("online", async () => {
     NETWORK_STATUS = "online";
     onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
+
+    const entries = await getSyncTargets();
+    if (onSyncCallback) {
+      entries.forEach((entry) => {
+        NETWORK_STATUS === "online" &&
+          onSyncCallback(entry, resolveSyncs(entry.action.id));
+      });
+    }
   });
   window.addEventListener("offline", () => {
     NETWORK_STATUS = "offline";
@@ -113,7 +119,7 @@ export async function connect<
       );
       await Promise.all(operations);
 
-      SYNC_COUNT -= operations.length;
+      SYNC_COUNT -= 1;
       onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
     };
   }
@@ -160,6 +166,17 @@ export async function connect<
         };
   }
 
+  async function getSyncTargets() {
+    const allSyncs = (await DB.getAll(SYNC_STORE_NAME)) as SyncEntry[];
+    const targetIds = allSyncs.map((sync) => sync.action.id);
+
+    const entries = await Promise.all(
+      targetIds.map((id) => mergeSyncEntries(id)),
+    );
+
+    return entries;
+  }
+
   async function backwardSync<
     TColumn,
     TDataSchema extends Record<string, ColumnBase<TColumn>>,
@@ -200,6 +217,7 @@ export async function connect<
 
       const syncEvent = await mergeSyncEntries(defaultedObj["id"]);
       onSyncCallback &&
+        NETWORK_STATUS === "online" &&
         onSyncCallback({ ...syncEvent }, resolveSyncs(defaultedObj["id"]));
 
       SYNC_COUNT++;
@@ -229,7 +247,9 @@ export async function connect<
         await createSync(deleteAction, table);
 
         const syncEvent = await mergeSyncEntries(k);
-        onSyncCallback && onSyncCallback(syncEvent, resolveSyncs(k));
+        onSyncCallback &&
+          NETWORK_STATUS === "online" &&
+          onSyncCallback(syncEvent, resolveSyncs(k));
       }
     })();
   }

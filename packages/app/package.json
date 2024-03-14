@@ -29,7 +29,7 @@
     "motion": "^10.17.0",
     "pinia": "^2.1.6",
     "register-service-worker": "^1.7.2",
-    "sync-client": "*",
+    "vue-sync-client": "*",
     "vite-plugin-pwa": "^0.16.5",
     "vue": "^3.3.4",
     "vue-clerk": "^0.2.0",

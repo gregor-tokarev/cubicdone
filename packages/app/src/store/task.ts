@@ -5,7 +5,8 @@ import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import { Draft } from "@models/draft.model.ts";
 import { IntegrationTask } from "@models/integration.model.ts";
-import { idbContextManager, trpc } from "../main.ts";
+import { trpc } from "../main.ts";
+import { useIdbxConnectionManager } from "vue-sync-client/src";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -13,20 +14,22 @@ export const useTaskStore = defineStore("task", {
   }),
   actions: {
     async loadTasks() {
-      this.tasks = (await idbContextManager.getItems(taskStore)) as Task[];
+      const connectionManager = await useIdbxConnectionManager();
+      this.tasks = await connectionManager.getItems(taskStore);
     },
 
     async backwardSync() {
       const tasks = await trpc.task.getAll.query();
 
-      await idbContextManager.backwardSync(taskStore, tasks);
-      this.tasks = await idbContextManager.getItems(taskStore);
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(taskStore, tasks);
+      this.tasks = await connectionManager.getItems(taskStore);
     },
-    commitDraft(
+    async commitDraft(
       draftId: string,
       dateTodo: string,
       newIdx: number,
-    ): Task | undefined {
+    ): Promise<Task | undefined> {
       const draftStore = useDraftsStore();
 
       const draft = draftStore.getOne(draftId);
@@ -46,14 +49,19 @@ export const useTaskStore = defineStore("task", {
         projectId: draft.projectId,
       };
 
-      idbContextManager.putItem(taskStore, task);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(taskStore, task);
 
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
 
       draftStore.remove(draftId);
     },
-    commitIntegration(draft: Draft, dateTodo: string, newIdx: number): Task {
+    async commitIntegration(
+      draft: Draft,
+      dateTodo: string,
+      newIdx: number,
+    ): Promise<Task> {
       const task: Task = {
         id: nanoid(3),
         draftId: draft.id,
@@ -69,44 +77,53 @@ export const useTaskStore = defineStore("task", {
         external: JSON.parse(JSON.stringify(draft.external)),
       };
 
-      idbContextManager.putItem(taskStore, task);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(taskStore, task);
 
       this.tasks.push(task);
       this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
 
       return task;
     },
-    setOrder(taskId: string, date: string, order: number): Task | undefined {
+    async setOrder(
+      taskId: string,
+      date: string,
+      order: number,
+    ): Promise<Task | undefined> {
       const task = this.tasks.find((t) => t.id === taskId);
       if (!task) return;
 
       task.order = order;
 
+      const connectionManager = await useIdbxConnectionManager();
+
       this.getByDate(date)
         .filter((t) => t.order >= order && t.id !== taskId)
         .forEach((t) => {
-          idbContextManager.putItem(taskStore, { ...t, order: t.order + 1 });
+          connectionManager.putItem(taskStore, { ...t, order: t.order + 1 });
           t.order++;
         });
 
       return task;
     },
-    changeOrder(
+    async changeOrder(
       taskId: string,
       oldIdx: number,
       newIdx: number,
-    ): Task | undefined {
+    ): Promise<Task | undefined> {
       const task = this.tasks.find((t) => t.id === taskId);
       if (!task) return;
 
       const dateTasks = this.getByDate(task.dateTodo);
+
+      const connectionManager = await useIdbxConnectionManager();
 
       if (oldIdx > newIdx) {
         const targetTasks = dateTasks.filter(
           (t) => t.order >= newIdx && t.order < oldIdx && t.id !== taskId,
         );
         targetTasks.forEach((t) => {
-          idbContextManager.putItem(taskStore, { ...t, order: t.order + 1 });
+          connectionManager.putItem(taskStore, { ...t, order: t.order + 1 });
           t.order++;
         });
       } else if (oldIdx < newIdx) {
@@ -114,22 +131,24 @@ export const useTaskStore = defineStore("task", {
           (t) => t.order <= newIdx && t.order > oldIdx && t.id !== taskId,
         );
         targetTasks.forEach((t) => {
-          idbContextManager.putItem(taskStore, { ...t, order: t.order - 1 });
+          connectionManager.putItem(taskStore, { ...t, order: t.order - 1 });
           t.order--;
         });
       }
 
       task.order = newIdx;
-      idbContextManager.putItem(taskStore, task);
+      connectionManager.putItem(taskStore, task);
 
       return task;
     },
-    changeTodoDate(
+    async changeTodoDate(
       taskId: string,
       newDate: string,
       newIdx: number,
-    ): Task | undefined {
+    ): Promise<Task | undefined> {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
+
+      const connectionManager = await useIdbxConnectionManager();
 
       const oldDateTasks = this.tasks.filter((t) =>
         dayjs(t.dateTodo).isSame(this.tasks[taskIdx].dateTodo, "day"),
@@ -137,24 +156,27 @@ export const useTaskStore = defineStore("task", {
       oldDateTasks
         .filter((t) => t.order > this.tasks[taskIdx].order)
         .forEach((t) => {
-          idbContextManager.putItem(taskStore, { ...t, order: t.order - 1 });
+          connectionManager.putItem(taskStore, { ...t, order: t.order - 1 });
           t.order--;
         });
 
       this.tasks[taskIdx].dateTodo = newDate;
-      idbContextManager.putItem(taskStore, this.tasks[taskIdx]);
+      connectionManager.putItem(taskStore, this.tasks[taskIdx]);
 
       this.setOrder(taskId, newDate, newIdx);
 
       return this.tasks[taskIdx];
     },
-    update(taskId: string, newTask: Partial<Task>): void {
+    async update(taskId: string, newTask: Partial<Task>) {
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1, { ...this.tasks[taskIdx], ...newTask });
 
-      idbContextManager.putItem(taskStore, this.tasks[taskIdx]);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(taskStore, this.tasks[taskIdx]);
     },
-    updateFromIntegrations(draft: IntegrationTask[]): void {
+    async updateFromIntegrations(draft: IntegrationTask[]) {
+      const connectionManager = await useIdbxConnectionManager();
+
       draft.forEach((d) => {
         const taskIdx = this.tasks.findIndex((t) => t.draftId === d.id);
 
@@ -179,12 +201,13 @@ export const useTaskStore = defineStore("task", {
           },
         };
 
-        idbContextManager.putItem(taskStore, task);
+        connectionManager.putItem(taskStore, task);
         this.tasks.splice(taskIdx, 1, task);
       });
     },
-    remove(taskId: string): void {
-      idbContextManager.deleteItem(taskStore, taskId);
+    async remove(taskId: string) {
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.deleteItem(taskStore, taskId);
 
       const taskIdx = this.tasks.findIndex((t) => t.id === taskId);
       this.tasks.splice(taskIdx, 1);

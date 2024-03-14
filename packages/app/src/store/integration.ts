@@ -3,7 +3,8 @@ import { Integration } from "@models/integration.model.ts";
 import { LinearIntegration } from "../integrations/linear.integration.ts";
 import { nanoid } from "nanoid";
 import { ApiKey, apiKeyStore } from "@models/api-key.model.ts";
-import { idbContextManager, trpc } from "../main.ts";
+import { trpc } from "../main.ts";
+import { useIdbxConnectionManager } from "vue-sync-client/src";
 
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({
@@ -13,18 +14,20 @@ export const useIntegrationStore = defineStore("integrations", {
 
   actions: {
     async loadKeys() {
-      this.apiKeys = await idbContextManager.getItems(apiKeyStore);
+      const connectionManager = await useIdbxConnectionManager();
+      this.apiKeys = await connectionManager.getItems(apiKeyStore);
     },
     async backwardSync() {
       const apiKeys = await trpc.apiKey.getAll.query();
 
-      await idbContextManager.backwardSync(apiKeyStore, apiKeys);
-      this.apiKeys = await idbContextManager.getItems(apiKeyStore);
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(apiKeyStore, apiKeys);
+      this.apiKeys = await connectionManager.getItems(apiKeyStore);
     },
-    connect(
+    async connect(
       integrationId: string,
       apiKey: { label: string; key: string },
-    ): Integration | undefined {
+    ): Promise<Integration | undefined> {
       const int = this.integrations.find((i) => i.id === integrationId);
       if (!int) return;
 
@@ -35,21 +38,23 @@ export const useIntegrationStore = defineStore("integrations", {
         integrationId: integrationId,
       } satisfies ApiKey;
 
-      idbContextManager.putItem(apiKeyStore, key);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(apiKeyStore, key);
 
       int.apiKeys.push(key);
       this.apiKeys.push(key);
     },
-    disconnect(
+    async disconnect(
       integrationId: string,
       apiKeyId: string,
-    ): Integration | undefined {
+    ): Promise<Integration | undefined> {
       const int = this.integrations.find((i) => i.id === integrationId);
       if (!int) return;
 
       const keyIdx = int.apiKeys.findIndex((key) => key.id === apiKeyId);
 
-      idbContextManager.deleteItem(apiKeyStore, apiKeyId);
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.deleteItem(apiKeyStore, apiKeyId);
 
       int.apiKeys.splice(keyIdx, 1);
 
