@@ -38,6 +38,6 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: latest
+          tags: ghcr.io/gregor-tokarev/personal_todo/backend:latest
           labels: latest
 
