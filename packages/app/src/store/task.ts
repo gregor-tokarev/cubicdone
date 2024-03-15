@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { Draft } from "@models/draft.model.ts";
 import { IntegrationTask } from "@models/integration.model.ts";
 import { trpc } from "../main.ts";
-import { useIdbxConnectionManager } from "vue-sync-client/src";
+import { useIdbxConnectionManager } from "vue-sync-client";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({

@@ -247,6 +247,7 @@ export async function connect<
         await createSync(deleteAction, table);
 
         const syncEvent = await mergeSyncEntries(k);
+        SYNC_COUNT++;
         onSyncCallback &&
           NETWORK_STATUS === "online" &&
           onSyncCallback(syncEvent, resolveSyncs(k));

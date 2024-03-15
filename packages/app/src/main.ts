@@ -11,7 +11,7 @@ import { draftStore } from "@models/draft.model.ts";
 import { apiKeyStore } from "@models/api-key.model.ts";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
-import { vueSyncClientPlugin } from "vue-sync-client/src";
+import { vueSyncClientPlugin } from "vue-sync-client";
 
 const pinia = createPinia();
 

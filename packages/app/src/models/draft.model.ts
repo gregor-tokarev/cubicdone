@@ -1,5 +1,4 @@
-import { defineSchema, integer, string } from "sync-client";
-import { createdAt } from "sync-client/src/columns/createdAt.ts";
+import { createdAt, defineSchema, integer, string } from "sync-client";
 
 export interface Draft {
   id: string;

@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Plugin, ref } from "vue";
 import { Options } from "./options";
-import { connect } from "sync-client/src/connect";
+import { connect } from "sync-client";
 
 let idbxConnectionManager: Awaited<ReturnType<typeof connect>> | null = null;
 let connectionPromise: Promise<any> | null = null;

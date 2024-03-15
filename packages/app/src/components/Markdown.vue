@@ -22,6 +22,6 @@ const markdownContent = computed(() => {
 
 <style scoped lang="postcss">
 .root :deep(code) {
-  @apply inline-block rounded bg-gray-150 px-1 font-mono text-xs;
+  @apply bg-gray-150 inline-block rounded px-1 font-mono text-xs;
 }
 </style>

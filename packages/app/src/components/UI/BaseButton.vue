@@ -19,7 +19,7 @@ withDefaults(
     :class="{
       'bg-black text-white ring-gray-900 hover:bg-gray-900  focus:ring-2':
         color === 'black',
-      'border-gray-150 bg-gray-100 text-black hover:bg-gray-150':
+      'border-gray-150 hover:bg-gray-150 bg-gray-100 text-black':
         color === 'gray',
     }"
   >

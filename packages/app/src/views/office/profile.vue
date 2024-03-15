@@ -80,13 +80,13 @@ async function onSave() {
     <h1 class="text-[32px]">Account Settings</h1>
     <div class="space-y-10">
       <div
-        class="flex items-center justify-between border-b border-gray-150 py-5"
+        class="border-gray-150 flex items-center justify-between border-b py-5"
       >
         <p class="text-[20px] text-gray-700">Avatar</p>
         <AvatarInput disabled v-model="v$.avatarUrl.$model"></AvatarInput>
       </div>
       <div
-        class="flex items-center justify-between border-b border-gray-150 py-5"
+        class="border-gray-150 flex items-center justify-between border-b py-5"
       >
         <p class="text-[20px] text-gray-700">Email</p>
         <BaseInput
@@ -96,7 +96,7 @@ async function onSave() {
         ></BaseInput>
       </div>
       <div
-        class="flex items-center justify-between border-b border-gray-150 py-5"
+        class="border-gray-150 flex items-center justify-between border-b py-5"
       >
         <p class="text-[20px] text-gray-700">First Name</p>
         <BaseInput
@@ -106,7 +106,7 @@ async function onSave() {
         ></BaseInput>
       </div>
       <div
-        class="flex items-center justify-between border-b border-gray-150 py-5"
+        class="border-gray-150 flex items-center justify-between border-b py-5"
       >
         <p class="text-[20px] text-gray-700">Last Name</p>
         <BaseInput

@@ -12,7 +12,7 @@ import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
 import { useTaskStore } from "./task.ts";
 import { trpc } from "../main.ts";
-import { useIdbxConnectionManager } from "vue-sync-client/src";
+import { useIdbxConnectionManager } from "vue-sync-client";
 
 dayjs.extend(minMax);
 

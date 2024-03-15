@@ -4,7 +4,7 @@ import { LinearIntegration } from "../integrations/linear.integration.ts";
 import { nanoid } from "nanoid";
 import { ApiKey, apiKeyStore } from "@models/api-key.model.ts";
 import { trpc } from "../main.ts";
-import { useIdbxConnectionManager } from "vue-sync-client/src";
+import { useIdbxConnectionManager } from "vue-sync-client";
 
 export const useIntegrationStore = defineStore("integrations", {
   state: () => ({

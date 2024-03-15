@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import Icon from "@components/Icon.vue";
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useClerk, useSession, useUser } from "vue-clerk";
-import { useSyncState } from "vue-sync-client/src";
+import { useSyncState } from "vue-sync-client";
 
 const navItems = ref([
   {

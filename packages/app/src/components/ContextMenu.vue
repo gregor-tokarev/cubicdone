@@ -15,7 +15,7 @@ const emit = defineEmits<{
 <template>
   <div
     v-if="show"
-    class="z-10 min-w-[220px] space-y-1 rounded border border-gray-150 bg-gray-50 px-1.5 py-2.5"
+    class="border-gray-150 z-10 min-w-[220px] space-y-1 rounded border bg-gray-50 px-1.5 py-2.5"
     v-bind="$attrs"
   >
     <div

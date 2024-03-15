@@ -1,5 +1,4 @@
-import { ColumnBase, Table } from "sync-client";
-import { OnSyncFn, OnSyncStateFn } from "sync-client/src/connect";
+import { ColumnBase, OnSyncFn, OnSyncStateFn, Table } from "sync-client";
 
 export interface Options {
   dbVersion: number;

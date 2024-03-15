@@ -3,7 +3,7 @@ import { Draft, draftStore } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
 import { trpc } from "../main.ts";
-import { useIdbxConnectionManager } from "vue-sync-client/src";
+import { useIdbxConnectionManager } from "vue-sync-client";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({

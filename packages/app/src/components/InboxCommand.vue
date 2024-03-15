@@ -10,7 +10,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="flex items-center space-x-2.5 rounded-[40px] bg-gray-900 px-[22px] py-2 text-xs text-gray-150"
+    class="text-gray-150 flex items-center space-x-2.5 rounded-[40px] bg-gray-900 px-[22px] py-2 text-xs"
   >
     <div
       class="flex h-[30px] cursor-pointer border border-dashed border-gray-700"
