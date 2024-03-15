@@ -114,15 +114,20 @@ const showBadge = computed(() => {
   >
     <!--    title block-->
     <div class="relative flex items-center justify-between">
-      <div class="flex items-center space-x-1.5">
+      <div
+        class="flex items-center space-x-1.5"
+        :class="{
+          'max-w-[85%]': !compact,
+          'w-full': compact,
+        }"
+      >
         <div
           v-if="isLoaded && user"
           ref="userEl"
           @click="openPanel = !openPanel"
-          class="!hover:text-white flex cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
+          class="!hover:text-white flex max-w-full cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
           :class="{
-            'max-w-[85%] space-x-2 px-[1px] py-0.5': !compact,
-            'w-full': compact,
+            'space-x-2 px-[1px] py-0.5': !compact,
           }"
         >
           <img
