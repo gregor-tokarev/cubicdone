@@ -247,10 +247,12 @@ export async function connect<
         await createSync(deleteAction, table);
 
         const syncEvent = await mergeSyncEntries(k);
-        SYNC_COUNT++;
         onSyncCallback &&
           NETWORK_STATUS === "online" &&
           onSyncCallback(syncEvent, resolveSyncs(k));
+
+        SYNC_COUNT++;
+        onSyncStateCallback(NETWORK_STATUS, SYNC_COUNT);
       }
     })();
   }
