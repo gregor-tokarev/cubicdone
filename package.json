@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "packageManager": "^npm@9.5.1",
   "dependencies": {
     "@trpc/client": "^11.0.0-next-beta.316",
     "@trpc/server": "^11.0.0-next-beta.316",
