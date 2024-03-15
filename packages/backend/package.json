@@ -21,7 +21,6 @@
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.11.17",
-    "drizzle-kit": "^0.20.14",
-    "tsx": "^3.12.2"
+    "drizzle-kit": "^0.20.14"
   }
 }

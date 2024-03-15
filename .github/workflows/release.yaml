@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ["master"]
+    branches: ["sync-package"]
 
 jobs:
   release:
@@ -20,7 +20,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -34,8 +33,8 @@ jobs:
       - name: Build and push container
         uses: docker/build-push-action@v3
         with:
-          context: packages/backend
-          file: Dockerfile
+          context: .
+          file: packages/backend/Dockerfile
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
