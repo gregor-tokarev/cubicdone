@@ -20,16 +20,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/gregor-tokarev/personal_todo/backend
-          flavor: latest=true
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
+#      - name: Docker meta
+#        id: meta
+#        uses: docker/metadata-action@v4
+#        with:
+#          images: ghcr.io/gregor-tokarev/personal_todo/backend
+#          flavor: latest=true
+#          tags: |
+#            type=ref,event=branch
+#            type=ref,event=pr
+#            type=semver,pattern={{version}}
       - name: Build and push container
         uses: docker/build-push-action@v3
         with:
@@ -38,6 +38,6 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
+          tags: latest
+          labels: latest
 
