@@ -28,5 +28,5 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/gregor-tokarev/personal_todo_backend:latest
+          tags: ghcr.io/gregor-tokarev/backend:latest
 
