@@ -20,11 +20,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Extract metadata (tags, labels) for Docker
-#        id: meta
-#        uses: docker/metadata-action@v3
-#        with:
-#          images: ghcr.io/gregor-tokarev/persona_todo
       - name: Build and push container
         uses: docker/build-push-action@v3
         with:
@@ -33,7 +28,5 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/gregor-tokarev/personal_todo/backend:latest
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/gregor-tokarev/personal_todo_backend:latest
 
