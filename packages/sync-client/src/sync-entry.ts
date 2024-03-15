@@ -1,7 +1,8 @@
 import { Table } from "./define-schema";
 import { ColumnBase } from "./column-base";
-import { DB, SYNC_STORE_NAME } from "./connect";
+import { SYNC_STORE_NAME } from "./connect";
 import { nanoid } from "nanoid";
+import { SyncContext } from "./models/sync-context.model";
 
 export abstract class SyncAction {
   id: string | number;
@@ -52,9 +53,13 @@ export class SyncEntry {
 
 export async function createSync<
   TDataSchema extends Record<string, ColumnBase<any>>,
->(syncAction: SyncAction, table: Table<any, TDataSchema>) {
+>(
+  syncContext: SyncContext,
+  syncAction: SyncAction,
+  table: Table<any, TDataSchema>,
+) {
   const sync = new SyncEntry(syncAction, table.name);
-  await DB.put(SYNC_STORE_NAME, sync);
+  await syncContext.db.put(SYNC_STORE_NAME, sync);
 
   return sync;
 }

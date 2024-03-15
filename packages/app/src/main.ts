@@ -15,13 +15,6 @@ import { vueSyncClientPlugin } from "vue-sync-client";
 
 const pinia = createPinia();
 
-// export const idbContextManager = await connect(1, [
-//   taskStore,
-//   projectStore,
-//   draftStore,
-//   apiKeyStore,
-// ]);
-
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
