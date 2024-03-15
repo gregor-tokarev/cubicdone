@@ -33,7 +33,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/gregor-tokarev/persona_todo/backend:latest
+          tags: ghcr.io/gregor-tokarev/personal_todo/backend:latest
 #          tags: ${{ steps.meta.outputs.tags }}
 #          labels: ${{ steps.meta.outputs.labels }}
 
