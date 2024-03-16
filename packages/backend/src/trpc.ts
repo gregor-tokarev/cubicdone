@@ -8,7 +8,9 @@ interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 export async function createContext({ req }: Context) {
   const cookieStr = req.headers.cookie as string;
 
+  console.log(cookieStr);
   const token = cookie.parse(cookieStr)["__session"];
+  console.log(token);
   if (!token) return { user: null };
 
   try {
