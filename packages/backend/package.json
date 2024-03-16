@@ -2,8 +2,8 @@
   "name": "backend",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts",
+    "dev": "NODE_ENV=development tsx watch src/index.ts",
+    "start": "NODE_ENV=production tsx src/index.ts",
     "migrations:gen": "drizzle-kit generate:pg",
     "migrations:push": "drizzle-kit push:pg"
   },

@@ -7,11 +7,9 @@ import { deleteItemScoped } from "./manager-methods/delete-item";
 import { sendAllSyncs } from "./manager-methods/send-all-syncs";
 import { backwardSyncScoped } from "./manager-methods/backward-sync";
 import { getItemsScoped } from "./manager-methods/get-items";
-import { newStore } from "./migration-helpers/new-store";
 import { adjustStore } from "./migration-helpers/adjust-store";
 import { SyncContext } from "./models/sync-context.model";
-import { OnSyncStateFn } from "./models/sync-state-fn.model";
-import { OnSyncFn } from "./models/sync-fn.model";
+import { OnSyncFn, OnSyncStateFn } from "./models";
 
 const syncContext = {
   db: null,
@@ -32,6 +30,7 @@ export async function connect<
   syncContext.db = await openDB(DB_NAME, version, {
     upgrade(database, oldVersion, newVersion, transaction, _event) {
       if (oldVersion >= newVersion) return;
+      console.log(database.objectStoreNames);
 
       if (!database.objectStoreNames.contains(SYNC_STORE_NAME))
         database.createObjectStore(SYNC_STORE_NAME, {
@@ -42,12 +41,30 @@ export async function connect<
         const indexColumns = Object.values(sc.dataSchema).filter(
           (column) => column.config.createIndex,
         );
-        const primaryColumn = Object.values(sc.dataSchema).find(
-          (column) => column.config.isPrimary,
-        );
 
         if (!database.objectStoreNames.contains(sc.name)) {
-          newStore(database, transaction, sc, indexColumns);
+          const primaryColumn = Object.values(sc.dataSchema).find(
+            (column) => column.config.isPrimary,
+          );
+
+          const store = database.createObjectStore(sc.name, {
+            keyPath: primaryColumn.config.name,
+          });
+          const indexes = store.indexNames;
+
+          Array.from(indexes).forEach((index) => {
+            if (!indexColumns.map((c) => c.config.name).includes(index)) {
+              console.log(`Deleting index ${index}...`);
+              store.deleteIndex(index);
+            }
+          });
+
+          indexColumns.forEach((c) => {
+            if (!indexes.contains(c.config.name)) {
+              console.log(`Creating index ${c.config.name}...`);
+              store.createIndex(c.config.name, c.config.name);
+            }
+          });
         } else {
           adjustStore(transaction, sc, indexColumns);
         }

@@ -18,16 +18,23 @@ const pinia = createPinia();
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: import.meta.env.VITE_SYNC_URL ?? "http://localhost:4000",
+      url: import.meta.env.PROD
+        ? import.meta.env.VITE_SYNC_URL
+        : "http://localhost:4000",
       fetch(url, options) {
-        return fetch(url, {
+        const finOptions = {
           ...options,
           credentials: "include",
-        });
+        } as RequestInit;
+        console.log(finOptions);
+
+        return fetch(url, finOptions);
       },
     }),
   ],
 });
+
+console.log("Сукаааа.....");
 
 createApp(App)
   .directive("hint", hint)
@@ -37,7 +44,7 @@ createApp(App)
   .use(router)
   .use(pinia)
   .use(vueSyncClientPlugin, {
-    dbVersion: 3,
+    dbVersion: 5,
     schema: [taskStore, apiKeyStore, draftStore, projectStore],
     onSync: async (sync, resolveFn) => {
       if (sync.targetTable === draftStore.name) {
