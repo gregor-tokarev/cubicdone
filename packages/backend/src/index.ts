@@ -27,7 +27,7 @@ export type AppRouter = typeof appRouter;
 const server = createHTTPServer({
   router: appRouter,
   middleware: cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://todo.tokarev.work"],
     credentials: true,
   }),
   createContext,
