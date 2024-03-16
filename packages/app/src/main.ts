@@ -26,7 +26,6 @@ export const trpc = createTRPCClient<AppRouter>({
       fetch(url, options) {
         const cookies = cookie.parse(document.cookie);
         const sessionToken = cookies["__session"];
-        console.log(sessionToken);
 
         return fetch(url, {
           ...options,
