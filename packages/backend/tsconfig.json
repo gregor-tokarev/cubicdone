@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "amd",
+    "module": "NodeNext",
     "types": [
       "node"
     ],
