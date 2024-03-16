@@ -22,10 +22,13 @@ export const trpc = createTRPCClient<AppRouter>({
         ? import.meta.env.VITE_SYNC_URL
         : "http://localhost:4000",
       fetch(url, options) {
-        return fetch(url, {
+        const finOptions = {
           ...options,
           credentials: "include",
-        });
+        } as RequestInit;
+        console.log(finOptions);
+
+        return fetch(url, finOptions);
       },
     }),
   ],
