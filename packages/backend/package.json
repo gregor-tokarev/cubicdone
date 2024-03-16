@@ -3,7 +3,9 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "migrations:gen": "drizzle-kit generate:pg",
+    "migrations:push": "drizzle-kit push:pg"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.11",
