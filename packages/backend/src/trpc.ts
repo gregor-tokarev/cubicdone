@@ -6,6 +6,8 @@ import * as cookie from "cookie";
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
+  console.log(req);
+  console.log(req.headers);
   const cookieStr = req.headers.cookie as string;
 
   console.log(cookieStr);
