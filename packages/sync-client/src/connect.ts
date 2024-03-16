@@ -30,6 +30,7 @@ export async function connect<
   syncContext.db = await openDB(DB_NAME, version, {
     upgrade(database, oldVersion, newVersion, transaction, _event) {
       if (oldVersion >= newVersion) return;
+      console.log(database.objectStoreNames);
 
       if (!database.objectStoreNames.contains(SYNC_STORE_NAME))
         database.createObjectStore(SYNC_STORE_NAME, {

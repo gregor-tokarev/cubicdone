@@ -42,7 +42,7 @@ createApp(App)
   .use(router)
   .use(pinia)
   .use(vueSyncClientPlugin, {
-    dbVersion: 4,
+    dbVersion: 5,
     schema: [taskStore, apiKeyStore, draftStore, projectStore],
     onSync: async (sync, resolveFn) => {
       if (sync.targetTable === draftStore.name) {
