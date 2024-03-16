@@ -5,7 +5,7 @@ import { clerkClient } from "@clerk/clerk-sdk-node";
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
-  const token = req.headers["Authorization"];
+  const token = req.headers["authorization"];
   if (!token) return { user: null };
 
   try {
