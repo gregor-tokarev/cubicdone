@@ -39,8 +39,8 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "flat-donkey-84"
-          entrypoint: "packages/backend/src/index.ts" # 📝 Update the entrypoint if necessary
-          root: "./out" # 📝 Update the root if necessary
+          entrypoint: "out/packages/backend/src/index.ts" # 📝 Update the entrypoint if necessary
+          root: "." # 📝 Update the root if necessary
 #  release:
 #    runs-on: ubuntu-latest
 #    steps:
