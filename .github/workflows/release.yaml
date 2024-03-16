@@ -49,6 +49,8 @@ jobs:
             echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> .env &&
             
             docker pull ghcr.io/gregor-tokarev/backend:latest &&
+            docker stop $(docker ps -aq) &&
+            docker rm $(docker ps -aq) &&
             docker run -p 4000:4000 -d --env-file=.env ghcr.io/gregor-tokarev/backend
           
 
