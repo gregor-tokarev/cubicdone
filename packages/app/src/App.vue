@@ -7,6 +7,7 @@ const { isSignedIn, isLoaded } = useAuth();
 const router = useRouter();
 
 watch(isLoaded, () => {
+  console.log(isSignedIn.value);
   if (!isLoaded.value) return;
 
   if (!isSignedIn.value) {
