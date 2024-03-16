@@ -11,7 +11,6 @@ export async function createContext({ req }: Context) {
   try {
     const payload = await clerkClient.verifyToken(token);
     const user = await clerkClient.users.getUser(payload.sub);
-    console.log(user);
 
     return { user };
   } catch (err) {
@@ -25,7 +24,6 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 
 const isAuthorized = t.middleware((opts) => {
-  console.log(opts.ctx);
   if (!("user" in opts.ctx) || !opts.ctx.user)
     throw new TRPCError({ code: "UNAUTHORIZED" });
 
