@@ -12,23 +12,28 @@ import { apiKeyStore } from "@models/api-key.model.ts";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
 import { vueSyncClientPlugin } from "vue-sync-client";
+import * as cookie from "cookie";
 
 const pinia = createPinia();
 
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: import.meta.env.PROD
-        ? import.meta.env.VITE_SYNC_URL
-        : "http://localhost:4000",
+      // url: import.meta.env.PROD
+      //   ? import.meta.env.VITE_SYNC_URL
+      //   : "http://localhost:4000",
+      url: import.meta.env.VITE_SYNC_URL,
       fetch(url, options) {
-        const finOptions = {
-          ...options,
-          credentials: "include",
-        } as RequestInit;
-        console.log(finOptions);
+        const cookies = cookie.parse(document.cookie);
+        const sessionToken = cookies["__session"];
 
-        return fetch(url, finOptions);
+        return fetch(url, {
+          ...options,
+          headers: {
+            ...options?.headers,
+            Authorization: sessionToken,
+          },
+        });
       },
     }),
   ],

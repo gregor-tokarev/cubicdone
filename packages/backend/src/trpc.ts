@@ -1,18 +1,11 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import { clerkClient } from "@clerk/clerk-sdk-node";
-import * as cookie from "cookie";
 
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
-  console.log(req);
-  console.log(req.headers);
-  const cookieStr = req.headers.cookie as string;
-
-  console.log(cookieStr);
-  const token = cookie.parse(cookieStr)["__session"];
-  console.log(token);
+  const token = req.headers["Authorization"];
   if (!token) return { user: null };
 
   try {
