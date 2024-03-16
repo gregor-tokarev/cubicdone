@@ -18,7 +18,9 @@ const pinia = createPinia();
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: import.meta.env.VITE_SYNC_URL ?? "http://localhost:4000",
+      url: import.meta.env.PROD
+        ? import.meta.env.VITE_SYNC_URL
+        : "http://localhost:4000",
       fetch(url, options) {
         return fetch(url, {
           ...options,
