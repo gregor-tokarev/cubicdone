@@ -1,10 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Draft } from "@models/draft.model.ts";
 import PlanInbox from "@components/layout/plan/PlanInbox.vue";
 import PlanPlanner from "@components/layout/plan/PlanPlanner.vue";
+import { useDraftsStore } from "@store/drafts.ts";
+import { useTaskStore } from "@store/task.ts";
+import { useProjectStore } from "@store/project.ts";
+import { useIntegrationStore } from "@store/integration.ts";
 
 const integrationDrafts = ref<Draft[]>([]);
+
+const integrationStore = useIntegrationStore();
+const draftStore = useDraftsStore();
+const taskStore = useTaskStore();
+const projectStore = useProjectStore();
+
+onMounted(async () => {
+  await Promise.all([
+    draftStore.loadDrafts(),
+    taskStore.loadTasks(),
+    projectStore.loadProjects(),
+    integrationStore.loadKeys(),
+  ]);
+});
 </script>
 
 <template>

@@ -16,7 +16,7 @@ const emit = defineEmits<{
   >
     <span>{{ apiKey.label }}</span>
     <button
-      class="rounded border border-gray-150 px-2 py-[3px] text-xs"
+      class="border-gray-150 rounded border px-2 py-[3px] text-xs"
       @click="emit('revoke')"
     >
       Revoke

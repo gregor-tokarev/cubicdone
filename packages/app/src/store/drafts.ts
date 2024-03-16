@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core";
-import { Draft } from "@models/draft.model.ts";
+import { Draft, draftStore } from "@models/draft.model.ts";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
+import { trpc } from "../main.ts";
+import { useIdbxConnectionManager } from "vue-sync-client";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({
-    drafts: useLocalStorage<Draft[]>("drafts", []),
+    drafts: [] as Draft[],
   }),
   actions: {
     // revertFromTask(taskId: string) {
@@ -26,7 +27,18 @@ export const useDraftsStore = defineStore("drafts", {
     //
     //     taskStore.remove(taskId)
     // },
-    create(title: string, projectId: string | null): Draft {
+    async loadDrafts() {
+      const connectionManager = await useIdbxConnectionManager();
+      this.drafts = await connectionManager.getItems(draftStore);
+    },
+    async backwardSync() {
+      const drafts = await trpc.draft.getAll.query();
+
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(draftStore, drafts);
+      this.drafts = await connectionManager.getItems(draftStore);
+    },
+    async create(title: string, projectId: string | null): Promise<Draft> {
       const draft: Draft = {
         id: nanoid(3),
         dateCreated: dayjs().toISOString(),
@@ -36,18 +48,26 @@ export const useDraftsStore = defineStore("drafts", {
         title,
       };
 
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(draftStore, draft);
       this.drafts.push(draft);
 
       return draft;
     },
-    edit(id: string, title: string): Draft | undefined {
+    async edit(id: string, title: string): Promise<Draft | undefined> {
       const draft = this.drafts.find((d) => d.id === id);
       if (!draft) return;
 
       draft.title = title;
       draft.dateUpdated = dayjs().toISOString();
+
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(draftStore, draft);
     },
-    remove(id: string | string[]): void {
+    async remove(id: string | string[]): Promise<void> {
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.deleteItem(draftStore, id);
+
       if (typeof id === "string") {
         const draftIdx = this.drafts.findIndex((d) => d.id === id);
         this.descOrders(id);
@@ -64,48 +84,63 @@ export const useDraftsStore = defineStore("drafts", {
         });
       }
     },
-    descOrders(draftId: string) {
+    async descOrders(draftId: string) {
       const draft = this.getOne(draftId);
       if (!draft) return;
+
+      const connectionManager = await useIdbxConnectionManager();
 
       this.drafts
         .filter((d) => d.order >= draft.order && d.id !== draftId)
         .forEach((d) => {
+          connectionManager.putItem(draftStore, { ...d, order: d.order - 1 });
           d.order--;
         });
     },
-    changeOrder(
+    async changeOrder(
       draftId: string,
       oldIdx: number,
       newIdx: number,
-    ): Draft | undefined {
+    ): Promise<Draft | undefined> {
       const draft = this.getOne(draftId);
       if (!draft) return;
+
+      const connectionManager = await useIdbxConnectionManager();
 
       if (oldIdx > newIdx) {
         const targetDrafts = this.drafts.filter(
           (t) => t.order >= newIdx && t.order < oldIdx && t.id !== draftId,
         );
 
-        targetDrafts.forEach((t) => t.order++);
+        targetDrafts.forEach((t) => {
+          connectionManager.putItem(draftStore, { ...t, order: t.order + 1 });
+          t.order++;
+        });
       } else if (oldIdx < newIdx) {
         const targetDrafts = this.drafts.filter(
           (t) => t.order <= newIdx && t.order > oldIdx && t.id !== draftId,
         );
 
-        targetDrafts.forEach((t) => t.order--);
+        targetDrafts.forEach((t) => {
+          connectionManager.putItem(draftStore, { ...t, order: t.order - 1 });
+          t.order--;
+        });
       }
 
       draft.order = newIdx;
+      connectionManager.putItem(draftStore, { ...draft, order: newIdx });
 
       return draft;
     },
-    setProject(draftId: string | string[], projectId: string) {
+    async setProject(draftId: string | string[], projectId: string) {
+      const connectionManager = await useIdbxConnectionManager();
+
       if (Array.isArray(draftId)) {
         this.drafts
           .filter((d) => draftId.includes(d.id))
           .forEach((d) => {
             d.projectId = projectId;
+            connectionManager.putItem(draftStore, { ...d, projectId });
           });
 
         return;
@@ -114,6 +149,7 @@ export const useDraftsStore = defineStore("drafts", {
       if (!draft) return;
 
       draft.projectId = projectId;
+      connectionManager.putItem(draftStore, { ...draft, projectId });
     },
   },
   getters: {

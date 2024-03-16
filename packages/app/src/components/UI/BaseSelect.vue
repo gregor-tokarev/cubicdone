@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Icon from "../Icon.vue";
 import { computed, onMounted, ref } from "vue";
-import { useEventListener, onClickOutside } from "@vueuse/core";
+import { onClickOutside, useEventListener } from "@vueuse/core";
 import Fuse from "fuse.js";
 
 const props = defineProps<{

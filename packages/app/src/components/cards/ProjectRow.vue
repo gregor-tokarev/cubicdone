@@ -2,7 +2,7 @@
 import { Project } from "@models/project.model.ts";
 import { useProjectStore } from "@store/project.ts";
 import { computed, ref } from "vue";
-import { onClickOutside } from "@vueuse/core";
+import { onClickOutside, useDebounceFn } from "@vueuse/core";
 
 const projectStore = useProjectStore();
 
@@ -31,12 +31,14 @@ const colorBound = computed(() => {
   return color.value.getBoundingClientRect();
 });
 
-function onEditDraft(event: Event) {
-  const target = event.currentTarget as HTMLElement;
+function editDraft(event: Event) {
+  const target = event.target as HTMLElement;
   const value = target.textContent;
 
   value && emit("update", { title: value });
 }
+
+const onEditDraft = useDebounceFn(editDraft, 1000);
 
 function onPickColor(color: string) {
   emit("update", { color });
@@ -56,7 +58,7 @@ function onEnter(event: Event) {
       <div
         ref="color"
         @click="showColorPicker = !showColorPicker"
-        class="h-5 w-5 cursor-pointer rounded-full hover:shadow-colorPick"
+        class="hover:shadow-colorPick h-5 w-5 cursor-pointer rounded-full"
         :class="{ [`bg-${project.color}-400`]: true }"
       ></div>
       <span>
@@ -93,7 +95,7 @@ function onEnter(event: Event) {
       <div
         v-for="c in projectStore.colors"
         :key="c"
-        class="h-5 w-5 cursor-pointer rounded-full border hover:shadow-colorPick"
+        class="hover:shadow-colorPick h-5 w-5 cursor-pointer rounded-full border"
         :class="{ [`bg-${c}-400`]: true, 'border-black': c === project.color }"
         @click="onPickColor(c)"
       ></div>

@@ -90,7 +90,7 @@ function onClick(projectId: string) {
         ref="searchEl"
         v-model="query"
         @keydown="onKeydown"
-        class="w-full border-b border-gray-150 bg-transparent p-2 placeholder-gray-500 outline-0"
+        class="border-gray-150 w-full border-b bg-transparent p-2 placeholder-gray-500 outline-0"
         placeholder="Change project..."
       />
       <div v-if="projectModalStore.modalOptions" class="">

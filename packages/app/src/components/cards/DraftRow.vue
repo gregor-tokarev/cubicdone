@@ -7,6 +7,7 @@ import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
 import Icon from "../Icon.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
+import { useDebounceFn } from "@vueuse/core";
 
 const props = defineProps<{
   draft: Draft;
@@ -20,12 +21,14 @@ const emit = defineEmits<{
 
 const mode = ref<"view" | "edit">("view");
 
-function onEditDraft(event: Event) {
-  const target = event.currentTarget as HTMLElement;
+function editDraft(event: Event) {
+  const target = event.target as HTMLElement;
   const value = target.textContent;
 
   value && emit("update:title", value);
 }
+
+const onEditDraft = useDebounceFn(editDraft, 1000);
 
 const editEl = ref<HTMLElement | null>(null);
 

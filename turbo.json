@@ -7,7 +7,9 @@
     "dev": {
       "cache": false,
       "persistent": true
-    }
+    },
+    "migrations:gen": {"outputs":  ["migrations/*"]},
+    "migrations:push": {}
   },
   "globalDependencies": [
     ".env.local",

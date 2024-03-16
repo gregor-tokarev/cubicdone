@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core";
-import { Project, ProjectStatistic } from "@models/project.model.ts";
+import {
+  Project,
+  ProjectStatistic,
+  projectStore,
+} from "@models/project.model.ts";
 import { randomInt } from "@utils/random.ts";
 import { nanoid } from "nanoid";
 import Fuse from "fuse.js";
@@ -8,12 +11,14 @@ import { useDraftsStore } from "./drafts.ts";
 import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
 import { useTaskStore } from "./task.ts";
+import { trpc } from "../main.ts";
+import { useIdbxConnectionManager } from "vue-sync-client";
 
 dayjs.extend(minMax);
 
 export const useProjectStore = defineStore("project", {
   state: () => ({
-    projects: useLocalStorage<Project[]>("projects", []),
+    projects: [] as Project[],
     colors: [
       "red",
       "orange",
@@ -35,7 +40,18 @@ export const useProjectStore = defineStore("project", {
     ],
   }),
   actions: {
-    create(title: string): Project {
+    async loadProjects() {
+      const connectionManager = await useIdbxConnectionManager();
+      this.projects = await connectionManager.getItems(projectStore);
+    },
+    async backwardSync() {
+      const projects = await trpc.project.getAll.query();
+
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(projectStore, projects);
+      this.projects = await connectionManager.getItems(projectStore);
+    },
+    async create(title: string): Promise<Project> {
       const proj: Project = {
         id: nanoid(4),
         color: this.colors[randomInt(0, this.colors.length)],
@@ -43,15 +59,24 @@ export const useProjectStore = defineStore("project", {
         order: 0,
       };
 
-      this.projects.forEach((p) => p.order++);
+      const connectionManager = await useIdbxConnectionManager();
 
+      this.projects.forEach((p) => {
+        connectionManager.putItem(projectStore, { ...p, order: p.order + 1 });
+        p.order++;
+      });
+
+      connectionManager.putItem(projectStore, proj);
       this.projects.push(proj);
 
       return proj;
     },
-    edit(id: string, project: Partial<Project>): Project {
+    async edit(id: string, project: Partial<Project>): Promise<Project> {
       const pIdx = this.projects.findIndex((p) => p.id === id);
       this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
+
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(projectStore, this.projects[pIdx]);
 
       return this.projects[pIdx];
     },

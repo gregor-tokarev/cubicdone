@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "migrations:gen": "drizzle-kit generate:pg",
+    "migrations:push": "drizzle-kit push:pg"
+  },
+  "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.11",
+    "cookie": "^0.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.30.0",
+    "drizzle-zod": "^0.5.1",
+    "hono": "^4.0.10",
+    "postgres": "^3.4.3"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/cookie": "^0.6.0",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^20.11.17",
+    "drizzle-kit": "^0.20.14"
+  }
+}
