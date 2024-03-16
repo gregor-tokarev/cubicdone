@@ -50,4 +50,4 @@ COPY --from=migrator /app .
 EXPOSE 4000
 
 # Command to start your application
-CMD cd packages/backend && drizzle-kit push:pg && npm start
+CMD cd packages/backend && ./node_modules/.bin/drizzle-kit push:pg && npm start
