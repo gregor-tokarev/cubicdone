@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ["sync-package"]
+    branches: ["master"]
 
 jobs:
   release:
