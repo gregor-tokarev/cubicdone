@@ -22,7 +22,6 @@ export const trpc = createTRPCClient<AppRouter>({
       url: import.meta.env.PROD
         ? import.meta.env.VITE_SYNC_URL
         : "http://localhost:4000",
-      // url: import.meta.env.VITE_SYNC_URL,
       fetch(url, options) {
         const cookies = cookie.parse(document.cookie);
         const sessionToken = cookies["__session"];
