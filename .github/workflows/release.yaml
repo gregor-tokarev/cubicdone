@@ -30,7 +30,7 @@ jobs:
         run: npm i
 
       - name: Build step
-        run: turbo prune backend
+        run: ./node_modules/.bin/turbo prune backend
 
       - name: Install packages
         run: cd out && npm ci
