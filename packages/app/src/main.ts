@@ -34,8 +34,6 @@ export const trpc = createTRPCClient<AppRouter>({
   ],
 });
 
-console.log("Сукаааа.....");
-
 createApp(App)
   .directive("hint", hint)
   .use(clerkPlugin, {
