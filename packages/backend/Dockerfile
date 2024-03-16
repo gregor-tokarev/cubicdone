@@ -31,14 +31,23 @@ RUN npm ci
 # Copy the rest of the application
 COPY --from=base /app/out/full/ .
 
+
+FROM node:18-alpine as migrator
+
+RUN npm i -g turbo
+
+WORKDIR /app
+COPY --from=installer /app .
+RUN turbo migrate:gen --filter=backend
+
 # Build the application
 # Final stage for running the application
 FROM node:18-alpine AS runner
 WORKDIR /app
-COPY --from=installer /app .
+COPY --from=migrator /app .
 
 # Expose the port your application runs on
 EXPOSE 4000
 
 # Command to start your application
-CMD cd packages/backend && npm start
+CMD cd packages/backend && drizzle-kit push:pg && npm start

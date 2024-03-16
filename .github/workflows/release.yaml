@@ -30,18 +30,6 @@ jobs:
           cache-to: type=gha,mode=max
           tags: ghcr.io/gregor-tokarev/backend:latest
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm ci
-      - name: Generate Migrations
-        run: ./node_modules/.bin/turbo migrations:gen --filter=backend
-      - name: run migrations
-        run: ./node_modules/.bin/turbo migrations:push --filter=backend
-
       - name: run on server
         uses: garygrossgarten/github-action-ssh@release
         with:
