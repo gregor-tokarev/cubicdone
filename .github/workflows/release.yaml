@@ -38,9 +38,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Generate Migrations
-        run: turbo migrations:gen --filter=backend
+        run: ./node_modules/.bin/turbo migrations:gen --filter=backend
       - name: run migrations
-        run: turbo migrations:push --filter=backend
+        run: ./node_modules/.bin/turbo migrations:push --filter=backend
 
       - name: run on server
         uses: garygrossgarten/github-action-ssh@release
