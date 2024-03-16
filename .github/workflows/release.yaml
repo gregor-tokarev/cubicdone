@@ -44,7 +44,6 @@ jobs:
             
             rm -f .env &&
             touch .env &&
-            
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env &&
             echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" >> .env &&
             echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> .env &&
