@@ -24,6 +24,7 @@ export const useDraftsStore = defineStore("drafts", {
         title: task.title,
         projectId: task.projectId,
         order: order,
+        external: task.external,
       };
 
       const connectionManager = await useIdbxConnectionManager();
