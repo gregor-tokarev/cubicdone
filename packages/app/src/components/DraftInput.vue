@@ -329,7 +329,7 @@ function onClickProject(projectId: string) {
  * Triggers every time `Enter` pressed in project block
  * @param evt
  */
-function handleProjectEnter(evt: KeyboardEvent) {
+async function handleProjectEnter(evt: KeyboardEvent) {
   evt.preventDefault();
 
   const tempValue = JSON.parse(JSON.stringify(props.modelValue));
@@ -338,7 +338,7 @@ function handleProjectEnter(evt: KeyboardEvent) {
     projectOptionSelected.value === projectSelectOptions.value.length &&
     !queryMatchProject.value
   ) {
-    const project = projectStore.create(projectQuery.value);
+    const project = await projectStore.create(projectQuery.value);
 
     tempValue[currentPartIdx.value].projectId = project.id;
   } else {
