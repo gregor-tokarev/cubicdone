@@ -9,7 +9,7 @@ const router = useRouter();
 watch(isLoaded, () => {
   if (!isLoaded.value) return;
 
-  if (!isSignedIn.value) {
+  if (!isSignedIn.value && !location.pathname.includes("/auth")) {
     router.replace("/auth");
   }
 });
