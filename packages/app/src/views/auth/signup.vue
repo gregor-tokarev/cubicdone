@@ -34,15 +34,15 @@ async function onSignup(strategy: OAuthStrategy) {
     </h1>
     <div class="space-y-4">
       <AuthButton @click="onSignup('oauth_google')">
-        <Icon name="google"></Icon>
+        <Icon :size="24" name="google"></Icon>
         <span>Continue with google</span>
       </AuthButton>
       <AuthButton @click="onSignup('oauth_notion')">
-        <Icon name="notion"></Icon>
+        <Icon :size="24" name="notion"></Icon>
         <span>Continue with notion</span></AuthButton
       >
       <AuthButton @click="onSignup('oauth_linear')">
-        <Icon name="linear"></Icon>
+        <Icon :size="24" name="linear"></Icon>
         <span>Continue with linear</span></AuthButton
       >
     </div>
