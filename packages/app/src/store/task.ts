@@ -53,9 +53,9 @@ export const useTaskStore = defineStore("task", {
       connectionManager.putItem(taskStore, task);
 
       this.tasks.push(task);
-      this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
+      await this.setOrder(task.id, task.dateTodo, newIdx); // needed to change other tasks order
 
-      draftStore.remove(draftId);
+      await draftStore.remove(draftId);
     },
     async commitIntegration(
       draft: Draft,

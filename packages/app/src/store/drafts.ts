@@ -4,35 +4,46 @@ import { nanoid } from "nanoid";
 import dayjs from "dayjs";
 import { trpc } from "../main.ts";
 import { useIdbxConnectionManager } from "vue-sync-client";
+import { useTaskStore } from "@store/task.ts";
 
 export const useDraftsStore = defineStore("drafts", {
   state: () => ({
     drafts: [] as Draft[],
   }),
   actions: {
-    // revertFromTask(taskId: string) {
-    //     const taskStore = useTaskStore()
-    //
-    //     const task = taskStore.getOne(taskId)
-    //     if (!task) return
-    //
-    //     const draft: Draft = {
-    //         id: nanoid(3),
-    //         dateCreated: task.dateCreated,
-    //         dateUpdated: task.dateUpdated,
-    //         title: task.title
-    //     }
-    //
-    //     this.drafts.push(draft)
-    //
-    //     taskStore.remove(taskId)
-    // },
+    async revertFromTask(taskId: string, order: number) {
+      const taskStore = useTaskStore();
+
+      const task = taskStore.getOne(taskId);
+      if (!task) return;
+
+      const draft: Draft = {
+        id: task.draftId,
+        dateCreated: task.dateCreated,
+        dateUpdated: task.dateUpdated,
+        title: task.title,
+        projectId: task.projectId,
+        order: order,
+      };
+
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.putItem(draftStore, draft);
+      this.drafts.push(draft);
+
+      await this.setOrder(draft.id, order);
+
+      await taskStore.remove(taskId);
+
+      return draft;
+    },
     async loadDrafts() {
       const connectionManager = await useIdbxConnectionManager();
       this.drafts = await connectionManager.getItems(draftStore);
     },
     async backwardSync() {
       const drafts = await trpc.draft.getAll.query();
+
+      await new Promise((r) => setTimeout(r, 20000));
 
       const connectionManager = await useIdbxConnectionManager();
       await connectionManager.backwardSync(draftStore, drafts);
@@ -83,6 +94,23 @@ export const useDraftsStore = defineStore("drafts", {
           return true;
         });
       }
+    },
+    async setOrder(draftId: string, order: number): Promise<Draft | undefined> {
+      const draft = this.drafts.find((t) => t.id === draftId);
+      if (!draft) return;
+
+      draft.order = order;
+
+      const connectionManager = await useIdbxConnectionManager();
+
+      this.drafts
+        .filter((d) => d.order >= order && d.id !== draftId)
+        .forEach((d) => {
+          connectionManager.putItem(draftStore, { ...d, order: d.order + 1 });
+          d.order++;
+        });
+
+      return draft;
     },
     async descOrders(draftId: string) {
       const draft = this.getOne(draftId);

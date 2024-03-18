@@ -26,7 +26,7 @@ const loadingDrafts = ref(false);
 
 const allDrafts = computed(() => {
   return JSON.parse(
-    JSON.stringify([...props.integrationDrafts, ...draftStore.drafts]),
+    JSON.stringify([...props.integrationDrafts, ...draftStore.sortedDrafts]),
   );
 });
 
@@ -78,9 +78,18 @@ onMounted(() => {
   }
 });
 
-function onChangeDraft(event: any) {
+function onStartDraggingDraft(event: any) {
   const target = event.item as HTMLElement;
   target.style.maxWidth = "unset";
+}
+
+function onChangeDraft(evt: any) {
+  if ("added" in evt) {
+    const idx = evt["added"]["newIndex"];
+    const { id: taskId } = evt["added"]["element"];
+
+    draftStore.revertFromTask(taskId, idx);
+  }
 }
 </script>
 
@@ -102,8 +111,9 @@ function onChangeDraft(event: any) {
     <VueDraggableNext
       class="flex min-h-[78px] items-center space-x-2.5 overflow-auto pb-2.5"
       :list="allDrafts"
-      @start="onChangeDraft($event)"
-      :group="{ name: 'tasks', put: false, pull: 'clone' }"
+      @change="onChangeDraft($event)"
+      @start="onStartDraggingDraft($event)"
+      :group="{ name: 'tasks', pull: 'clone' }"
     >
       <DraftCard
         class="min-w-[25%] grow"

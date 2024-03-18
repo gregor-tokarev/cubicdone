@@ -13,6 +13,7 @@ defineProps<{
   <div
     class="cursor-grab space-y-1 rounded-lg bg-gray-100 px-4 py-2.5 active:cursor-grabbing"
   >
+    {{ draft.order }}
     <Markdown :model-value="draft.title"></Markdown>
     <div class="flex items-center space-x-1">
       <ProjectTag
