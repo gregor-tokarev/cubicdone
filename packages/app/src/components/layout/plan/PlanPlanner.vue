@@ -15,6 +15,10 @@ const props = defineProps<{
   integrationDrafts: Draft[];
 }>();
 
+const emit = defineEmits<{
+  (e: "update:integrationDrafts", value: Draft[]): void;
+}>();
+
 const taskStore = useTaskStore();
 
 // Initial Day columns generation
@@ -124,7 +128,13 @@ function onMove([date, evt]: [Dayjs, any]) {
         const integrationIdx = props.integrationDrafts.findIndex(
           (d) => d.id === draft.id,
         );
-        props.integrationDrafts.splice(integrationIdx, 1);
+
+        const tempIntegrations = JSON.parse(
+          JSON.stringify(props.integrationDrafts),
+        );
+        tempIntegrations.splice(integrationIdx, 1);
+
+        emit("update:integrationDrafts", tempIntegrations);
       }
     }
   } else if ("moved" in evt) {

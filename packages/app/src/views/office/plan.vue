@@ -41,7 +41,7 @@ onMounted(async () => {
     <!--    Date columns-->
     <PlanPlanner
       class="grow"
-      :integration-drafts="integrationDrafts"
+      v-model:integration-drafts="integrationDrafts"
     ></PlanPlanner>
   </div>
 </template>
