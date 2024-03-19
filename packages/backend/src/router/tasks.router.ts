@@ -1,11 +1,7 @@
 import { authedProcedure, router } from "../trpc";
 import { db } from "../index";
-import {
-  tasksTableValidator,
-  taskTable,
-  taskTableInsertValidator,
-} from "../models/schema";
-import { undefined, z } from "zod";
+import { tasksTableValidator, taskTable } from "../models/schema";
+import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 
