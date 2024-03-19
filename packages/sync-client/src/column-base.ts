@@ -1,4 +1,4 @@
-export type ColumnType = "int" | "string" | "timestamp";
+export type ColumnType = "int" | "string" | "timestamp" | "object";
 
 interface DefaultFn<T> {
   (): T;

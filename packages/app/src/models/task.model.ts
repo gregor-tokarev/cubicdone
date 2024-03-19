@@ -1,4 +1,4 @@
-import { createdAt, defineSchema, integer, string } from "sync-client";
+import { createdAt, defineSchema, integer, string, object } from "sync-client";
 
 export type Task = {
   id: string;
@@ -33,4 +33,5 @@ export const taskStore = defineSchema("task", {
   dateCompleted: string("dateCompleted"),
   dateTodo: string("dateTodo"),
   projectId: string("projectId"),
+  external: object("external"),
 });

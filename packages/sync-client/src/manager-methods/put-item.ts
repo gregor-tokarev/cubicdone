@@ -2,9 +2,9 @@ import { ColumnBase } from "../column-base";
 import { Table } from "../define-schema";
 import { mapObjectToTable } from "./mapObjectToTable";
 import { createSync, CreateSyncAction, UpdateSyncAction } from "../sync-entry";
-import { SyncContext } from "../sync-context";
 import { mergeSyncEntries } from "./merge-sync-entries";
 import { resolveSyncs } from "./resolve-syncs";
+import { SyncContext } from "../models/sync-context.model";
 
 export function putItemScoped<
   TColumn,

@@ -62,7 +62,6 @@ export const useTaskStore = defineStore("task", {
       dateTodo: string,
       newIdx: number,
     ): Promise<Task> {
-      console.log(draft);
       const task: Task = {
         id: nanoid(3),
         draftId: draft.id,
@@ -77,7 +76,6 @@ export const useTaskStore = defineStore("task", {
         projectId: draft.projectId,
         external: JSON.parse(JSON.stringify(draft.external)),
       };
-      console.log(task);
 
       const connectionManager = await useIdbxConnectionManager();
       connectionManager.putItem(taskStore, task);
