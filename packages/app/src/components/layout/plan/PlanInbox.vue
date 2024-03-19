@@ -35,6 +35,7 @@ onMounted(() => {
   const activatedIntegrations = integrationStore.mappedIntegrations.filter(
     (i) => i.apiKeys.length,
   );
+  console.log(activatedIntegrations, isOnline.value);
   if (activatedIntegrations.length && isOnline.value) {
     try {
       loadingDrafts.value = true;
