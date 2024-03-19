@@ -15,13 +15,13 @@ const emit = defineEmits<{
 <template>
   <div
     v-if="show"
-    class="border-gray-150 z-10 min-w-[220px] space-y-1 rounded border bg-gray-50 px-1.5 py-2.5"
+    class="border-gray-150 z-10 min-w-[265px] space-y-1 rounded border bg-gray-50 px-1.5 py-2.5"
     v-bind="$attrs"
   >
     <div
       v-for="itm in options"
       :key="itm.id"
-      class="flex cursor-pointer items-center justify-between rounded px-2 py-1 text-xs text-gray-700 transition-colors hover:bg-gray-100"
+      class="flex cursor-pointer items-center justify-between rounded px-3 py-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-800"
       @click="emit('option', itm.value)"
     >
       <span>{{ itm.label }}</span>
