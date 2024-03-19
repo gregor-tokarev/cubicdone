@@ -1,6 +1,7 @@
 import { pgTable } from "drizzle-orm/pg-core/table";
 import { integer, varchar } from "drizzle-orm/pg-core";
 import { z } from "zod";
+import { json } from "node:stream/consumers";
 
 export const taskTable = pgTable("task", {
   id: varchar("id").primaryKey(),
@@ -15,8 +16,8 @@ export const taskTable = pgTable("task", {
   dateTodo: varchar("dateTodo"),
   projectId: varchar("projectId"),
   authorId: varchar("authorId").notNull(),
+  external: json("external"),
 });
-
 export const tasksTableValidator = z.object({
   id: z.string(),
   draftId: z.string().nullish(),
@@ -27,6 +28,7 @@ export const tasksTableValidator = z.object({
   dateUpdated: z.string(),
   dateTodo: z.string(),
   projectId: z.string().nullish(),
+  external: z.record(z.string(), z.string()).nullish(),
 });
 
 export const projectTable = pgTable("project", {
