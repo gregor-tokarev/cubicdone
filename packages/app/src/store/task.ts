@@ -4,7 +4,6 @@ import { useDraftsStore } from "./drafts.ts";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import { Draft } from "@models/draft.model.ts";
-import { IntegrationTask } from "@models/integration.model.ts";
 import { trpc } from "../main.ts";
 import { useIdbxConnectionManager } from "vue-sync-client";
 
@@ -19,10 +18,10 @@ export const useTaskStore = defineStore("task", {
     },
 
     async backwardSync() {
-      const tasks = await trpc.task.getAll.query();
+      let tasks = await trpc.task.getAll.query();
 
       const connectionManager = await useIdbxConnectionManager();
-      await connectionManager.backwardSync(taskStore, tasks);
+      await connectionManager.backwardSync(taskStore, tasks as Task[]);
       this.tasks = await connectionManager.getItems(taskStore);
     },
     async commitDraft(
@@ -47,6 +46,7 @@ export const useTaskStore = defineStore("task", {
         order: newIdx,
         dateTodo,
         projectId: draft.projectId,
+        external: null,
       };
 
       const connectionManager = await useIdbxConnectionManager();
@@ -163,7 +163,7 @@ export const useTaskStore = defineStore("task", {
       this.tasks[taskIdx].dateTodo = newDate;
       connectionManager.putItem(taskStore, this.tasks[taskIdx]);
 
-      this.setOrder(taskId, newDate, newIdx);
+      await this.setOrder(taskId, newDate, newIdx);
 
       return this.tasks[taskIdx];
     },
@@ -174,37 +174,37 @@ export const useTaskStore = defineStore("task", {
       const connectionManager = await useIdbxConnectionManager();
       connectionManager.putItem(taskStore, this.tasks[taskIdx]);
     },
-    async updateFromIntegrations(draft: IntegrationTask[]) {
-      const connectionManager = await useIdbxConnectionManager();
-
-      draft.forEach((d) => {
-        const taskIdx = this.tasks.findIndex((t) => t.draftId === d.id);
-
-        const task: Task = {
-          id: nanoid(3),
-          draftId: d.id,
-          title: d.title,
-          status: this.tasks[taskIdx].status,
-          dateUpdated: d.updatedAt,
-          dateCreated: d.createdAt,
-          dateCommitted: dayjs().toISOString(),
-          dateCompleted: null,
-          order: this.tasks[taskIdx].order,
-          dateTodo: this.tasks[taskIdx].dateTodo,
-          projectId: null,
-          external: {
-            integrationName: d.integrationName,
-            projectTitle: d.projectTitle,
-            projectId: d.projectId,
-            iconURL: d.iconURL,
-            link: d.link,
-          },
-        };
-
-        connectionManager.putItem(taskStore, task);
-        this.tasks.splice(taskIdx, 1, task);
-      });
-    },
+    // async updateFromIntegrations(draft: IntegrationTask[]) {
+    //   const connectionManager = await useIdbxConnectionManager();
+    //
+    //   draft.forEach((d) => {
+    //     const taskIdx = this.tasks.findIndex((t) => t.draftId === d.id);
+    //
+    //     const task: Task = {
+    //       id: nanoid(3),
+    //       draftId: d.id,
+    //       title: d.title,
+    //       status: this.tasks[taskIdx].status,
+    //       dateUpdated: d.updatedAt,
+    //       dateCreated: d.createdAt,
+    //       dateCommitted: dayjs().toISOString(),
+    //       dateCompleted: null,
+    //       order: this.tasks[taskIdx].order,
+    //       dateTodo: this.tasks[taskIdx].dateTodo,
+    //       projectId: null,
+    //       external: {
+    //         integrationName: d.integrationName,
+    //         projectTitle: d.projectTitle,
+    //         projectId: d.projectId,
+    //         iconURL: d.iconURL,
+    //         link: d.link,
+    //       },
+    //     };
+    //
+    //     connectionManager.putItem(taskStore, task);
+    //     this.tasks.splice(taskIdx, 1, task);
+    //   });
+    // },
     async remove(taskId: string) {
       const connectionManager = await useIdbxConnectionManager();
       connectionManager.deleteItem(taskStore, taskId);

@@ -12,13 +12,13 @@ export type Task = {
   dateCompleted: string | null;
   dateTodo: string;
   projectId: string | null;
-  external?: {
+  external: {
     integrationName: string;
     projectTitle?: string;
     projectId?: string;
     link: string;
     iconURL: string;
-  };
+  } | null;
 };
 
 export const taskStore = defineSchema("task", {

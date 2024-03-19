@@ -52,13 +52,6 @@ watchEffect(() => {
                 "update:integrationDrafts",
                 props.integrationDrafts.concat(draftedTasks),
               );
-
-              const taskIds = taskStore.tasks.map((t) => t.draftId);
-
-              const draftsToUpdate = tasksFromKey.filter(
-                (d) => taskIds.indexOf(d.id) !== -1,
-              );
-              await taskStore.updateFromIntegrations(draftsToUpdate);
             }
 
             genCount++;
