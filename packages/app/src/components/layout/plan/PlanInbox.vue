@@ -85,6 +85,7 @@ async function onChangeDraft(evt: any) {
     const data = evt["added"]["element"];
     const idx = evt["added"]["newIndex"];
 
+    console.log(data);
     if ("external" in data) {
       const draft: Draft = {
         id: data.draftId,
@@ -101,6 +102,7 @@ async function onChangeDraft(evt: any) {
       ) as Draft[];
 
       emit("update:integrationDrafts", newIntegrations);
+      console.log(props.integrationDrafts);
 
       await taskStore.remove(data["id"]);
     } else {
