@@ -1,7 +1,6 @@
 import { pgTable } from "drizzle-orm/pg-core/table";
-import { integer, varchar } from "drizzle-orm/pg-core";
+import { integer, json, varchar } from "drizzle-orm/pg-core";
 import { z } from "zod";
-import { json } from "node:stream/consumers";
 
 export const taskTable = pgTable("task", {
   id: varchar("id").primaryKey(),
