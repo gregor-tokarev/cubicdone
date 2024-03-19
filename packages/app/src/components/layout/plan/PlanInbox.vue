@@ -2,24 +2,24 @@
 import DraftCard from "@components/cards/DraftCard.vue";
 import { VueSpinner } from "vue3-spinners";
 import { VueDraggableNext } from "vue-draggable-next";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useDraftsStore } from "@store/drafts.ts";
 import { useOnline } from "@vueuse/core";
 import { draftsFromIntegration } from "@utils/draftsFromIntegration.ts";
-import { useIntegrationStore } from "@store/integration.ts";
 import { useTaskStore } from "@store/task.ts";
 import { Draft } from "@models/draft.model.ts";
 import Icon from "@components/Icon.vue";
+import { Integration } from "@models/integration.model.ts";
 
 const props = defineProps<{
   integrationDrafts: Draft[];
+  activatedIntegrations: Integration[];
 }>();
 const emit = defineEmits<{
   (e: "update:integrationDrafts", value: Draft[]): void;
 }>();
 
 const draftStore = useDraftsStore();
-const integrationStore = useIntegrationStore();
 const taskStore = useTaskStore();
 
 const loadingDrafts = ref(false);
@@ -31,17 +31,13 @@ const allDrafts = computed(() => {
 });
 
 const isOnline = useOnline();
-onMounted(() => {
-  const activatedIntegrations = integrationStore.mappedIntegrations.filter(
-    (i) => i.apiKeys.length,
-  );
-  console.log(activatedIntegrations, isOnline.value);
-  if (activatedIntegrations.length && isOnline.value) {
+watchEffect(() => {
+  if (props.activatedIntegrations.length && isOnline.value) {
     try {
       loadingDrafts.value = true;
       let genCount = 0;
 
-      activatedIntegrations
+      props.activatedIntegrations
         .map((i) => i.fetchTasks())
         .forEach(async (taskGenerator) => {
           try {
@@ -66,7 +62,7 @@ onMounted(() => {
             }
 
             genCount++;
-            if (genCount >= activatedIntegrations.length)
+            if (genCount >= props.activatedIntegrations.length)
               loadingDrafts.value = false;
           } catch (err) {
             console.error(err);
