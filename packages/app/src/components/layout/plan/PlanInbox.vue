@@ -58,7 +58,7 @@ watchEffect(() => {
               const draftsToUpdate = tasksFromKey.filter(
                 (d) => taskIds.indexOf(d.id) !== -1,
               );
-              taskStore.updateFromIntegrations(draftsToUpdate);
+              await taskStore.updateFromIntegrations(draftsToUpdate);
             }
 
             genCount++;
@@ -80,12 +80,32 @@ function onStartDraggingDraft(event: any) {
   target.style.maxWidth = "unset";
 }
 
-function onChangeDraft(evt: any) {
+async function onChangeDraft(evt: any) {
   if ("added" in evt) {
+    const data = evt["added"]["element"];
     const idx = evt["added"]["newIndex"];
-    const { id: taskId } = evt["added"]["element"];
 
-    draftStore.revertFromTask(taskId, idx);
+    if ("external" in data) {
+      const draft: Draft = {
+        id: data.draftId,
+        dateCreated: data.dateCreated,
+        dateUpdated: data.dateUpdated,
+        title: data.title,
+        projectId: data.projectId,
+        order: Math.max(...props.integrationDrafts.map((d) => d.order)) + 1,
+        external: data.external,
+      };
+
+      const newIntegrations = JSON.parse(
+        JSON.stringify([...props.integrationDrafts, draft]),
+      ) as Draft[];
+
+      emit("update:integrationDrafts", newIntegrations);
+
+      await taskStore.remove(data["id"]);
+    } else {
+      await draftStore.revertFromTask(data["id"], idx);
+    }
   }
 }
 </script>

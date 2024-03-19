@@ -17,7 +17,6 @@ export const useDraftsStore = defineStore("drafts", {
       const task = taskStore.getOne(taskId);
       if (!task) return;
 
-      console.log(task);
       const draft: Draft = {
         id: task.draftId,
         dateCreated: task.dateCreated,
@@ -27,7 +26,6 @@ export const useDraftsStore = defineStore("drafts", {
         order: order,
         external: task.external,
       };
-      console.log(draft);
 
       const connectionManager = await useIdbxConnectionManager();
       connectionManager.putItem(draftStore, draft);
