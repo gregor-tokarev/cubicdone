@@ -1,16 +1,68 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Personal Todo</title>
-  </head>
-  <body class="overflow-y-hidden">
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Todo</title>
+
+  <style>
+      .loader {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .loader__content {
+          width: fit-content;
+          font-weight: bold;
+          font-family: monospace;
+          font-size: 30px;
+          background: radial-gradient(circle closest-side, #000 94%, #0000) right/calc(200% - 1em) 100%;
+          animation: l24 1s infinite alternate linear;
+      }
+
+      .loader__content::before {
+          content: "Loading...";
+          line-height: 1em;
+          color: #0000;
+          background: inherit;
+          background-image: radial-gradient(circle closest-side, #fff 94%, #000);
+          -webkit-background-clip: text;
+          background-clip: text;
+      }
+
+      @keyframes l24 {
+          100% {
+              background-position: left
+          }
+      }
+  </style>
+</head>
+<body class="overflow-y-hidden">
+<div id="app"></div>
+
+<div class="loader">
+  <div class="loader__content"></div>
+</div>
+
+<script>
+  const loader = document.querySelector(".loader");
+  loader.style.opacity = 0
+  setTimeout(() => {loader.style.opacity = 1}, 100)
+
+  window.addEventListener("load", () => {
+    loader.remove();
+  });
+</script>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>

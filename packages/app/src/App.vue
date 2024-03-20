@@ -26,6 +26,9 @@ router.onError((error, to) => {
 
 <template>
   <router-view v-if="isLoaded"></router-view>
+  <div v-else class="loader">
+    <div class="loader__content"></div>
+  </div>
 </template>
 
 <style scoped></style>

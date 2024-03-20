@@ -50,3 +50,7 @@
 * {
   font-family: Poppins, sans-serif;
 }
+
+html,body {
+  min-height: 100dvh;
+}
