@@ -172,7 +172,10 @@ export const useTaskStore = defineStore("task", {
       this.tasks.splice(taskIdx, 1, { ...this.tasks[taskIdx], ...newTask });
 
       const connectionManager = await useIdbxConnectionManager();
-      connectionManager.putItem(taskStore, this.tasks[taskIdx]);
+      connectionManager.putItem(
+        taskStore,
+        JSON.parse(JSON.stringify(this.tasks[taskIdx])),
+      );
     },
     // async updateFromIntegrations(draft: IntegrationTask[]) {
     //   const connectionManager = await useIdbxConnectionManager();
