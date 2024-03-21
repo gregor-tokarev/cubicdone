@@ -78,7 +78,7 @@ async function onChangeDraft(evt: any) {
     const data = evt["added"]["element"];
     const idx = evt["added"]["newIndex"];
 
-    if ("external" in data) {
+    if ("external" in data && data.external) {
       const draft: Draft = {
         id: data.draftId,
         dateCreated: data.dateCreated,
