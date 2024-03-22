@@ -32,7 +32,7 @@ defineProps<{
             : draft.external.integrationName
         }}</span>
       </a>
-      <span class="text-xs text-gray-600">
+      <span class="text-xs text-gray-700">
         {{ dayjs(draft.dateCreated).format("DD MMM, HH:MM") }}
       </span>
     </div>

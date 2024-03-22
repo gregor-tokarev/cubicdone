@@ -86,7 +86,7 @@ function onKeydown(evt: KeyboardEvent) {
         @click="mode = 'edit'"
         :model-value="draft.title"
       ></Markdown>
-      <div class="ml-2.5 text-xs text-gray-300">
+      <div class="ml-2.5 text-xs text-gray-600">
         {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
       </div>
     </div>
