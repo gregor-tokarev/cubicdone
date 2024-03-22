@@ -7,7 +7,7 @@ import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
 import Icon from "../Icon.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
-import { useDebounceFn } from "@vueuse/core";
+import { onClickOutside, useDebounceFn } from "@vueuse/core";
 
 const props = defineProps<{
   draft: Draft;
@@ -19,7 +19,12 @@ const emit = defineEmits<{
   (e: "update:selected", value: boolean): void;
 }>();
 
+const editEl = ref<HTMLElement | null>(null);
+
 const mode = ref<"view" | "edit">("view");
+onClickOutside(editEl, () => {
+  mode.value = "view";
+});
 
 function editDraft(event: Event) {
   const target = event.target as HTMLElement;
@@ -29,8 +34,6 @@ function editDraft(event: Event) {
 }
 
 const onEditDraft = useDebounceFn(editDraft, 1000);
-
-const editEl = ref<HTMLElement | null>(null);
 
 function onKeydown(evt: KeyboardEvent) {
   if (evt.key === "`") {
