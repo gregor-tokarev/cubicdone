@@ -2,7 +2,7 @@
 import { Draft } from "@models/draft.model.ts";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
 import Icon from "../Icon.vue";
@@ -22,6 +22,14 @@ const emit = defineEmits<{
 const editEl = ref<HTMLElement | null>(null);
 
 const mode = ref<"view" | "edit">("view");
+watch(mode, (newMode) => {
+  if (newMode !== "view") return;
+
+  if (!editEl.value) return;
+
+  const value = editEl.value.textContent;
+  value && emit("update:title", value);
+});
 onClickOutside(editEl, () => {
   mode.value = "view";
 });
