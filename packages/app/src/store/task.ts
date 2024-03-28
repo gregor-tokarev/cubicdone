@@ -161,7 +161,10 @@ export const useTaskStore = defineStore("task", {
         });
 
       this.tasks[taskIdx].dateTodo = newDate;
-      connectionManager.putItem(taskStore, this.tasks[taskIdx]);
+      connectionManager.putItem(
+        taskStore,
+        JSON.parse(JSON.stringify(this.tasks[taskIdx])),
+      );
 
       await this.setOrder(taskId, newDate, newIdx);
 
