@@ -11,7 +11,10 @@ export function putItemScoped<
   TDataSchema extends Record<string, ColumnBase<TColumn>>,
   R extends Record<keyof TDataSchema, any>,
 >(syncContext: SyncContext, table: Table<TColumn, TDataSchema>, object: R): R {
-  const defaultedObj = mapObjectToTable(table, object);
+  const defaultedObj = mapObjectToTable(
+    table,
+    JSON.parse(JSON.stringify(object)),
+  );
 
   (async () => {
     const res = await syncContext.db.get(table.name, defaultedObj["id"]);
