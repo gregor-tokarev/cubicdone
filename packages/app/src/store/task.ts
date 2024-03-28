@@ -137,7 +137,7 @@ export const useTaskStore = defineStore("task", {
       }
 
       task.order = newIdx;
-      connectionManager.putItem(taskStore, JSON.parse(JSON.stringify(task)));
+      connectionManager.putItem(taskStore, task);
 
       return task;
     },

@@ -20,5 +20,5 @@ export function mapObjectToTable<
     obj[objKey] = object[objKey] ?? defaultValue;
   }
 
-  return obj;
+  return JSON.parse(JSON.stringify(obj));
 }
