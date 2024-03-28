@@ -111,11 +111,7 @@ export async function connect<
     TDataSchema extends Record<string, ColumnBase<TColumn>>,
     R extends Record<keyof TDataSchema, any>,
   >(table: Table<TColumn, TDataSchema>, object: R): R {
-    return putItemScoped(
-      syncContext,
-      table,
-      JSON.parse(JSON.stringify(object)),
-    );
+    return putItemScoped(syncContext, table, object);
   }
 
   function deleteItem<

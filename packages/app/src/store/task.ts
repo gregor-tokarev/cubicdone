@@ -123,7 +123,10 @@ export const useTaskStore = defineStore("task", {
           (t) => t.order >= newIdx && t.order < oldIdx && t.id !== taskId,
         );
         targetTasks.forEach((t) => {
-          connectionManager.putItem(taskStore, { ...t, order: t.order + 1 });
+          connectionManager.putItem(
+            taskStore,
+            JSON.parse(JSON.stringify({ ...t, order: t.order + 1 })),
+          );
           t.order++;
         });
       } else if (oldIdx < newIdx) {
@@ -131,13 +134,16 @@ export const useTaskStore = defineStore("task", {
           (t) => t.order <= newIdx && t.order > oldIdx && t.id !== taskId,
         );
         targetTasks.forEach((t) => {
-          connectionManager.putItem(taskStore, { ...t, order: t.order - 1 });
+          connectionManager.putItem(
+            taskStore,
+            JSON.parse(JSON.stringify({ ...t, order: t.order - 1 })),
+          );
           t.order--;
         });
       }
 
       task.order = newIdx;
-      connectionManager.putItem(taskStore, task);
+      connectionManager.putItem(taskStore, JSON.parse(JSON.stringify(task)));
 
       return task;
     },
