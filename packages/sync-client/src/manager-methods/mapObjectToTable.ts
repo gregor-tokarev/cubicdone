@@ -17,7 +17,7 @@ export function mapObjectToTable<
       column.config.default ?? column.config.defaultFn
         ? column.config.defaultFn()
         : null;
-    obj[objKey] = object[objKey] ?? defaultValue;
+    obj[objKey] = JSON.parse(JSON.stringify(object[objKey])) ?? defaultValue;
   }
 
   return obj;
