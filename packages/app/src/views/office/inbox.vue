@@ -10,7 +10,7 @@ import ContextMenu from "@components/ContextMenu.vue";
 import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
 import { useProjectModalStore } from "@store/project-modal.ts";
-import InboxCommand from "@components/InboxCommand.vue";
+import CommandPalette from "@components/CommandPalette.vue";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
 import { animate } from "motion";
 import { useProjectStore } from "@store/project.ts";
@@ -74,7 +74,7 @@ function onChangeOrder(evt: any) {
   }
 }
 
-const inboxCommandEl = ref<InstanceType<typeof InboxCommand> | null>(null);
+const inboxCommandEl = ref<InstanceType<typeof CommandPalette> | null>(null);
 const selectedDraftIds = ref<string[]>([]);
 watch(
   selectedDraftIds,
@@ -278,13 +278,17 @@ function onListLeave() {
       @option="onSelectContextMenu($event)"
     ></ContextMenu>
   </teleport>
-  <InboxCommand
+  <CommandPalette
     ref="inboxCommandEl"
     class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full"
+    :commands="[
+      { name: 'Set Project', icon: 'hashtag', emitName: 'setProject' },
+      { name: 'Remove', icon: 'basket', emitName: 'remove' },
+    ]"
     @discard="selectedDraftIds = []"
     @setProject="selectProject"
     @remove="removeDraft"
-  ></InboxCommand>
+  ></CommandPalette>
 </template>
 
 <style scoped></style>

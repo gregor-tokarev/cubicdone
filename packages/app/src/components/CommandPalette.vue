@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import Icon from "../components/Icon.vue";
+import { getCurrentInstance } from "vue";
+
+defineProps<{
+  commands: { name: string; icon: string; emitName: string }[];
+}>();
+
+const { emit: $emit } = getCurrentInstance();
 
 const emit = defineEmits<{
   (e: "discard", value: void): void;
-  (e: "setProject", value: void): void;
-  (e: "remove", value: void): void;
 }>();
 </script>
 
@@ -24,19 +29,21 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="h-9 w-[1px] bg-gray-700"></div>
-    <div
+    <!--    <div
       @click="emit('setProject')"
       class="flex h-[30px] cursor-pointer items-center space-x-1 border border-gray-700 px-2.5"
     >
       <span>#</span>
       <span>set project</span>
-    </div>
+    </div>-->
     <div
-      @click="emit('remove')"
+      v-for="command in commands"
+      :key="command.name"
+      @click="$emit(command.emitName)"
       class="flex h-[30px] cursor-pointer items-center space-x-1 border border-gray-700 px-2.5"
     >
-      <Icon name="basket"></Icon>
-      <span>remove</span>
+      <Icon :name="command.icon"></Icon>
+      <span>{{ command.name }}</span>
     </div>
   </div>
 </template>
