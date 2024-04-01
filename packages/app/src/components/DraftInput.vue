@@ -8,7 +8,7 @@ import { useProjectStore } from "@store/project.ts";
 import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
 import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
-import ProjectOption from "@components/ProjectOption.vue";
+import ProjectOption from "@components/SelectModalOption.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
 import FuseResult = Fuse.FuseResult;
 

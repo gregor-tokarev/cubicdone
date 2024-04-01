@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { Project } from "@models/project.model.ts";
 import Icon from "./Icon.vue";
 
 defineProps<{
-  project: Project;
+  option: {
+    id: string;
+    text: string;
+    icon?: string;
+    color?: string;
+  };
+
   active: boolean;
   check: boolean;
 }>();
@@ -16,11 +21,13 @@ defineProps<{
   >
     <!--        Color circle-->
     <div class="flex items-center space-x-1.5">
+      <Icon v-if="option.icon" size="14px" :name="option.icon"></Icon>
       <div
+        v-else-if="option.color"
         class="h-[11px] w-[11px] rounded-full"
-        :class="{ [`bg-${project.color}-400`]: true }"
+        :class="{ [`bg-${option.color}-400`]: true }"
       ></div>
-      <span>{{ project.title }}</span>
+      <span>{{ option.text }}</span>
     </div>
     <Icon v-if="check" name="check" class="text-gray-800"></Icon>
   </div>
