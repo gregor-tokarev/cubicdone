@@ -95,6 +95,15 @@ export const useDraftsStore = defineStore("drafts", {
         });
       }
     },
+    clearProject(projectId: string) {
+      const ids = this.drafts
+        .filter((d) => d.projectId === projectId)
+        .map((d) => d.id);
+
+      ids.forEach((id) => {
+        this.setProject(id, null);
+      });
+    },
     async setOrder(draftId: string, order: number): Promise<Draft | undefined> {
       const draft = this.drafts.find((t) => t.id === draftId);
       if (!draft) return;
@@ -160,7 +169,7 @@ export const useDraftsStore = defineStore("drafts", {
 
       return draft;
     },
-    async setProject(draftId: string | string[], projectId: string) {
+    async setProject(draftId: string | string[], projectId: string | null) {
       const connectionManager = await useIdbxConnectionManager();
 
       if (Array.isArray(draftId)) {

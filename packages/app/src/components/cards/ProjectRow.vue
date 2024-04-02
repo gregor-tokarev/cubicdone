@@ -3,18 +3,26 @@ import { Project } from "@models/project.model.ts";
 import { useProjectStore } from "@store/project.ts";
 import { computed, ref } from "vue";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
+import Checkbox from "@components/UI/Checkbox.vue";
+import { useProjectStatusStore } from "@store/project-status.ts";
+import Icon from "@components/Icon.vue";
+import { ProjectStatus } from "@models/projectStauts.model.ts";
+import { useAttrs } from "vue";
 
 const projectStore = useProjectStore();
+const projectStatusStore = useProjectStatusStore();
 
-defineProps<{
+const attrs = useAttrs();
+
+const props = defineProps<{
   project: Project;
-  draftCount: number;
-  taskCompletedCount: number;
-  taskActiveCount: number;
+  selected: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "update", value: Partial<Project>): void;
+  (e: "update:selected", value: boolean): void;
+  (e: "setStatus", value: void): void;
 }>();
 
 const showColorPicker = ref(false);
@@ -29,6 +37,14 @@ const colorBound = computed(() => {
   if (!color.value) return;
 
   return color.value.getBoundingClientRect();
+});
+
+const projectStatus = computed<ProjectStatus | undefined>(() => {
+  if (!props.project.statusId) return;
+
+  return projectStatusStore.projectStatuses.find(
+    (ps) => ps.id === props.project.statusId,
+  );
 });
 
 function editDraft(event: Event) {
@@ -53,8 +69,17 @@ function onEnter(event: Event) {
 </script>
 
 <template>
-  <div class="flex items-center border-b border-gray-400 py-[18px]">
-    <div class="flex w-[38%] items-center space-x-2">
+  <div
+    class="flex cursor-pointer items-center border-b border-gray-400 py-5 transition-colors hover:bg-gray-50"
+    :class="{ '!border-black bg-gray-50': selected }"
+    v-bind="attrs"
+  >
+    <Checkbox
+      class="mr-2"
+      :model-value="selected"
+      @update:model-value="emit('update:selected', $event)"
+    ></Checkbox>
+    <div class="flex w-[56%] items-center space-x-2">
       <div
         ref="color"
         @click="showColorPicker = !showColorPicker"
@@ -72,14 +97,17 @@ function onEnter(event: Event) {
         </span>
       </span>
     </div>
-    <div class="w-[20%]">
-      {{ taskActiveCount }}
-    </div>
-    <div class="w-[32%]">
-      {{ taskCompletedCount }}
-    </div>
-    <div class="">
-      {{ draftCount }}
+    <div
+      class="flex cursor-pointer items-center space-x-1.5 rounded px-2 py-1 text-xs capitalize text-gray-800 transition-colors hover:bg-gray-100"
+      @click="emit('setStatus')"
+    >
+      <template v-if="projectStatus">
+        <Icon :name="projectStatus?.icon" :size="14"></Icon>
+        <span>{{ projectStatus?.title }}</span>
+      </template>
+      <template v-else>
+        <span>Set status</span>
+      </template>
     </div>
   </div>
   <teleport to="body">
@@ -102,5 +130,3 @@ function onEnter(event: Event) {
     </div>
   </teleport>
 </template>
-
-<style scoped></style>

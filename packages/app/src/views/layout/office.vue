@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ProjectModal from "@components/ProjectModal.vue";
 import DeleteModal from "@components/DeleteModal.vue";
+import ProjectModal from "@components/SelectModals/ProjectModal.vue";
 import Sidebar from "@components/Sidebar.vue";
 import { SpeedInsights } from "@vercel/speed-insights/vue";
 import { onMounted, ref } from "vue";
@@ -12,6 +12,7 @@ import { useIntegrationStore } from "@store/integration.ts";
 import { useTaskStore } from "@store/task.ts";
 import { useProjectStore } from "@store/project.ts";
 import { useDraftsStore } from "@store/drafts.ts";
+import { useProjectStatusStore } from "@store/project-status.ts";
 
 const router = useRouter();
 
@@ -19,6 +20,7 @@ const integrationStore = useIntegrationStore();
 const taskStore = useTaskStore();
 const projectStore = useProjectStore();
 const draftStore = useDraftsStore();
+const projectStatusStore = useProjectStatusStore();
 
 const synced = ref(true);
 onMounted(async () => {
@@ -64,6 +66,7 @@ onMounted(async () => {
       taskStore.backwardSync(),
       projectStore.backwardSync(),
       draftStore.backwardSync(),
+      projectStatusStore.backwardSync(),
     ]);
     synced.value = true;
   } catch (e) {

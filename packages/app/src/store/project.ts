@@ -1,18 +1,20 @@
-import { defineStore } from "pinia";
 import {
   Project,
   ProjectStatistic,
   projectStore,
 } from "@models/project.model.ts";
-import { randomInt } from "@utils/random.ts";
-import { nanoid } from "nanoid";
+
 import Fuse from "fuse.js";
-import { useDraftsStore } from "./drafts.ts";
-import minMax from "dayjs/plugin/minMax";
 import dayjs from "dayjs";
-import { useTaskStore } from "./task.ts";
+import { defineStore } from "pinia";
+import minMax from "dayjs/plugin/minMax";
+import { nanoid } from "nanoid";
+import { randomInt } from "@utils/random.ts";
 import { trpc } from "../main.ts";
+import { useDraftsStore } from "./drafts.ts";
 import { useIdbxConnectionManager } from "vue-sync-client";
+import { useTaskStore } from "./task.ts";
+import { useProjectStatusStore } from "./project-status.ts";
 
 dayjs.extend(minMax);
 
@@ -52,11 +54,14 @@ export const useProjectStore = defineStore("project", {
       this.projects = await connectionManager.getItems(projectStore);
     },
     async create(title: string): Promise<Project> {
+      const projectStatusStore = useProjectStatusStore();
+
       const proj: Project = {
         id: nanoid(4),
         color: this.colors[randomInt(0, this.colors.length)],
         title,
         order: 0,
+        statusId: projectStatusStore.defaultStatusId,
       };
 
       const connectionManager = await useIdbxConnectionManager();
@@ -73,12 +78,40 @@ export const useProjectStore = defineStore("project", {
     },
     async edit(id: string, project: Partial<Project>): Promise<Project> {
       const pIdx = this.projects.findIndex((p) => p.id === id);
+
       this.projects.splice(pIdx, 1, { ...this.projects[pIdx], ...project });
 
       const connectionManager = await useIdbxConnectionManager();
       connectionManager.putItem(projectStore, this.projects[pIdx]);
 
       return this.projects[pIdx];
+    },
+    async remove(projectId: string | string[]) {
+      const connectionManager = await useIdbxConnectionManager();
+      connectionManager.deleteItem(projectStore, projectId);
+
+      const draftStore = useDraftsStore();
+      const taskStore = useTaskStore();
+
+      if (typeof projectId === "string") {
+        const projectIdx = this.projects.findIndex((p) => p.id === projectId);
+
+        this.projects.splice(projectIdx, 1);
+
+        draftStore.clearProject(projectId);
+        taskStore.clearProject(projectId);
+      } else if (Array.isArray(projectId)) {
+        this.projects = this.projects.filter((p) => {
+          if (projectId.includes(p.id)) {
+            draftStore.clearProject(p.id);
+            taskStore.clearProject(p.id);
+
+            return false;
+          }
+
+          return true;
+        });
+      }
     },
   },
   getters: {

@@ -8,6 +8,7 @@ import { setCursorPosition } from "@utils/focus.ts";
 import Icon from "../Icon.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
+import Checkbox from "@components/UI/Checkbox.vue";
 
 const props = defineProps<{
   draft: Draft;
@@ -71,14 +72,10 @@ function onKeydown(evt: KeyboardEvent) {
     :class="{ '!border-black bg-gray-50': selected }"
   >
     <!--    checkbox-->
-    <div
-      class="mr-1.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded border border-transparent hover:border-black"
-      :class="{ 'bg-black': selected }"
-      v-hint.bottom="'x'"
-      @click="emit('update:selected', !selected)"
-    >
-      <Icon v-show="selected" class="text-white" name="check"></Icon>
-    </div>
+    <Checkbox
+      :model-value="selected"
+      @update:model-value="emit('update:selected', $event)"
+    ></Checkbox>
     <div class="flex items-baseline">
       <!--    Title-->
       <div

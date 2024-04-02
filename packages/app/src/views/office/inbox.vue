@@ -9,7 +9,7 @@ import { InputGenericPart } from "@models/input-part.model.ts";
 import ContextMenu from "@components/ContextMenu.vue";
 import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
-import { useProjectModalStore } from "@store/project-modal.ts";
+import { useProjectModalStore } from "@store/select-modal.ts";
 import CommandPalette from "@components/CommandPalette.vue";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
 import { animate } from "motion";
@@ -161,11 +161,11 @@ const projectModalStore = useProjectModalStore();
 async function onSelectContextMenu(action: string) {
   if (action === "del") {
     removeDraft();
-    contextMenuOpen.value = false;
   } else if (action === "proj") {
     selectProject();
-    contextMenuOpen.value = false;
   }
+
+  contextMenuOpen.value = false;
 }
 
 const deleteModalStore = useDeleteModalStore();

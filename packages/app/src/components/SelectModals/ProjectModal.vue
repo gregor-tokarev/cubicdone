@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useProjectModalStore } from "@store/project-modal.ts";
+import { useProjectModalStore } from "@store/select-modal.ts";
 import { useProjectStore } from "@store/project.ts";
 import { computed, ref } from "vue";
-import SelectModal from "@components/SelectModal.vue";
+import SelectModal from "./SelectModal.vue";
 
 const projectModalStore = useProjectModalStore();
 const projectStore = useProjectStore();
@@ -60,3 +60,4 @@ const checkedIndex = computed(() => {
 </template>
 
 <style scoped></style>
+@store/select-modal

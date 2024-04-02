@@ -5,6 +5,7 @@ export interface Project {
   title: string;
   color: string;
   order: number;
+  statusId: string | null;
 }
 
 export const projectStore = defineSchema("project", {
@@ -12,6 +13,7 @@ export const projectStore = defineSchema("project", {
   title: string("title"),
   color: string("color"),
   order: integer("order"),
+  statusId: string("statusId"),
 });
 
 export interface ProjectStatistic {

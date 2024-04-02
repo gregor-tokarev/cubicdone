@@ -106,6 +106,16 @@ export const useTaskStore = defineStore("task", {
 
       return task;
     },
+
+    clearProject(projectId: string) {
+      const ids = this.tasks
+        .filter((d) => d.projectId === projectId)
+        .map((d) => d.id);
+
+      ids.forEach((id) => {
+        this.update(id, { projectId: null });
+      });
+    },
     async changeOrder(
       taskId: string,
       oldIdx: number,

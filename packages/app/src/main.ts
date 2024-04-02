@@ -13,6 +13,7 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
 import { vueSyncClientPlugin } from "vue-sync-client";
 import * as cookie from "cookie";
+import { projectStatusStore } from "@models/projectStauts.model.ts";
 
 const pinia = createPinia();
 
@@ -46,8 +47,14 @@ createApp(App)
   .use(router)
   .use(pinia)
   .use(vueSyncClientPlugin, {
-    dbVersion: 5,
-    schema: [taskStore, apiKeyStore, draftStore, projectStore],
+    dbVersion: 11,
+    schema: [
+      taskStore,
+      apiKeyStore,
+      draftStore,
+      projectStore,
+      projectStatusStore,
+    ],
     onSync: async (sync, resolveFn) => {
       if (sync.targetTable === draftStore.name) {
         if (sync.action.actionName === "create")
