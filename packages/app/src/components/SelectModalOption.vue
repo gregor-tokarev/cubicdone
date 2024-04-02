@@ -21,7 +21,7 @@ defineProps<{
   >
     <!--        Color circle-->
     <div class="flex items-center space-x-1.5">
-      <Icon v-if="option.icon" size="14px" :name="option.icon"></Icon>
+      <Icon v-if="option.icon" :size="14" :name="option.icon"></Icon>
       <div
         v-else-if="option.color"
         class="h-[11px] w-[11px] rounded-full"
