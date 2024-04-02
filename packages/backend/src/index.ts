@@ -9,6 +9,7 @@ import { drafts } from "./router/draft.router";
 import { tasks } from "./router/tasks.router";
 import { projects } from "./router/project.router";
 import { apiKeys } from "./router/apikey.router";
+import { projectStatus } from "./router/project-status.router";
 
 config({ path: ".env.local" });
 
@@ -20,6 +21,7 @@ const appRouter = router({
   task: tasks,
   project: projects,
   apiKey: apiKeys,
+  projectStatus: projectStatus,
 });
 
 export type AppRouter = typeof appRouter;

@@ -1,5 +1,7 @@
+import { integer, json, uuid, varchar } from "drizzle-orm/pg-core";
+
 import { pgTable } from "drizzle-orm/pg-core/table";
-import { integer, json, varchar } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
 
 export const taskTable = pgTable("task", {
@@ -36,12 +38,20 @@ export const projectTable = pgTable("project", {
   color: varchar("color"),
   order: integer("order"),
   authorId: varchar("authorId").notNull(),
+  statusId: uuid("status_id").references(() => projectStatusTable.id),
 });
 export const projectTableValidator = z.object({
   id: z.string(),
   title: z.string(),
   color: z.string(),
   order: z.number(),
+  statusId: z.string().nullable(),
+});
+
+export const projectStatusTable = pgTable("project_status", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: varchar("title").notNull(),
+  icon: varchar("icon"),
 });
 
 export const draftTable = pgTable("drafts", {
