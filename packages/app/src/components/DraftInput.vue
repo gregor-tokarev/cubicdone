@@ -8,7 +8,7 @@ import { useProjectStore } from "@store/project.ts";
 import { Project } from "@models/project.model.ts";
 import Fuse from "fuse.js";
 import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
-import ProjectOption from "@components/SelectModalOption.vue";
+import SelectModalOption from "@components/SelectModalOption.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
 import FuseResult = Fuse.FuseResult;
 
@@ -254,6 +254,8 @@ const projectSelectBound = computed(() => {
 });
 
 const projectSelectOptions = computed<Project[]>(() => {
+  console.log(projectStore.rankedProjects);
+
   return projectQuery.value
     ? projectQueryResult.value.map((r) => r.item)
     : projectStore.rankedProjects;
@@ -485,10 +487,10 @@ defineExpose({
       >
         <!--      Project item-->
         <template v-if="projectSelectOptions">
-          <ProjectOption
+          <SelectModalOption
             v-for="(p, idx) in projectSelectOptions"
             :active="projectOptionSelected === idx"
-            :project="p"
+            :option="{ id: p.id, text: p.title, color: p.color }"
             :check="false"
             @click="onClickProject(p.id)"
           />
