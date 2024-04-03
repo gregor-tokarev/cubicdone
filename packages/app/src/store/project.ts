@@ -1,22 +1,19 @@
-import { projectStatusStore } from "./../models/projectStauts.model";
 import {
   Project,
-  ProjectStatistic,
-  projectStore,
+  projectStore
 } from "@models/project.model.ts";
 
-import Fuse from "fuse.js";
-import dayjs from "dayjs";
-import { defineStore } from "pinia";
-import minMax from "dayjs/plugin/minMax";
-import { nanoid } from "nanoid";
 import { randomInt } from "@utils/random.ts";
+import dayjs from "dayjs";
+import minMax from "dayjs/plugin/minMax";
+import Fuse from "fuse.js";
+import { nanoid } from "nanoid";
+import { defineStore } from "pinia";
+import { useIdbxConnectionManager } from "vue-sync-client";
 import { trpc } from "../main.ts";
 import { useDraftsStore } from "./drafts.ts";
-import { useIdbxConnectionManager } from "vue-sync-client";
-import { useTaskStore } from "./task.ts";
 import { useProjectStatusStore } from "./project-status.ts";
-import { ProjectStatus } from "@models/projectStauts.model.ts";
+import { useTaskStore } from "./task.ts";
 
 dayjs.extend(minMax);
 
@@ -127,6 +124,12 @@ export const useProjectStore = defineStore("project", {
         return projectStatusStore.getOne(project.statusId);
       };
     },
+    activeProjects(state) {
+      return state.projects.filter((p) => {
+        const status = this.getStatus(p.id);
+        return status?.title !== "finished";
+      });
+    },
     rankedProjects(state): Project[] {
       const draftStore = useDraftsStore();
 
@@ -134,18 +137,13 @@ export const useProjectStore = defineStore("project", {
       // value - date of most recent draft with this project
       const recentTable: Record<string, string | undefined> = {};
 
-      state.projects
-        .filter((p) => {
-          const status = this.getStatus(p.id);
-          return status?.title !== "finished";
-        })
-        .forEach((p) => {
-          const drafts = draftStore.getByProject(p.id);
+      this.activeProjects.forEach((p) => {
+        const drafts = draftStore.getByProject(p.id);
 
-          recentTable[p.id] = dayjs
-            .max(...drafts.map((d) => dayjs(d.dateCreated)))
-            ?.toISOString();
-        });
+        recentTable[p.id] = dayjs
+          .max(...drafts.map((d) => dayjs(d.dateCreated)))
+          ?.toISOString();
+      });
 
       return Object.entries(recentTable)
         .sort((prev, next) => {
@@ -162,30 +160,8 @@ export const useProjectStore = defineStore("project", {
     sortedProjects(state): Project[] {
       return state.projects.sort((prev, next) => prev["order"] - next["order"]);
     },
-    withStatistics(state): ProjectStatistic[] {
-      const draftStore = useDraftsStore();
-      const taskStore = useTaskStore();
-
-      // @ts-ignore
-      return state.sortedProjects.map((p: Project) => {
-        const draftCount = draftStore.getByProject(p.id).length;
-        const taskCompletedCount = taskStore
-          .getByProject(p.id)
-          .filter((t) => t.status === "done").length;
-        const taskActiveCount = taskStore
-          .getByProject(p.id)
-          .filter((t) => t.status === "todo").length;
-
-        return {
-          project: p,
-          draftCount,
-          taskCompletedCount,
-          taskActiveCount,
-        };
-      });
-    },
-    getIndex(state): Fuse<Project> {
-      return new Fuse<Project>(state.projects, {
+    getIndex(): Fuse<Project> {
+      return new Fuse<Project>(this.activeProjects, {
         keys: [{ name: "title" }],
       });
     },

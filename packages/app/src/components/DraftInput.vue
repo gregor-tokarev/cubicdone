@@ -254,8 +254,6 @@ const projectSelectBound = computed(() => {
 });
 
 const projectSelectOptions = computed<Project[]>(() => {
-  console.log(projectStore.rankedProjects);
-
   return projectQuery.value
     ? projectQueryResult.value.map((r) => r.item)
     : projectStore.rankedProjects;
