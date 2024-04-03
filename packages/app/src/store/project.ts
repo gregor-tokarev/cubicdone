@@ -1,3 +1,4 @@
+import { projectStatusStore } from "./../models/projectStauts.model";
 import {
   Project,
   ProjectStatistic,
@@ -15,6 +16,7 @@ import { useDraftsStore } from "./drafts.ts";
 import { useIdbxConnectionManager } from "vue-sync-client";
 import { useTaskStore } from "./task.ts";
 import { useProjectStatusStore } from "./project-status.ts";
+import { ProjectStatus } from "@models/projectStauts.model.ts";
 
 dayjs.extend(minMax);
 
@@ -115,6 +117,16 @@ export const useProjectStore = defineStore("project", {
     },
   },
   getters: {
+    getStatus(_state) {
+      const projectStatusStore = useProjectStatusStore();
+
+      return (projectId: string) => {
+        const project = this.getOne(projectId);
+        if (!project || !project.statusId) return;
+
+        return projectStatusStore.getOne(project.statusId);
+      };
+    },
     rankedProjects(state): Project[] {
       const draftStore = useDraftsStore();
 
@@ -122,13 +134,18 @@ export const useProjectStore = defineStore("project", {
       // value - date of most recent draft with this project
       const recentTable: Record<string, string | undefined> = {};
 
-      state.projects.forEach((p) => {
-        const drafts = draftStore.getByProject(p.id);
+      state.projects
+        .filter((p) => {
+          const status = this.getStatus(p.id);
+          return status?.title !== "finished";
+        })
+        .forEach((p) => {
+          const drafts = draftStore.getByProject(p.id);
 
-        recentTable[p.id] = dayjs
-          .max(...drafts.map((d) => dayjs(d.dateCreated)))
-          ?.toISOString();
-      });
+          recentTable[p.id] = dayjs
+            .max(...drafts.map((d) => dayjs(d.dateCreated)))
+            ?.toISOString();
+        });
 
       return Object.entries(recentTable)
         .sort((prev, next) => {

@@ -38,5 +38,10 @@ export const useProjectStatusStore = defineStore("projectStatus", {
         null
       );
     },
+    getOne(state) {
+      return (id: string) => {
+        return state.projectStatuses.find((ps) => ps.id === id);
+      };
+    },
   },
 });
