@@ -23,7 +23,7 @@ const taskStore = useTaskStore();
 
 // Initial Day columns generation
 const INITIAL_COLUMNS_COUNT = 10;
-const COLUMNS_PER_PAGE = 5;
+const COLUMNS_PER_PAGE = 30;
 
 const initialDayColumns = [];
 for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
@@ -41,14 +41,14 @@ const todayIndex = computed(() => {
 const columnComponents = ref<InstanceType<typeof PlanColumn>[]>([]);
 const columnsRoot = ref<InstanceType<typeof RecycleScroller> | null>(null);
 
-function onScroll(_evt: Event) {
+async function onScroll(_evt: Event) {
   const scroll: { start: number; end: number } = columnsRoot.value.getScroll();
   const totalSize: number = columnsRoot.value.totalSize;
 
   if (scroll.end === totalSize) {
-    loadAfterColumns();
+    await loadAfterColumns();
   } else if (scroll.start === 0) {
-    loadBeforeColumns();
+    await loadBeforeColumns();
 
     setTimeout(() => {
       const newSize: number = columnsRoot.value.totalSize;
@@ -64,6 +64,8 @@ async function loadBeforeColumns() {
   for (let i = 1; i < COLUMNS_PER_PAGE + 1; i++) {
     newColumns.push(dayColumns.value[0].add(-i, "day"));
   }
+
+  console.log(newColumns);
 
   dayColumns.value = newColumns.reverse().concat(dayColumns.value);
 }

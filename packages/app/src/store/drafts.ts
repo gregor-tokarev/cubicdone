@@ -43,8 +43,6 @@ export const useDraftsStore = defineStore("drafts", {
     async backwardSync() {
       const drafts = await trpc.draft.getAll.query();
 
-      await new Promise((r) => setTimeout(r, 20000));
-
       const connectionManager = await useIdbxConnectionManager();
       await connectionManager.backwardSync(draftStore, drafts);
       this.drafts = await connectionManager.getItems(draftStore);

@@ -18,10 +18,25 @@ export const useTaskStore = defineStore("task", {
     },
 
     async backwardSync() {
-      let tasks = await trpc.task.getAll.query();
+      const tasks = await trpc.task.getAll.query({
+        date: dayjs().format(),
+        lastNDays: 60,
+      });
 
       const connectionManager = await useIdbxConnectionManager();
       await connectionManager.backwardSync(taskStore, tasks as Task[]);
+      this.tasks = await connectionManager.getItems(taskStore);
+    },
+    async paginateOver(date: string) {
+      const tasks = await trpc.task.getAll.query({
+        date,
+        lastNDays: 30,
+      });
+
+      const tasksUnion = JSON.parse(JSON.stringify([...tasks, ...this.tasks]));
+
+      const connectionManager = await useIdbxConnectionManager();
+      await connectionManager.backwardSync(taskStore, tasksUnion as Task[]);
       this.tasks = await connectionManager.getItems(taskStore);
     },
     async commitDraft(

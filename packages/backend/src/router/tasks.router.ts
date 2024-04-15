@@ -1,18 +1,31 @@
-import { authedProcedure, router } from "../trpc";
-import { db } from "../index";
-import { tasksTableValidator, taskTable } from "../models/schema";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import dayjs from "dayjs";
+import { and, eq, gte } from "drizzle-orm";
+import { z } from "zod";
+import { db } from "../index";
+import { taskTable, tasksTableValidator } from "../models/schema";
+import { authedProcedure, router } from "../trpc";
 
 export const tasks = router({
-  getAll: authedProcedure.query((opts) => {
-    return db
-      .select()
-      .from(taskTable)
-      .where(eq(taskTable.authorId, opts.ctx.user.id))
-      .execute();
-  }),
+  getAll: authedProcedure
+    .input(z.object({ date: z.string(), lastNDays: z.number().default(30) }))
+    .query(async (opts) => {
+      return db
+        .select()
+        .from(taskTable)
+        .where(
+          and(
+            gte(
+              taskTable.dateTodo,
+              dayjs(opts.input.date)
+                .subtract(opts.input.lastNDays, "days")
+                .format(),
+            ),
+            eq(taskTable.authorId, opts.ctx.user.id),
+          ),
+        )
+        .execute();
+    }),
   delete: authedProcedure.input(z.string()).mutation(async (opts) => {
     const userId = opts.ctx.user.id;
     const targetId = opts.input;
