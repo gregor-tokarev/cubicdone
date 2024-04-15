@@ -5,6 +5,7 @@ import { Task } from "@models/task.model.ts";
 import { Draft } from "@models/draft.model.ts";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import PlanColumn from "@components/layout/plan/PlanColumn.vue";
+import { VueSpinner } from "vue3-spinners";
 
 // @ts-ignore
 import { RecycleScroller } from "vue-virtual-scroller";
@@ -45,27 +46,31 @@ async function onScroll(_evt: Event) {
   const scroll: { start: number; end: number } = columnsRoot.value.getScroll();
   const totalSize: number = columnsRoot.value.totalSize;
 
-  if (scroll.end === totalSize) {
-    await loadAfterColumns();
-  } else if (scroll.start === 0) {
-    await loadBeforeColumns();
+  // if (scroll.end === totalSize) {
+  //   await loadAfterColumns();
+  // } else if (scroll.start === 0) {
+  //   await loadBeforeColumns();
 
-    setTimeout(() => {
-      const newSize: number = columnsRoot.value.totalSize;
+  //   setTimeout(() => {
+  //     const newSize: number = columnsRoot.value.totalSize;
 
-      columnsRoot.value.scrollToPosition(newSize - totalSize);
-    });
-  }
+  //     columnsRoot.value.scrollToPosition(newSize - totalSize);
+  //   });
+  // }
 }
 
+const loadingColumns = ref(true);
 async function loadBeforeColumns() {
   const newColumns = [];
+
+  loadingColumns.value = true;
 
   for (let i = 1; i < COLUMNS_PER_PAGE + 1; i++) {
     newColumns.push(dayColumns.value[0].add(-i, "day"));
   }
 
   await taskStore.paginateOver(newColumns[0].format());
+  loadingColumns.value = false;
 
   dayColumns.value = newColumns.reverse().concat(dayColumns.value);
 }
@@ -199,14 +204,23 @@ function onIndexArrows(direction: "incr" | "decr") {
       direction="horizontal"
       emit-update
       @scroll="onScroll"
-      v-slot="{ item }"
     >
-      <PlanColumn
-        ref="columnComponents"
-        :date="item"
-        @move="onMove"
-        class="h-full w-[310px] pr-2.5"
-      ></PlanColumn>
+      <template #before>
+        <div
+          v-if="loadingColumns"
+          class="flex h-full w-[50px] items-center justify-center text-gray-600"
+        >
+          <VueSpinner></VueSpinner>
+        </div>
+      </template>
+      <template v-slot="{ item }">
+        <PlanColumn
+          ref="columnComponents"
+          :date="item"
+          @move="onMove"
+          class="h-full w-[310px] pr-2.5"
+        ></PlanColumn>
+      </template>
     </RecycleScroller>
   </div>
 </template>
