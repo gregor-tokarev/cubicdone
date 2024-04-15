@@ -24,7 +24,7 @@ const taskStore = useTaskStore();
 
 // Initial Day columns generation
 const INITIAL_COLUMNS_COUNT = 10;
-const COLUMNS_PER_PAGE = 5;
+const COLUMNS_PER_PAGE = 30;
 
 const initialDayColumns = [];
 for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
