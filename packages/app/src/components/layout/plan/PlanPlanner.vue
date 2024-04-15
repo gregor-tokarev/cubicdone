@@ -54,7 +54,7 @@ async function onScroll(_evt: Event) {
     setTimeout(() => {
       const newSize: number = columnsRoot.value.totalSize;
 
-      columnsRoot.value.scrollToPosition(newSize - totalSize - 50); // -50 is width of loading spinner
+      columnsRoot.value.scrollToPosition(newSize - totalSize);
     });
   }
 }
@@ -164,10 +164,13 @@ function onIndexArrows(direction: "incr" | "decr") {
   if (!columnsRoot.value) return;
 
   columnsRoot.value.scrollToItem(
-    direction === "incr"
-      ? columnsRoot.value.$_endIndex - 3
-      : columnsRoot.value.$_endIndex - 5,
+    direction === "incr" ? currentIdx.value : currentIdx.value - 2,
   );
+}
+
+const currentIdx = ref(0);
+function onUpdate(_1, _2, _3, currIdx: number) {
+  currentIdx.value = currIdx;
 }
 </script>
 
@@ -203,6 +206,7 @@ function onIndexArrows(direction: "incr" | "decr") {
       key-field="$d"
       direction="horizontal"
       emit-update
+      @update="onUpdate"
       @scroll="onScroll"
     >
       <template #before>
