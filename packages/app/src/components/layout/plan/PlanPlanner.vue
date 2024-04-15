@@ -65,8 +65,6 @@ async function loadBeforeColumns() {
     newColumns.push(dayColumns.value[0].add(-i, "day"));
   }
 
-  console.log(newColumns);
-
   dayColumns.value = newColumns.reverse().concat(dayColumns.value);
 }
 async function loadAfterColumns() {
