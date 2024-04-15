@@ -46,20 +46,20 @@ async function onScroll(_evt: Event) {
   const scroll: { start: number; end: number } = columnsRoot.value.getScroll();
   const totalSize: number = columnsRoot.value.totalSize;
 
-  // if (scroll.end === totalSize) {
-  //   await loadAfterColumns();
-  // } else if (scroll.start === 0) {
-  //   await loadBeforeColumns();
+  if (scroll.end === totalSize) {
+    await loadAfterColumns();
+  } else if (scroll.start === 0) {
+    await loadBeforeColumns();
 
-  //   setTimeout(() => {
-  //     const newSize: number = columnsRoot.value.totalSize;
+    setTimeout(() => {
+      const newSize: number = columnsRoot.value.totalSize;
 
-  //     columnsRoot.value.scrollToPosition(newSize - totalSize);
-  //   });
-  // }
+      columnsRoot.value.scrollToPosition(newSize - totalSize - 50); // -50 is width of loading spinner
+    });
+  }
 }
 
-const loadingColumns = ref(true);
+const loadingColumns = ref(false);
 async function loadBeforeColumns() {
   const newColumns = [];
 
@@ -165,8 +165,8 @@ function onIndexArrows(direction: "incr" | "decr") {
 
   columnsRoot.value.scrollToItem(
     direction === "incr"
-      ? columnsRoot.value.$_startIndex + 2
-      : columnsRoot.value.$_startIndex,
+      ? columnsRoot.value.$_endIndex - 3
+      : columnsRoot.value.$_endIndex - 5,
   );
 }
 </script>
