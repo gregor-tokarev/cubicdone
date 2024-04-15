@@ -20,7 +20,7 @@ export const useTaskStore = defineStore("task", {
     async backwardSync() {
       const tasks = await trpc.task.getAll.query({
         date: dayjs().format(),
-        lastNDays: 60,
+        lastNDays: 30,
       });
 
       const connectionManager = await useIdbxConnectionManager();

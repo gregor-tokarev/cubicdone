@@ -23,7 +23,7 @@ const emit = defineEmits<{
 const taskStore = useTaskStore();
 
 // Initial Day columns generation
-const INITIAL_COLUMNS_COUNT = 10;
+const INITIAL_COLUMNS_COUNT = 30;
 const COLUMNS_PER_PAGE = 30;
 
 const initialDayColumns = [];
