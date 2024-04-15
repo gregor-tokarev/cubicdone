@@ -23,7 +23,7 @@ const taskStore = useTaskStore();
 
 // Initial Day columns generation
 const INITIAL_COLUMNS_COUNT = 10;
-const COLUMNS_PER_PAGE = 30;
+const COLUMNS_PER_PAGE = 5;
 
 const initialDayColumns = [];
 for (let i = -(INITIAL_COLUMNS_COUNT / 2); i < INITIAL_COLUMNS_COUNT / 2; i++) {
@@ -64,6 +64,8 @@ async function loadBeforeColumns() {
   for (let i = 1; i < COLUMNS_PER_PAGE + 1; i++) {
     newColumns.push(dayColumns.value[0].add(-i, "day"));
   }
+
+  await taskStore.paginateOver(newColumns[0].format());
 
   dayColumns.value = newColumns.reverse().concat(dayColumns.value);
 }
