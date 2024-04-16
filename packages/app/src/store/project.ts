@@ -1,7 +1,4 @@
-import {
-  Project,
-  projectStore
-} from "@models/project.model.ts";
+import { Project, projectStore } from "@models/project.model.ts";
 
 import { randomInt } from "@utils/random.ts";
 import dayjs from "dayjs";
