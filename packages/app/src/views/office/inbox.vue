@@ -243,6 +243,7 @@ function onListLeave() {
     ></DraftInput>
     <!--  drafts list-->
     <VueDraggableNext
+      v-if="draftStore.sortedDrafts.length"
       ref="listEl"
       class="mt-5"
       :list="draftStore.sortedDrafts"
@@ -261,6 +262,11 @@ function onListLeave() {
         @update:selected="onUpdateSelect(d.id)"
       ></DraftRow>
     </VueDraggableNext>
+    <p class="mt-10 text-center text-gray-600" v-else>
+      Write everything on your mind. <br />
+      Clear it, to achieve better performance. <br />
+      Press Enter after you wrote it.
+    </p>
   </div>
   <teleport to="body">
     <ContextMenu
