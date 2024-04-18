@@ -1,7 +1,7 @@
 {
   "name": "mobile",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "./index.ts",
   "scripts": {
     "start": "EXPO_USE_METRO_WORKSPACE_ROOT=1 expo start",
     "android": "EXPO_USE_METRO_WORKSPACE_ROOT=1 expo start --android",
@@ -13,7 +13,13 @@
     "expo-status-bar": "~1.11.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
-    "react-native": "0.73.6"
+    "react-native": "0.73.6",
+    "expo-router": "~3.4.8",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "~3.29.0",
+    "expo-linking": "~6.2.2",
+    "expo-constants": "~15.4.6",
+    "contract-models": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
