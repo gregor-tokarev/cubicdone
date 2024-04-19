@@ -17,8 +17,10 @@ export default function Root() {
   return (
     <GestureHandlerRootView className="flex-1">
       <SafeAreaView className="flex-1">
-        <View className="h-[35px] justify-center border-b border-gray-200">
-          <Text className="text-center font-[Poppins300] text-xl">TODO</Text>
+        <View className="h-[35px] justify-center border-b border-gray-400">
+          <Text className="text-center font-[Poppins] text-xl text-gray-800">
+            TODO
+          </Text>
         </View>
         <Slot></Slot>
       </SafeAreaView>
