@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import dayjs, { Dayjs } from "dayjs";
 import { useTaskStore } from "@store/task.ts";
-import { Task } from "@models/task.model.ts";
-import { Draft } from "@models/draft.model.ts";
+import { Draft, Task } from "contract-models";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import PlanColumn from "@components/layout/plan/PlanColumn.vue";
 import { VueSpinner } from "vue3-spinners";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Task } from "@models/task.model.ts";
+import { Task } from "contract-models";
 import Icon from "../Icon.vue";
 import ProjectTag from "../UI/ProjectTag.vue";
 import Markdown from "@components/Markdown.vue";

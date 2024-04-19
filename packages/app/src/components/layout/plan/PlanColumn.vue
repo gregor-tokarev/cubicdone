@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 import TaskCard from "@components/cards/TaskCard.vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { useTaskStore } from "@store/task.ts";
-import { Task } from "@models/task.model.ts";
+import { Task } from "contract-models";
 import { computed } from "vue";
 
 const props = defineProps<{

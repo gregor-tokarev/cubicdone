@@ -1,4 +1,4 @@
-import { ApiKey } from "@models/api-key.model.ts";
+import { ApiKey } from "contract-models";
 
 export interface IntegrationTask {
   id: string;

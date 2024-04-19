@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { Draft } from "@models/draft.model.ts";
 import PlanInbox from "@components/layout/plan/PlanInbox.vue";
 import PlanPlanner from "@components/layout/plan/PlanPlanner.vue";
+import { Draft } from "contract-models";
 import { useDraftsStore } from "@store/drafts.ts";
 import { useTaskStore } from "@store/task.ts";
 import { useProjectStore } from "@store/project.ts";

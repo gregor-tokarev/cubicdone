@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ApiKey } from "@models/api-key.model.ts";
+import { ApiKey } from "contract-models";
 
 defineProps<{
   apiKey: ApiKey;

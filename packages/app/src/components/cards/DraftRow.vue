@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Draft } from "@models/draft.model.ts";
+import { Draft } from "contract-models";
 import dayjs from "dayjs";
 import ProjectTag from "../UI/ProjectTag.vue";
 import { ref, watch } from "vue";
 import Markdown from "@components/Markdown.vue";
 import { setCursorPosition } from "@utils/focus.ts";
-import Icon from "../Icon.vue";
 import { replaceAt } from "@utils/replaceAt.ts";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import Checkbox from "@components/UI/Checkbox.vue";

@@ -7,7 +7,7 @@ import { useDraftsStore } from "@store/drafts.ts";
 import { useOnline } from "@vueuse/core";
 import { draftsFromIntegration } from "@utils/draftsFromIntegration.ts";
 import { useTaskStore } from "@store/task.ts";
-import { Draft } from "@models/draft.model.ts";
+import { Draft } from "contract-models";
 import Icon from "@components/Icon.vue";
 import { Integration } from "@models/integration.model.ts";
 

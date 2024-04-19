@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { Project } from "@models/project.model.ts";
+import { Project, ProjectStatus } from "contract-models";
 import { useProjectStore } from "@store/project.ts";
-import { computed, ref } from "vue";
+import { computed, ref, useAttrs } from "vue";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import Checkbox from "@components/UI/Checkbox.vue";
 import { useProjectStatusStore } from "@store/project-status.ts";
 import Icon from "@components/Icon.vue";
-import { ProjectStatus } from "@models/projectStauts.model.ts";
-import { useAttrs } from "vue";
 
 const projectStore = useProjectStore();
 const projectStatusStore = useProjectStatusStore();

@@ -2,7 +2,7 @@
 import ContextMenu from "@components/ContextMenu.vue";
 import ProjectStatusModal from "@components/SelectModals/ProjectStatusModal.vue";
 import ProjectRow from "@components/cards/ProjectRow.vue";
-import { Project } from "@models/project.model.ts";
+import { Project } from "contract-models";
 import { useProjectStatusModalStore } from "@store/select-modal.ts";
 import { useProjectStore } from "@store/project.ts";
 import { focusOnEditableElement } from "@utils/focus.ts";

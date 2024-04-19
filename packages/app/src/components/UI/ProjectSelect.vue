@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { Project } from "@models/project.model.ts";
+import { Project } from "contract-models";
 import Fuse from "fuse.js";
 import { useProjectStore } from "@store/project.ts";
 import Icon from "../Icon.vue";
