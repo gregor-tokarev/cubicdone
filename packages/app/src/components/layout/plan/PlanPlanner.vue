@@ -169,7 +169,6 @@ function onIndexArrows(direction: "incr" | "decr") {
 
 const currentIdx = ref(0);
 function onUpdate(_1: unknown, _2: unknown, _3: unknown, currIdx: number) {
-  console.log(_1, _2, _3, currIdx);
   currentIdx.value = currIdx;
 }
 </script>
