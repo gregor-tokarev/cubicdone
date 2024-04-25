@@ -163,12 +163,13 @@ function onIndexArrows(direction: "incr" | "decr") {
   if (!columnsRoot.value) return;
 
   columnsRoot.value.scrollToItem(
-    direction === "incr" ? currentIdx.value + 1 : currentIdx.value - 1,
+    direction === "incr" ? currentIdx.value : currentIdx.value - 2,
   );
 }
 
 const currentIdx = ref(0);
 function onUpdate(_1: unknown, _2: unknown, _3: unknown, currIdx: number) {
+  console.log(_1, _2, _3, currIdx);
   currentIdx.value = currIdx;
 }
 </script>
