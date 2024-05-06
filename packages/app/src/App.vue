@@ -2,15 +2,22 @@
 import { useAuth } from "vue-clerk";
 import { watch } from "vue";
 import { useRouter } from "vue-router";
+import * as cookie from "cookie";
 
 const { isSignedIn, isLoaded } = useAuth();
 const router = useRouter();
 
 watch(isLoaded, () => {
   if (!isLoaded.value) return;
+  const c = cookie.parse(document.cookie);
+  const session = c["__session"];
 
-  if (!isSignedIn.value && !location.pathname.includes("/auth")) {
-    router.replace("/auth");
+  if (location.pathname.includes("/auth")) return;
+
+  if (!session) {
+    router.replace("/auth/signup");
+  } else if (!isSignedIn.value) {
+    router.replace("/auth/signin");
   }
 });
 
