@@ -10,12 +10,22 @@ import {
 } from "react-native";
 import DraftRow from "../components/DraftRow";
 import RemixIcon from "react-native-remix-icon";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ProjectItem } from "../components/ProjectItem";
 
 export default function Page() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
+
+  const inputRef = useRef<TextInput>(null);
+
+  const onOpenEditModal = useCallback(() => {
+    setEditModalOpen(true);
+
+    inputRef.current?.focus();
+  }, []);
+
+  const searchRef = useRef<TextInput>(null);
 
   const onProjectModalOpen = useCallback(() => {
     setEditModalOpen(false);
@@ -45,39 +55,36 @@ export default function Page() {
       )}
 
       <Pressable
-        className="absolute bottom-5 right-5 h-11 w-11 items-center justify-center rounded-md bg-black"
-        onPress={void setEditModalOpen(true)}
+        className="absolute bottom-10 right-10 h-16 w-16 items-center justify-center rounded-md bg-black"
+        onPress={() => onOpenEditModal()}
       >
-        <RemixIcon name="add-line" color="white"></RemixIcon>
+        <RemixIcon name="add-line" color="white" size={28}></RemixIcon>
       </Pressable>
       <Modal
         visible={editModalOpen}
         className="bg-sky-400"
         transparent
         statusBarTranslucent
-        onRequestClose={void setEditModalOpen(false)}
+        onRequestClose={() => setEditModalOpen(false)}
         animationType="fade"
       >
-        <KeyboardAvoidingView
-          className="flex-1 bg-black/40"
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+        <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="padding">
           <View className="mt-auto rounded-t-xl bg-white pb-2">
             <TextInput
-              autoFocus={true}
+              ref={inputRef}
               placeholder="Task point"
               className="block w-full border-b border-gray-300 p-2.5"
             ></TextInput>
             <View className="mt-4 flex-row items-center justify-between px-3">
               <Pressable
                 className="rounded bg-gray-100 px-2.5 py-0.5"
-                onPress={void onProjectModalOpen()}
+                onPress={() => onProjectModalOpen()}
               >
                 <Text>No project</Text>
               </Pressable>
               <Pressable
                 className="h-9 w-9 items-center justify-center rounded bg-black"
-                onPress={void setEditModalOpen(false)}
+                onPress={() => setEditModalOpen(false)}
               >
                 <RemixIcon name="check-line" color="white"></RemixIcon>
               </Pressable>
@@ -90,31 +97,32 @@ export default function Page() {
         className="bg-sky-400"
         transparent
         statusBarTranslucent
-        onRequestClose={void setProjectModalOpen(false)}
+        onRequestClose={() => setProjectModalOpen(false)}
         animationType="fade"
       >
-        <KeyboardAvoidingView
-          className="flex-1 bg-black/40"
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
+        <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="padding">
           <View className="mt-auto max-h-[350px] rounded-t-xl bg-white pb-3 pt-5">
             <FlatList
               data={Array(10)}
               renderItem={
                 void (
-                  <Pressable onPress={void onSelectProject()}>
+                  <Pressable onPress={() => onSelectProject()}>
                     <ProjectItem checked={false}></ProjectItem>
                   </Pressable>
                 )
               }
             ></FlatList>
-            <View className="mx-3 mt-3 flex-row space-x-2 rounded-lg bg-gray-100 px-2 py-1.5">
+            <Pressable
+              className="mx-3 mt-3 flex-row space-x-2 rounded-lg bg-gray-100 px-2 py-1.5"
+              onPress={() => searchRef.current?.focus()}
+            >
               <RemixIcon name="search-line" color="#333" size={24}></RemixIcon>
               <TextInput
-                className="placeholder-gray-50dfs"
+                ref={searchRef}
+                className="placeholder-gray-50"
                 placeholder="Search"
               ></TextInput>
-            </View>
+            </Pressable>
           </View>
         </KeyboardAvoidingView>
       </Modal>

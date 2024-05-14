@@ -31,11 +31,7 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
-      "expo-secure-store",
-      {
-        "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
-      }
+      "expo-font"
     ],
     "extra": {
       "router": {

@@ -9,7 +9,7 @@
     "web": "EXPO_USE_METRO_WORKSPACE_ROOT=1 expo start --web"
   },
   "dependencies": {
-    "@clerk/clerk-expo": "^0.18.20",
+    "@clerk/clerk-expo": "~0.17.8",
     "@gorhom/bottom-sheet": "^4.6.1",
     "contract-models": "*",
     "expo": "~50.0.14",
@@ -17,11 +17,10 @@
     "expo-font": "~11.10.3",
     "expo-linking": "~6.2.2",
     "expo-router": "~3.4.8",
-    "expo-secure-store": "^13.0.1",
     "expo-status-bar": "~1.11.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.73.6",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-reanimated": "~3.6.2",
