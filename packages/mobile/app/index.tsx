@@ -46,7 +46,7 @@ export default function Page() {
 
       <Pressable
         className="absolute bottom-5 right-5 h-11 w-11 items-center justify-center rounded-md bg-black"
-        onPress={setEditModalOpen(true)}
+        onPress={void setEditModalOpen(true)}
       >
         <RemixIcon name="add-line" color="white"></RemixIcon>
       </Pressable>
@@ -55,7 +55,7 @@ export default function Page() {
         className="bg-sky-400"
         transparent
         statusBarTranslucent
-        onRequestClose={setEditModalOpen(false)}
+        onRequestClose={void setEditModalOpen(false)}
         animationType="fade"
       >
         <KeyboardAvoidingView
@@ -71,13 +71,13 @@ export default function Page() {
             <View className="mt-4 flex-row items-center justify-between px-3">
               <Pressable
                 className="rounded bg-gray-100 px-2.5 py-0.5"
-                onPress={onProjectModalOpen()}
+                onPress={void onProjectModalOpen()}
               >
                 <Text>No project</Text>
               </Pressable>
               <Pressable
                 className="h-9 w-9 items-center justify-center rounded bg-black"
-                onPress={setEditModalOpen(false)}
+                onPress={void setEditModalOpen(false)}
               >
                 <RemixIcon name="check-line" color="white"></RemixIcon>
               </Pressable>
@@ -90,7 +90,7 @@ export default function Page() {
         className="bg-sky-400"
         transparent
         statusBarTranslucent
-        onRequestClose={setProjectModalOpen(false)}
+        onRequestClose={void setProjectModalOpen(false)}
         animationType="fade"
       >
         <KeyboardAvoidingView
@@ -101,9 +101,11 @@ export default function Page() {
             <FlatList
               data={Array(10)}
               renderItem={
-                <Pressable onPress={onSelectProject()}>
-                  <ProjectItem checked={false}></ProjectItem>
-                </Pressable>
+                void (
+                  <Pressable onPress={void onSelectProject()}>
+                    <ProjectItem checked={false}></ProjectItem>
+                  </Pressable>
+                )
               }
             ></FlatList>
             <View className="mx-3 mt-3 flex-row space-x-2 rounded-lg bg-gray-100 px-2 py-1.5">
