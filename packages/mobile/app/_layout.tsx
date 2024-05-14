@@ -2,8 +2,7 @@ import { SafeAreaView, Text, View } from "react-native";
 import { Slot } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFonts } from "expo-font";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
-import { Auth } from "../components/auth";
+import { ClerkProvider } from "@clerk/clerk-expo";
 // import * as SecureStore from "expo-secure-store";
 //
 // const tokenCache = {
