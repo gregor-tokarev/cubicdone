@@ -7,13 +7,11 @@ import { eq } from "drizzle-orm";
 
 export const drafts = router({
   getAll: authedProcedure.query((opts) => {
-    return (
-      db
-        .select()
-        .from(draftTable)
-        // .where(eq(draftTable.authorId, opts.ctx.user.id))
-        .execute()
-    );
+    return db
+      .select()
+      .from(draftTable)
+      .where(eq(draftTable.authorId, opts.ctx.user.id))
+      .execute();
   }),
   delete: authedProcedure.input(z.string()).mutation(async (opts) => {
     const userId = opts.ctx.user.id;

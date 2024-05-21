@@ -9,10 +9,25 @@ import {
 } from "react-native";
 import DraftRow from "../components/DraftRow";
 import RemixIcon from "react-native-remix-icon";
-import { useCallback, useRef, useState } from "react";
-import { ProjectItem } from "../components/ProjectItem";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { trpc } from "../lib/trpc";
+import { useDraftStore } from "../store/draft.store";
+import { useProjectStore } from "../store/project.store";
 
 export default function Page() {
+  const { data: drafts } = trpc.draft.getAll.useQuery();
+  const { data: projects } = trpc.project.getAll.useQuery();
+
+  const setDrafts = useDraftStore((state) => state.setDrafts);
+  useEffect(() => {
+    drafts && setDrafts(drafts);
+  }, [drafts]);
+
+  const setProjects = useProjectStore((state) => state.setProjects);
+  useEffect(() => {
+    projects && setProjects(projects);
+  }, [projects]);
+
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
 
@@ -38,11 +53,11 @@ export default function Page() {
 
   return (
     <View className="relative flex-1">
-      {false ? (
+      {drafts?.length ? (
         <FlatList
           className="pt-10"
-          data={Array(10)}
-          renderItem={(_item) => <DraftRow></DraftRow>}
+          data={drafts}
+          renderItem={({ item }) => <DraftRow draft={item}></DraftRow>}
         ></FlatList>
       ) : (
         <View className="flex-1 items-center justify-center">
@@ -102,14 +117,12 @@ export default function Page() {
         <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="padding">
           <View className="mt-auto max-h-[350px] rounded-t-xl bg-white pb-3 pt-5">
             <FlatList
-              data={Array(10)}
-              renderItem={
-                void (
-                  <Pressable onPress={() => onSelectProject()}>
-                    <ProjectItem checked={false}></ProjectItem>
-                  </Pressable>
-                )
-              }
+              data={projects}
+              renderItem={({ item }) => (
+                <Pressable onPress={() => onSelectProject()}>
+                  <ProjectItem checked={false} project={item}></ProjectItem>
+                </Pressable>
+              )}
             ></FlatList>
             <Pressable
               className="mx-3 mt-3 flex-row space-x-2 rounded-lg bg-gray-100 px-2 py-1.5"
