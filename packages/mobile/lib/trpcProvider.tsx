@@ -22,6 +22,7 @@ export function TrpcProvider(props: Props) {
               headers: {
                 ...options?.headers,
                 Authorization: token ?? "",
+                "cache-control": "no-cache",
               },
             });
           },

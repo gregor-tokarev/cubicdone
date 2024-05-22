@@ -2,7 +2,7 @@ import { FlatList, Pressable, Text, View } from "react-native";
 import DraftRow from "../components/DraftRow";
 import RemixIcon from "react-native-remix-icon";
 import { useCallback, useEffect, useState } from "react";
-import { Project } from "contract-models";
+import { Draft, Project } from "contract-models";
 import { trpc } from "../lib/trpc";
 import { useDraftStore } from "../store/draft.store";
 import { useProjectStore } from "../store/project.store";
@@ -34,20 +34,47 @@ export default function Page() {
 
   const [projectId, setProjectId] = useState<Project["id"] | null>(null);
 
+  const [editDraftId, setEditDraftId] = useState<Draft["id"] | null>(null);
+  const onEditDraft = useCallback(
+    (draftId: Draft["id"]) => {
+      const draft = drafts?.find((d) => d.id === draftId);
+
+      setEditDraftId(draftId);
+      draft?.projectId && setProjectId(draft.projectId);
+
+      setEditModalOpen(true);
+    },
+    [drafts],
+  );
+
   const onSelectProject = useCallback((projectId: Project["id"]) => {
     setProjectId(projectId);
 
-    setProjectModalOpen(false);
     setEditModalOpen(true);
+    setProjectModalOpen(false);
   }, []);
+
+  const onSubmit = useCallback(() => {
+    setEditModalOpen(false);
+    setProjectModalOpen(false);
+
+    setProjectId(null);
+    setEditDraftId(null);
+
+    refreshDrafts();
+  }, [refreshDrafts]);
 
   return (
     <View className="relative flex-1">
       {drafts?.length ? (
         <FlatList
           className="pt-10"
-          data={drafts}
-          renderItem={({ item }) => <DraftRow draft={item}></DraftRow>}
+          data={drafts.sort((prev, next) => prev.order - next.order)}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => onEditDraft(item.id)}>
+              <DraftRow draft={item}></DraftRow>
+            </Pressable>
+          )}
         ></FlatList>
       ) : (
         <View className="flex-1 items-center justify-center">
@@ -68,8 +95,9 @@ export default function Page() {
         editModalOpen={editModalOpen}
         onEditModalOpen={setEditModalOpen}
         onOpenProjectModal={() => onProjectModalOpen()}
-        onSubmit={() => refreshDrafts()}
+        onSubmit={() => onSubmit()}
         projectId={projectId}
+        editedDraftId={editDraftId}
       ></DraftEditModal>
       {projects && (
         <ProjectSelectModal

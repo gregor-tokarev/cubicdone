@@ -21,6 +21,7 @@ interface ProjectSelectModalProps extends React.PropsWithChildren {
 
 export default function ProjectSelectModal(props: ProjectSelectModalProps) {
   const searchRef = useRef<TextInput>(null);
+
   return (
     <Modal
       visible={props.projectModalOpen}

@@ -8,12 +8,12 @@ import {
   View,
 } from "react-native";
 import RemixIcon from "react-native-remix-icon";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { trpc } from "../lib/trpc";
 import { useDraftStore } from "../store/draft.store";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
-import { Project } from "contract-models";
+import { Draft, Project } from "contract-models";
 import { useProjectStore } from "../store/project.store";
 
 export interface DraftEditModalProps extends React.PropsWithChildren {
@@ -22,34 +22,58 @@ export interface DraftEditModalProps extends React.PropsWithChildren {
   onSubmit: () => void;
   editModalOpen: boolean;
 
+  editedDraftId: Draft["id"] | null;
   projectId: Project["id"] | null;
 }
 
 export function DraftEditModal(props: DraftEditModalProps) {
+  const draft = useDraftStore((state) =>
+    state.drafts.find((d) => d.id === props.editedDraftId),
+  );
+
+  const project = useProjectStore((state) =>
+    state.projects.find((p) => p.id === props.projectId),
+  );
+
   const inputRef = useRef<TextInput>(null);
 
   const [draftTitle, setDraftTitle] = useState("");
+  useEffect(() => {
+    draft?.title && setDraftTitle(draft.title);
+  }, [props.editedDraftId]);
 
   const createDraft = trpc.draft.create.useMutation();
+  const updateDraft = trpc.draft.update.useMutation();
 
   const [loadingDraft, setLoadingDraft] = useState(false);
 
   const maxDraftsOrder = useDraftStore((state) =>
     Math.max(...state.drafts.map((d) => d.order)),
   );
-  const onCreateProject = useCallback(async () => {
+  const onSubmit = useCallback(async () => {
     if (loadingDraft) return;
     setLoadingDraft(true);
 
     try {
-      await createDraft.mutateAsync({
-        title: draftTitle,
-        projectId: props.projectId,
-        dateCreated: dayjs().toISOString(),
-        dateUpdated: dayjs().toISOString(),
-        order: maxDraftsOrder + 1,
-        id: nanoid(3),
-      });
+      if (!props.editedDraftId) {
+        await createDraft.mutateAsync({
+          title: draftTitle,
+          projectId: props.projectId,
+          dateCreated: dayjs().toISOString(),
+          dateUpdated: dayjs().toISOString(),
+          order: maxDraftsOrder + 1,
+          id: nanoid(3),
+        });
+      } else {
+        await updateDraft.mutateAsync({
+          id: props.editedDraftId,
+          title: draftTitle,
+          order: draft.order,
+          projectId: props.projectId,
+          dateUpdated: dayjs().toISOString(),
+          dateCreated: draft.dateCreated,
+        });
+      }
 
       props.onSubmit();
     } catch (e) {
@@ -58,11 +82,7 @@ export function DraftEditModal(props: DraftEditModalProps) {
       props.onEditModalOpen(false);
       setLoadingDraft(false);
     }
-  }, [draftTitle]);
-
-  const project = useProjectStore((state) =>
-    state.projects.find((p) => p.id === props.projectId),
-  );
+  }, [draftTitle, props.projectId]);
 
   return (
     <Modal
@@ -89,13 +109,17 @@ export function DraftEditModal(props: DraftEditModalProps) {
               }-100 px-2.5 py-0.5`}
               onPress={() => props.onOpenProjectModal()}
             >
-              <Text className={`text-${project ? project.color : "gray"}-400 `}>
+              <Text
+                className={`text-${project ? project.color : "gray"}-${
+                  project ? "400" : "800"
+                } `}
+              >
                 {project ? "#" + project.title : "No project"}
               </Text>
             </Pressable>
             <Pressable
               className="h-9 w-9 items-center justify-center rounded bg-black"
-              onPress={() => onCreateProject()}
+              onPress={() => onSubmit()}
             >
               {loadingDraft ? (
                 <ActivityIndicator size="small" color="white" />
