@@ -7,6 +7,7 @@ import React from "react";
 import { Auth } from "../components/auth";
 import * as SecureStore from "expo-secure-store";
 import { TrpcProvider } from "../lib/trpcProvider";
+import Constants from "expo-constants";
 
 const tokenCache = {
   async getToken(key: string) {
@@ -39,7 +40,7 @@ export default function Root() {
   return (
     <GestureHandlerRootView className="flex-1">
       <ClerkProvider
-        publishableKey={"pk_test_c29saWQtZWVsLTg2LmNsZXJrLmFjY291bnRzLmRldiQ"}
+        publishableKey={Constants.expoConfig?.extra?.clerkKey ?? ""}
         tokenCache={tokenCache}
       >
         <TrpcProvider>

@@ -34,6 +34,7 @@
       "expo-font"
     ],
     "extra": {
+      "clerkKey": "pk_test_c29saWQtZWVsLTg2LmNsZXJrLmFjY291bnRzLmRldiQ",
       "router": {
         "origin": false
       },
