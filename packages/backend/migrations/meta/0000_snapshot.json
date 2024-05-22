@@ -1,10 +1,8 @@
 {
-  "id": "b5946639-7431-4607-9894-99b02eb45aa8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "postgresql",
   "tables": {
-    "apikeys": {
+    "public.apikeys": {
       "name": "apikeys",
       "schema": "",
       "columns": {
@@ -38,7 +36,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "drafts": {
+    "public.drafts": {
       "name": "drafts",
       "schema": "",
       "columns": {
@@ -85,7 +83,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "project": {
+    "public.project": {
       "name": "project",
       "schema": "",
       "columns": {
@@ -119,7 +117,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "task": {
+    "public.task": {
       "name": "task",
       "schema": "",
       "columns": {
@@ -200,8 +198,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "b5946639-7431-4607-9894-99b02eb45aa8",
+  "prevId": "00000000-0000-0000-0000-000000000000"
 }

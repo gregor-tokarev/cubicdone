@@ -22,7 +22,7 @@ export default function DraftRow(props: Props) {
       </View>
       {project && (
         <Text
-          className={`rounded-md bg-${project.color}-50 px-[3px] py-0.5 text-${project.color}-400`}
+          className={`rounded-md bg-${project.color}-100 px-[3px] py-0.5 text-${project.color}-400`}
         >
           #{project?.title}
         </Text>

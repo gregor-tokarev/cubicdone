@@ -6,8 +6,8 @@ config({ path: ".env.local" });
 export default {
   schema: "./src/models/schema.ts",
   out: "./migrations",
-  driver: "pg",
+  dialect: "postgresql",
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL || "",
+    url: process.env.DATABASE_URL || "",
   },
 } satisfies Config;

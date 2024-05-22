@@ -1,10 +1,8 @@
 {
-  "id": "3d641594-15ff-4921-a6ea-a6590ac7a39c",
-  "prevId": "220f5855-fb41-4c18-ad34-0b7e58573705",
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "postgresql",
   "tables": {
-    "apikeys": {
+    "public.apikeys": {
       "name": "apikeys",
       "schema": "",
       "columns": {
@@ -44,7 +42,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "drafts": {
+    "public.drafts": {
       "name": "drafts",
       "schema": "",
       "columns": {
@@ -96,7 +94,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "project": {
+    "public.project": {
       "name": "project",
       "schema": "",
       "columns": {
@@ -136,7 +134,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "task": {
+    "public.task": {
       "name": "task",
       "schema": "",
       "columns": {
@@ -222,8 +220,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "3d641594-15ff-4921-a6ea-a6590ac7a39c",
+  "prevId": "220f5855-fb41-4c18-ad34-0b7e58573705"
 }

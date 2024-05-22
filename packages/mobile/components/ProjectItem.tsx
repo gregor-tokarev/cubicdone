@@ -11,7 +11,9 @@ export function ProjectItem(props: Props) {
   return (
     <View className="flex-row items-center justify-between p-3">
       <View className="flex-row items-center space-x-1">
-        <View className="h-[11px] w-[11px] rounded-full bg-[#FBB80A]"></View>
+        <View
+          className={`h-[11px] w-[11px] rounded-full bg-${props.project.color}-400`}
+        ></View>
         <Text className="text-xs text-[Poppins500] text-black">
           {props.project.title}
         </Text>

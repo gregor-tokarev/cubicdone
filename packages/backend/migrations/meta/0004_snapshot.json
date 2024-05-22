@@ -1,10 +1,8 @@
 {
-  "id": "5503aaf0-ec33-4f57-9d0f-a540689bbb41",
-  "prevId": "9d045bea-775b-4043-b991-398c656e3dc8",
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "postgresql",
   "tables": {
-    "apikeys": {
+    "public.apikeys": {
       "name": "apikeys",
       "schema": "",
       "columns": {
@@ -44,7 +42,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "drafts": {
+    "public.drafts": {
       "name": "drafts",
       "schema": "",
       "columns": {
@@ -96,7 +94,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "project_status": {
+    "public.project_status": {
       "name": "project_status",
       "schema": "",
       "columns": {
@@ -125,7 +123,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "project": {
+    "public.project": {
       "name": "project",
       "schema": "",
       "columns": {
@@ -171,21 +169,21 @@
         "project_status_id_project_status_id_fk": {
           "name": "project_status_id_project_status_id_fk",
           "tableFrom": "project",
-          "tableTo": "project_status",
           "columnsFrom": [
             "status_id"
           ],
+          "tableTo": "project_status",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "task": {
+    "public.task": {
       "name": "task",
       "schema": "",
       "columns": {
@@ -277,8 +275,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "5503aaf0-ec33-4f57-9d0f-a540689bbb41",
+  "prevId": "9d045bea-775b-4043-b991-398c656e3dc8"
 }

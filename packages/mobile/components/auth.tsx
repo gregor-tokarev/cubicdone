@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import React, { JSX, useCallback, useEffect } from "react";
 import * as WebBrowser from "expo-web-browser";
-import { useOAuth, UseOAuthFlowParams } from "@clerk/clerk-expo";
+import { useOAuth } from "@clerk/clerk-expo";
 import GoogleIcon from "../assets/icons/google.svg";
 import NotionIcon from "../assets/icons/notion.svg";
 import LinearIcon from "../assets/icons/linear.svg";

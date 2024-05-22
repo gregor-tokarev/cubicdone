@@ -22,7 +22,7 @@
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^20.11.17",
-    "drizzle-kit": "^0.20.14",
+    "drizzle-kit": "^0.21.2",
     "pg": "^8.11.3"
   }
 }

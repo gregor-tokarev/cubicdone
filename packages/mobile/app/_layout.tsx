@@ -39,8 +39,8 @@ export default function Root() {
   return (
     <GestureHandlerRootView className="flex-1">
       <ClerkProvider
-        tokenCache={tokenCache}
         publishableKey={"pk_test_c29saWQtZWVsLTg2LmNsZXJrLmFjY291bnRzLmRldiQ"}
+        tokenCache={tokenCache}
       >
         <TrpcProvider>
           <SafeAreaView className="flex-1 pt-[55px]">
