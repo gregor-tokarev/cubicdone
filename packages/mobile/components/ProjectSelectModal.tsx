@@ -22,6 +22,10 @@ interface ProjectSelectModalProps extends React.PropsWithChildren {
 
 export default function ProjectSelectModal(props: ProjectSelectModalProps) {
   const searchRef = useRef<TextInput>(null);
+  useEffect(() => {
+    if (!props.projectModalOpen) return;
+    searchRef.current?.focus();
+  }, [props.projectModalOpen]);
 
   const [search, setSearch] = useState("");
   useEffect(() => {

@@ -36,6 +36,10 @@ export function DraftEditModal(props: DraftEditModalProps) {
   );
 
   const inputRef = useRef<TextInput>(null);
+  useEffect(() => {
+    if (!props.editModalOpen) return;
+    inputRef.current?.focus();
+  }, [props.editModalOpen]);
 
   const [draftTitle, setDraftTitle] = useState("");
   useEffect(() => {
