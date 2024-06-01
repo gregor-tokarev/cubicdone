@@ -22,6 +22,7 @@
     "expo-router": "~3.4.8",
     "expo-secure-store": "^13.0.1",
     "expo-status-bar": "~1.11.1",
+    "fuse.js": "^7.0.0",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",

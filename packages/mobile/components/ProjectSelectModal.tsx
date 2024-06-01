@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -10,6 +10,7 @@ import {
 import { ProjectItem } from "./ProjectItem";
 import { Project } from "contract-models";
 import RemixIcon from "react-native-remix-icon";
+import Fuse from "fuse.js";
 
 interface ProjectSelectModalProps extends React.PropsWithChildren {
   projects: Project[];
@@ -21,6 +22,23 @@ interface ProjectSelectModalProps extends React.PropsWithChildren {
 
 export default function ProjectSelectModal(props: ProjectSelectModalProps) {
   const searchRef = useRef<TextInput>(null);
+
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    setSearch("");
+  }, [props.projectModalOpen]);
+
+  const filteredProjects = useMemo(() => {
+    if (!search) return props.projects;
+
+    const fuse = new Fuse(props.projects, {
+      keys: ["title"],
+    });
+
+    return fuse.search(search).map((project) => {
+      return project.item;
+    });
+  }, [search, props.projects]);
 
   return (
     <Modal
@@ -34,7 +52,7 @@ export default function ProjectSelectModal(props: ProjectSelectModalProps) {
       <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="padding">
         <View className="mt-auto max-h-[350px] rounded-t-xl bg-white pb-3 pt-5">
           <FlatList
-            data={props.projects}
+            data={filteredProjects}
             renderItem={({ item }) => (
               <Pressable onPress={() => props.onSelectProject(item.id)}>
                 <ProjectItem
@@ -51,7 +69,8 @@ export default function ProjectSelectModal(props: ProjectSelectModalProps) {
             <RemixIcon name="search-line" color="#333" size={24}></RemixIcon>
             <TextInput
               ref={searchRef}
-              className="placeholder-gray-50"
+              className="grow-1"
+              onChangeText={setSearch}
               placeholder="Search"
             ></TextInput>
           </Pressable>
