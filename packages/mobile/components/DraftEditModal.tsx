@@ -37,8 +37,11 @@ export function DraftEditModal(props: DraftEditModalProps) {
 
   const inputRef = useRef<TextInput>(null);
   useEffect(() => {
-    if (!props.editModalOpen) return;
-    inputRef.current?.focus();
+    if (!props.editModalOpen) {
+      // inputRef.current?.blur();
+      return;
+    }
+    setTimeout(() => inputRef.current?.focus(), 100);
   }, [props.editModalOpen]);
 
   const [draftTitle, setDraftTitle] = useState("");
@@ -87,15 +90,13 @@ export function DraftEditModal(props: DraftEditModalProps) {
       setLoadingDraft(false);
     }
   }, [draftTitle, props.projectId]);
-
   return (
     <Modal
       visible={props.editModalOpen}
       className="bg-sky-400"
       transparent
       statusBarTranslucent
-      onRequestClose={() => props.onEditModalOpen(false)}
-      animationType="fade"
+      animationType="slide"
     >
       <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="padding">
         <View className="mt-auto rounded-t-xl bg-white pb-2">

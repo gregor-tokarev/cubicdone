@@ -24,7 +24,7 @@ export default function ProjectSelectModal(props: ProjectSelectModalProps) {
   const searchRef = useRef<TextInput>(null);
   useEffect(() => {
     if (!props.projectModalOpen) return;
-    searchRef.current?.focus();
+    setTimeout(() => searchRef.current?.focus(), 100);
   }, [props.projectModalOpen]);
 
   const [search, setSearch] = useState("");

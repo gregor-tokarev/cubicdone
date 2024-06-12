@@ -1,4 +1,11 @@
-import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
+import {
+  BackHandler,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 import DraftRow from "../components/DraftRow";
 import RemixIcon from "react-native-remix-icon";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -24,7 +31,6 @@ export default function Page() {
 
   const setDrafts = useDraftStore((state) => state.setDrafts);
   useEffect(() => {
-    console.log(drafts);
     drafts && setDrafts(drafts);
   }, [drafts]);
 
@@ -71,6 +77,14 @@ export default function Page() {
     setEditModalOpen(true);
     setProjectModalOpen(false);
   }, []);
+
+  // BackHandler.addEventListener("hardwareBackPress", () => {
+  //   console.log("Back pressed");
+  //   setEditModalOpen(false);
+  //   setProjectModalOpen(false);
+  //
+  //   return true;
+  // });
 
   const onSubmit = useCallback(() => {
     setEditModalOpen(false);
