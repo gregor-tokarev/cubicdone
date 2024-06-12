@@ -13,7 +13,7 @@ export function TrpcProvider(props: Props) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:4000",
+          url: "http://192.168.1.66:4000",
           async fetch(url, options) {
             const token = await getToken();
 

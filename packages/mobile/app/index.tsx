@@ -1,7 +1,7 @@
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 import DraftRow from "../components/DraftRow";
 import RemixIcon from "react-native-remix-icon";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Draft, Project } from "contract-models";
 import { trpc } from "../lib/trpc";
 import { useDraftStore } from "../store/draft.store";
@@ -11,11 +11,20 @@ import { DraftEditModal } from "../components/DraftEditModal";
 import ProjectSelectModal from "../components/ProjectSelectModal";
 
 export default function Page() {
-  const { data: drafts, refetch: refreshDrafts } = trpc.draft.getAll.useQuery();
-  const { data: projects } = trpc.project.getAll.useQuery();
+  const {
+    data: drafts,
+    refetch: refreshDrafts,
+    isLoading: loadingDrafts,
+  } = trpc.draft.getAll.useQuery();
+  const {
+    data: projects,
+    refetch: refreshProjects,
+    isLoading: loadingProjects,
+  } = trpc.project.getAll.useQuery();
 
   const setDrafts = useDraftStore((state) => state.setDrafts);
   useEffect(() => {
+    console.log(drafts);
     drafts && setDrafts(drafts);
   }, [drafts]);
 
@@ -23,6 +32,15 @@ export default function Page() {
   useEffect(() => {
     projects && setProjects(projects);
   }, [projects]);
+
+  const onRefresh = useCallback(async () => {
+    return Promise.all([refreshDrafts(), refreshProjects()]);
+  }, [refreshDrafts, refreshProjects]);
+
+  const loading = useMemo(
+    () => loadingDrafts || loadingProjects,
+    [loadingDrafts, loadingProjects],
+  );
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
@@ -75,6 +93,12 @@ export default function Page() {
               <DraftRow draft={item}></DraftRow>
             </Pressable>
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={() => onRefresh()}
+            ></RefreshControl>
+          }
         ></FlatList>
       ) : (
         <View className="flex-1 items-center justify-center">
