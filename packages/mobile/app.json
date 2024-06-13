@@ -31,7 +31,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "expo-secure-store"
     ],
     "extra": {
       "clerkKey": "pk_test_c29saWQtZWVsLTg2LmNsZXJrLmFjY291bnRzLmRldiQ",
@@ -41,6 +42,12 @@
       "eas": {
         "projectId": "6aaac014-f238-4cc2-af80-8e76697d4ecf"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6aaac014-f238-4cc2-af80-8e76697d4ecf"
     }
   }
 }
