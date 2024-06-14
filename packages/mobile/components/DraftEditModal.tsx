@@ -98,7 +98,7 @@ export function DraftEditModal(props: DraftEditModalProps) {
       statusBarTranslucent
       animationType="slide"
     >
-      <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="padding">
+      <KeyboardAvoidingView className="flex-1 bg-black/40" behavior="height">
         <View className="mt-auto rounded-t-xl bg-white pb-2">
           <TextInput
             ref={inputRef}
