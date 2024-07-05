@@ -51,6 +51,7 @@
   font-family: Poppins, sans-serif;
 }
 
-html,body {
+html,
+body {
   min-height: 100dvh;
 }

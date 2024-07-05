@@ -3,10 +3,8 @@
     "target": "ESNext",
     "module": "NodeNext",
     "strict": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "outDir": "dist",
     "outFile": "dist/main.js"
-  },
+  }
 }

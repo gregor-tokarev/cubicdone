@@ -8,11 +8,8 @@
       "cache": false,
       "persistent": true
     },
-    "migrations:gen": {"outputs":  ["migrations/*"]},
+    "migrations:gen": { "outputs": ["migrations/*"] },
     "migrations:push": {}
   },
-  "globalDependencies": [
-    ".env.local",
-    "tsconfig.json"
-  ]
+  "globalDependencies": [".env.local", "tsconfig.json"]
 }
