@@ -1,0 +1,20 @@
+---
+import Button from "./button.astro";
+---
+
+<header class="py-6">
+  <div class="flex justify-between items-center mx-auto px-[50px] max-w-[1440px]">
+    <div class="flex items-center gap-[50px]">
+      <strong class="text-gray-900 uppercase text-[24px] text-bold">cubicdone</strong>
+      <nav class="flex items-center gap-5 text-gray-800">
+        <a href="/pricing" class="transition-colors text-gray-800 hover:text-black">Pricing</a>
+        <a href="/features" class="transition-colors text-gray-800 hover:text-black">Features</a>
+        <a href="/mobileapp" class="transition-colors text-gray-800 hover:text-black">Mobile App</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-2">
+      <Button color="light">Log in</Button>
+      <Button>Sign up</Button>
+    </div>
+  </div>
+</header>

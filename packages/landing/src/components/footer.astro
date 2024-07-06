@@ -1,0 +1,49 @@
+---
+const linkSections = [
+  {
+    name: "Legal",
+    links: [
+    {label: "Privacy", href: "/privacy"},
+      {label: "Terms of Service", href: "/terms"},
+      {label: "Security", href: "/security"},
+    ]
+  },
+  {
+    name: "Company",
+    links: [
+      {label: "About us", href: "/about"},
+      {label: "Sitemap", href: "/sitemap"},
+    ]
+  },
+  {
+    name: "Support",
+    links: [
+      {label: "FAQ", href: "/faq"},
+      {label: "Contact", href: "/contact"},
+    ]
+  }
+]
+---
+
+<footer class="bg-black xl:h-[375px] mt-auto pt-10">
+  <div class="grid grid-cols-6 gap-x-5 px-[50px] mx-auto max-w-[1440px]">
+    <div class="max-w-[430px] col-span-2">
+      <strong class="text-white uppercase text-[24px] font-bold">cubicdone</strong>
+      <p class="text-gray-600 mt-2.5">
+        TODO List with preconfigured productivity system, that will keep your tasks and mind in shape
+      </p>
+    </div>
+    {
+      linkSections.map((section, index) => (
+        <div class="flex flex-col gap-2.5" class:list={[`col-start-${4 + index}`]}>
+          <h4 class="text-gray-300 font-semibold mb-6">{section.name}</h4>
+          <nav class="flex flex-col gap-2.5">
+            {section.links.map((link) => (
+              <a href={link.href} class="transition-colors text-gray-600 text-400 hover:text-white">{link.label}</a>
+              ))
+            }
+          </nav>
+        </div>))
+    }
+  </div>
+</footer>

@@ -1,0 +1,42 @@
+---
+import { Image } from "astro:assets";
+import Button from "./button.astro";
+---
+
+<section class="flex items-start gap-5">
+  <div class="">
+    <h1 class="text-[48px] text-gray-800 font-medium leading-[1.2]">
+      Do not spend days to create
+      <span class="animated-gradient-text">productivity system</span>, we already do that
+    for you
+    </h1>
+    <p class="text-gray-600 mt-5 text-[24px] text-400 leading-[1.4]">
+      TODO List with preconfigured productivity system, that will keep your tasks and mind in shape
+    </p>
+    <Button class="mt-5 block">Get cubicdone</Button>
+  </div>
+  <Image src="/screenshots/hero.png" alt="hero" width="660px" height="321px" />
+</section>
+
+<style>
+    @keyframes gradient-animation {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* Style the text with the animated gradient */
+    .animated-gradient-text {
+        background: linear-gradient(45deg, #ff6ec4, #7873f5, #3f51b5, #2196f3);
+        background-size: 300% 300%;
+        background-clip: text;
+        color: transparent;
+        animation: gradient-animation 5s ease infinite;
+    }
+</style>
