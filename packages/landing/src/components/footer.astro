@@ -3,16 +3,15 @@ const linkSections = [
   {
     name: "Legal",
     links: [
-    {label: "Privacy", href: "/privacy"},
+      {label: "Privacy", href: "/privacy"},
       {label: "Terms of Service", href: "/terms"},
-      {label: "Security", href: "/security"},
     ]
   },
   {
     name: "Company",
     links: [
       {label: "About us", href: "/about"},
-      {label: "Sitemap", href: "/sitemap"},
+      {label: "Sitemap", href: "/sitemap-index.xml"},
     ]
   },
   {
@@ -35,7 +34,7 @@ const linkSections = [
     </div>
     {
       linkSections.map((section, index) => (
-        <div class="flex flex-col gap-2.5" class:list={[`col-start-${4 + index}`]}>
+        <div class="flex flex-col gap-2.5 col-span-1" class:list={[`col-start-${4 + index}`]}>
           <h4 class="text-gray-300 font-semibold mb-6">{section.name}</h4>
           <nav class="flex flex-col gap-2.5">
             {section.links.map((link) => (
