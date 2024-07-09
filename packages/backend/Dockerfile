@@ -2,7 +2,7 @@
 FROM node:18-alpine AS base
 
 # Install Turbo globally
-RUN npm i -g turbo@^1.22.5
+RUN npm i -g turbo@^1.12.5
 
 
 # Prune the monorepo for the specific app
@@ -22,7 +22,7 @@ COPY --from=base /app/out/full/ .
 
 FROM node:18-alpine as migrator
 
-RUN npm i -g turbo@^1.22.5
+RUN npm i -g turbo@^1.12.5
 
 WORKDIR /app
 COPY --from=installer /app .
