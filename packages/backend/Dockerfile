@@ -26,7 +26,8 @@ RUN npm i -g turbo
 
 WORKDIR /app
 COPY --from=installer /app .
-RUN ls -la
+RUN ls -la packages/backend
+RUN cat packages/backend/package.json
 RUN turbo migrations:gen --filter=backend
 
 # Build the application
