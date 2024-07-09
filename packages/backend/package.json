@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch src/index.ts",
     "start": "NODE_ENV=production tsx src/index.ts",
-    "migrations:gen": "drizzle-kit generate:pg",
-    "migrations:push": "drizzle-kit push:pg"
+    "migrations:gen": "drizzle-kit generate",
+    "migrations:push": "drizzle-kit push"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.11",
