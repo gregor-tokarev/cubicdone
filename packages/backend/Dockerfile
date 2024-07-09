@@ -1,15 +1,3 @@
-#FROM node:18.16.0
-#
-#WORKDIR /app
-#COPY package*.json .
-#RUN npm i
-#
-#COPY . .
-#
-#EXPOSE 4000
-#
-#CMD npm start
-
 # Use a Node.js base image
 FROM node:18-alpine AS base
 
@@ -38,6 +26,7 @@ RUN npm i -g turbo
 
 WORKDIR /app
 COPY --from=installer /app .
+RUN ls -la
 RUN turbo migrations:gen --filter=backend
 
 # Build the application
