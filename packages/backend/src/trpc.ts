@@ -7,6 +7,8 @@ interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
   console.log(req.headers);
+  console.log(req.cookie);
+  console.log(req.cookies);
   const session = lucia.readSessionCookie(req.headers.cookie);
   if (!session) return { user: null };
 
