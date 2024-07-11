@@ -26,13 +26,17 @@ oauthRouter.get("/google", async (req, res) => {
   console.log(authURL.toString());
 
   res.cookie(stateCookieName, state, {
-    maxAge: 60 * 10,
+    path: "/",
+    maxAge: 3 * 60 * 1000,
+    domain: "cubicdone.com",
     httpOnly: true,
     sameSite: "lax",
   });
 
   res.cookie(verifierCookieName, codeVerifier, {
-    maxAge: 60 * 10,
+    path: "/",
+    maxAge: 3 * 60 * 1000,
+    domain: "cubicdone.com",
     httpOnly: true,
     sameSite: "lax",
   });
