@@ -1,9 +1,13 @@
 import { NextFunction, Request, Router, Response } from "express";
-import { google, notion } from "../auth/providers";
+import { google, linear, notion } from "../auth/providers";
 import { db } from "../db";
 import { userTable } from "../models/schema";
 import { eq, InferSelectModel } from "drizzle-orm";
 import { lucia, stateCookieName, verifierCookieName } from "../auth/lucia";
+import { NotionTokens } from "arctic";
+import { config } from "dotenv";
+
+config({ path: ".env.local" });
 
 export function sameOauthState() {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -81,16 +85,70 @@ oauthRedirectRouter.get("/google", async (req, res) => {
 oauthRedirectRouter.get("/notion", async (req, res) => {
   const code = req.query["code"];
 
-  console.log(code);
-  const tokens = await notion.validateAuthorizationCode(code as string);
+  const tokens: NotionTokens = await fetch(
+    "https://api.notion.com/v1/oauth/token",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_SECRET}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_url: "http://localhost:4000/oauth/redirect/notion",
+      }),
+    },
+  ).then((res) => res.json());
+
   console.log(tokens);
-  const response = await fetch("https://api.notion.com/v1/users/me", {
+
+  const user = await fetch("https://api.notion.com/v1/users/me", {
     headers: {
       Authorization: `Bearer ${tokens.accessToken}`,
     },
-  });
-  const user = await response.json();
+  }).then((res) => res.json());
   console.log(user);
+});
+
+oauthRedirectRouter.get("/linear", async (req, res) => {
+  const code = req.query["code"];
+
+  const tokens = await linear.validateAuthorizationCode(code as string);
+
+  const userData = await fetch("https://api.linear.app/graphql", {
+    method: "POST",
+    body: `{ "query": "{ viewer { id name email avatarUrl } }" }`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${tokens.accessToken}`,
+    },
+  }).then((res) => res.json());
+
+  const user = userData.data.viewer;
+  const [firstName, lastName] = user["name"];
+
+  const [existingUser] = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.email, user["email"]))
+    .execute();
+
+  if (existingUser) {
+    return defaultResponse(existingUser, res);
+  }
+
+  const [newUser] = await db
+    .insert(userTable)
+    .values({
+      email: user["email"],
+      firstName,
+      lastName,
+      avatar: user["avatarUrl"],
+    })
+    .returning();
+
+  return defaultResponse(newUser, res);
 });
 
 export { oauthRedirectRouter };

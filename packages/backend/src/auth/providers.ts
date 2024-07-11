@@ -19,7 +19,7 @@ export const notion = new Notion(
 );
 
 export const linear = new Linear(
-  process.env.LINEAR_CLIENT_ID ?? "",
+  process.env.LINEAR_CLINET_ID ?? "",
   process.env.LINEAR_SECRET ?? "",
   process.env.NODE_ENV === "development"
     ? "http://localhost:4000/oauth/redirect/linear"

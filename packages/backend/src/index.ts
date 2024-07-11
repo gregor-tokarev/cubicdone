@@ -32,14 +32,14 @@ export type AppRouter = typeof appRouter;
 
 const app = express();
 
-app.use(cookieParser());
-
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://app.cubicdone.com"],
     credentials: true,
   }),
 );
+
+app.use(cookieParser());
 
 app.use("/oauth/redirect", oauthRedirectRouter);
 app.use("/oauth", oauthUrlRouter);

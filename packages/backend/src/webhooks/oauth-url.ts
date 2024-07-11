@@ -1,8 +1,9 @@
 import { generateState } from "arctic";
 import { Response, Router } from "express";
-import { google, notion } from "../auth/providers";
+import { google, linear, notion } from "../auth/providers";
 import { stateCookieName, verifierCookieName } from "../auth/lucia";
 import { strict } from "assert";
+import { stat } from "fs";
 
 const oauthUrlRouter = Router();
 
@@ -45,9 +46,18 @@ oauthUrlRouter.get("/google", async (req, res) => {
   res.redirect(authURL.toString());
 });
 
-oauthUrlRouter.get("/notion", async (req, res) => {
+oauthUrlRouter.get("/notion", async (_req, res) => {
   const state = generateState();
   const authUrl = await notion.createAuthorizationURL(state);
+
+  setCookies(res, state);
+
+  res.redirect(authUrl.toString());
+});
+
+oauthUrlRouter.get("/linear", async (_req, res) => {
+  const state = generateState();
+  const authUrl = await linear.createAuthorizationURL(state);
 
   setCookies(res, state);
 
