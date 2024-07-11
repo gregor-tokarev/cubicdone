@@ -95,7 +95,9 @@ export const apikeyTableValidator = z.object({
 });
 
 export const userTable = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   email: text("email").unique().notNull(),
   firstName: text("first_name"),
   lastName: text("last_name"),
