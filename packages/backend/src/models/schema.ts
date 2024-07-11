@@ -1,4 +1,11 @@
-import { integer, json, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  timestamp,
+  integer,
+  json,
+  uuid,
+  varchar,
+  text,
+} from "drizzle-orm/pg-core";
 
 import { pgTable } from "drizzle-orm/pg-core/table";
 import { z } from "zod";
@@ -84,4 +91,21 @@ export const apikeyTableValidator = z.object({
   label: z.string(),
   key: z.string(),
   integrationId: z.string(),
+});
+
+export const userTable = pgTable("users", {
+  id: uuid("id").primaryKey(),
+  email: text("email").unique(),
+  dateCreated: timestamp("dateCreated"),
+});
+
+export const sessionTable = pgTable("session", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id),
+  expiresAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
 });

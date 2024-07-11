@@ -1,9 +1,4 @@
-import postgres from "postgres";
-import * as schema from "./models/schema";
-import { drizzle } from "drizzle-orm/postgres-js";
-import { config } from "dotenv";
 import { createContext, router } from "./trpc";
-import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import cors from "cors";
 import { drafts } from "./router/draft.router";
 import { tasks } from "./router/tasks.router";
@@ -11,10 +6,12 @@ import { projects } from "./router/project.router";
 import { apiKeys } from "./router/apikey.router";
 import { projectStatus } from "./router/project-status.router";
 
-config({ path: ".env.local" });
+import express from "express";
+import * as trpcExpress from "@trpc/server/adapters/express";
+import { oauthRouter } from "./webhooks/oauth-redirects";
+import { webcrypto } from "node:crypto";
 
-const pg = postgres(process.env.DATABASE_URL ?? "");
-export const db = drizzle(pg, { schema });
+globalThis.crypto = webcrypto as Crypto;
 
 const appRouter = router({
   draft: drafts,
@@ -26,13 +23,19 @@ const appRouter = router({
 
 export type AppRouter = typeof appRouter;
 
-const server = createHTTPServer({
-  router: appRouter,
-  middleware: cors({
-    origin: ["http://localhost:5173", "https://todo.tokarev.work"],
+const app = express();
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://app.cubicdone.com"],
     credentials: true,
   }),
-  createContext,
-});
+);
 
-server.listen(4000);
+app.use("/oauth", oauthRouter);
+
+app.use(
+  trpcExpress.createExpressMiddleware({ router: appRouter, createContext }),
+);
+
+app.listen(4000);

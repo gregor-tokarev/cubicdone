@@ -1,5 +1,5 @@
 import { authedProcedure, router } from "../trpc";
-import { db } from "../index";
+import { db } from "../db";
 import { draftTable, draftTableValidator } from "../models/schema";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";

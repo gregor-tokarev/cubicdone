@@ -43,6 +43,13 @@
       "when": 1720503291191,
       "tag": "0005_amused_whistler",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1720680243508,
+      "tag": "0006_handy_stranger",
+      "breakpoints": true
     }
   ]
 }

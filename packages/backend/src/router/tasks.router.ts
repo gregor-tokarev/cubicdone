@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import { and, eq, gte } from "drizzle-orm";
 import { z } from "zod";
-import { db } from "../index";
+import { db } from "../db";
 import { taskTable, tasksTableValidator } from "../models/schema";
 import { authedProcedure, router } from "../trpc";
 

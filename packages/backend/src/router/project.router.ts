@@ -2,7 +2,7 @@ import { authedProcedure, router } from "../trpc";
 import { projectTable, projectTableValidator } from "../models/schema";
 
 import { TRPCError } from "@trpc/server";
-import { db } from "../index";
+import { db } from "../db";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 

@@ -1,5 +1,5 @@
 import { authedProcedure, router } from "../trpc";
-import { db } from "../index";
+import { db } from "../db";
 import { projectStatusTable } from "../models/schema";
 
 export const projectStatus = router({
