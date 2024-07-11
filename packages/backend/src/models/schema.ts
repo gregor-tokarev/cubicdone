@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   timestamp,
   integer,
@@ -95,8 +96,11 @@ export const apikeyTableValidator = z.object({
 
 export const userTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  email: text("email").unique(),
-  dateCreated: timestamp("dateCreated"),
+  email: text("email").unique().notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  dateCreated: timestamp("dateCreated").default(sql`CURRENT_TIMESTAMP`),
+  avatar: text("avatar"),
 });
 
 export const sessionTable = pgTable("session", {

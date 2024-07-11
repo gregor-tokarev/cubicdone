@@ -11,13 +11,10 @@ export async function createContext({ req }: Context) {
   if (!sessionCookie) return { user: null };
 
   try {
-    console.log(sessionCookie);
     const { user } = await lucia.validateSession(sessionCookie);
-    console.log(user);
 
     return { user };
   } catch (err) {
-    console.log(err);
     console.error(err);
   }
 }

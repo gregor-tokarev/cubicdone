@@ -70,14 +70,11 @@ oauthRouter.get("/redirect/google", async (req, res) => {
     },
   );
   const user = await response.json();
-  console.log(user);
-
-  const email = user["email"];
 
   const [existingUser] = await db
     .select()
     .from(userTable)
-    .where(eq(userTable.email, email))
+    .where(eq(userTable.email, user["email"]))
     .execute();
 
   if (existingUser) {
@@ -94,7 +91,12 @@ oauthRouter.get("/redirect/google", async (req, res) => {
 
   const [newUser] = await db
     .insert(userTable)
-    .values({ id: "sdfsf", email })
+    .values({
+      email: user["email"],
+      firstName: user["given_name"],
+      lastName: user["family_name"],
+      avatar: user["picture"],
+    })
     .returning();
 
   const session = await lucia.createSession(newUser.id, {});
