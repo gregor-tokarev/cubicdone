@@ -1,16 +1,19 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import { clerkClient } from "@clerk/clerk-sdk-node";
+import { lucia } from "./auth/lucia";
 
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
-  const token = req.headers["authorization"];
-  if (!token) return { user: null };
+  const session = lucia.readSessionCookie(req.headers.cookie);
+  // const token = req.headers["authorization"];
+  if (!session) return { user: null };
 
   try {
-    const payload = await clerkClient.verifyToken(token);
-    const user = await clerkClient.users.getUser(payload.sub);
+    // const payload = await clerkClient.verifyToken(token);
+    // const user = await clerkClient.users.getUser(payload.sub);
+    const { user } = await lucia.validateSession(session);
 
     return { user };
   } catch (err) {

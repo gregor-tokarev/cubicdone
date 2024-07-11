@@ -23,27 +23,27 @@ export const trpc = createTRPCClient<AppRouter>({
       url: import.meta.env.PROD
         ? import.meta.env.VITE_SYNC_URL
         : "http://localhost:4000",
-      fetch(url, options) {
-        const cookies = cookie.parse(document.cookie);
-        const sessionToken = cookies["__session"];
-
-        return fetch(url, {
-          ...options,
-          headers: {
-            ...options?.headers,
-            Authorization: sessionToken,
-          },
-        });
-      },
+      // fetch(url, options) {
+      //   const cookies = cookie.parse(document.cookie);
+      //   const sessionToken = cookies["__session"];
+      //
+      //   return fetch(url, {
+      //     ...options,
+      //     headers: {
+      //       ...options?.headers,
+      //       Authorization: sessionToken,
+      //     },
+      //   });
+      // },
     }),
   ],
 });
 
 createApp(App)
   .directive("hint", hint)
-  .use(clerkPlugin, {
-    publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
-  })
+  // .use(clerkPlugin, {
+  //   publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+  // })
   .use(router)
   .use(pinia)
   .use(vueSyncClientPlugin, {
