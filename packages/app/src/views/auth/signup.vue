@@ -1,27 +1,10 @@
 <script setup lang="ts">
 import AuthButton from "@components/UI/AuthButton.vue";
 import Icon from "../../components/Icon.vue";
-import { useSignUp } from "vue-clerk";
 import { OAuthStrategy } from "@clerk/types/dist/strategies";
 
-const { signUp } = useSignUp();
-
 async function onSignup(strategy: OAuthStrategy) {
-  if (!signUp.value) return;
-
-  const redirectUrl = `${location.origin}/inbox`;
-
-  const res = await signUp.value.create({
-    strategy,
-    redirectUrl,
-    actionCompleteRedirectUrl: redirectUrl,
-  });
-
-  const oauthLink =
-    res.verifications.externalAccount.externalVerificationRedirectURL;
-  if (!oauthLink) return;
-
-  location.href = oauthLink.href;
+  location.href = "https://api.cubicdone.com/oauth/google";
 }
 </script>
 

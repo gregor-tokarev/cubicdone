@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { useAuth } from "vue-clerk";
-import { watch } from "vue";
+import { watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import * as cookie from "cookie";
 
-const { isSignedIn, isLoaded } = useAuth();
 const router = useRouter();
 
-watch(isLoaded, () => {
-  if (!isLoaded.value) return;
+onMounted(() => {
   const c = cookie.parse(document.cookie);
-  const session = c["__session"];
+  const session = c["session"];
 
   if (location.pathname.includes("/auth")) return;
 
@@ -32,10 +29,7 @@ router.onError((error, to) => {
 </script>
 
 <template>
-  <router-view v-if="isLoaded"></router-view>
-  <div v-else class="loader">
-    <div class="loader__content"></div>
-  </div>
+  <router-view></router-view>
 </template>
 
 <style scoped></style>
