@@ -6,10 +6,9 @@ import { lucia } from "./auth/lucia";
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
-  console.log(req.headers);
-  console.log(req.cookie);
-  console.log(req.cookies);
-  const session = lucia.readSessionCookie(req.headers.cookie);
+  const sessionCookie = req.headers["Authorization"];
+
+  const session = lucia.readSessionCookie(sessionCookie);
   if (!session) return { user: null };
 
   try {

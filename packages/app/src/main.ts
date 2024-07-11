@@ -4,7 +4,6 @@ import App from "./App.vue";
 import { router } from "./router";
 import { createPinia } from "pinia";
 import { hint } from "./directives/hint.ts";
-import { clerkPlugin } from "vue-clerk/plugin";
 import { taskStore } from "@models/task.model.ts";
 import { projectStore } from "@models/project.model.ts";
 import { draftStore } from "@models/draft.model.ts";
@@ -23,18 +22,18 @@ export const trpc = createTRPCClient<AppRouter>({
       url: import.meta.env.PROD
         ? import.meta.env.VITE_SYNC_URL
         : "http://localhost:4000",
-      // fetch(url, options) {
-      //   const cookies = cookie.parse(document.cookie);
-      //   const sessionToken = cookies["__session"];
-      //
-      //   return fetch(url, {
-      //     ...options,
-      //     headers: {
-      //       ...options?.headers,
-      //       Authorization: sessionToken,
-      //     },
-      //   });
-      // },
+      fetch(url, options) {
+        const cookies = cookie.parse(document.cookie);
+        const sessionToken = cookies["session"];
+
+        return fetch(url, {
+          ...options,
+          headers: {
+            ...options?.headers,
+            Authorization: sessionToken,
+          },
+        });
+      },
     }),
   ],
 });
