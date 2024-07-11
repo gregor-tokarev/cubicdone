@@ -3,7 +3,7 @@ import { db } from "../db";
 import { sessionTable, userTable } from "../models/schema";
 import { Lucia, TimeSpan } from "lucia";
 
-const adapter = new DrizzlePostgreSQLAdapter(db, userTable, sessionTable);
+const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
 export const lucia = new Lucia(adapter, {
   sessionExpiresIn: new TimeSpan(2, "w"),
