@@ -49,8 +49,6 @@ oauthRouter.get("/redirect/google", async (req, res) => {
   const code = req.query["code"];
 
   const localState = req.cookies[stateCookieName];
-  console.log(req.cookies);
-  console.log(localState, state);
 
   if (localState !== state) {
     return res.status(400).json({ message: "state mismatch" });
@@ -83,6 +81,7 @@ oauthRouter.get("/redirect/google", async (req, res) => {
 
   if (existingUser) {
     const session = await lucia.createSession(existingUser.id, {});
+    console.log(session);
 
     res.cookie("session", lucia.createSessionCookie(session.id).value, {
       maxAge: 60 * 60,
