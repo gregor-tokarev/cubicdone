@@ -5,6 +5,9 @@ import { Lucia, TimeSpan } from "lucia";
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
+export const stateCookieName = "state";
+export const verifierCookieName = "codeVerifier";
+
 export const lucia = new Lucia(adapter, {
   sessionExpiresIn: new TimeSpan(2, "w"),
   getUserAttributes: (attributes) => ({

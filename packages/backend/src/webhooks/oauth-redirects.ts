@@ -1,59 +1,43 @@
-import { generateState } from "arctic";
-import { Router } from "express";
-import { google } from "../auth/providers";
+import { NextFunction, Request, Router, Response } from "express";
+import { google, notion } from "../auth/providers";
 import { db } from "../db";
 import { userTable } from "../models/schema";
-import { eq } from "drizzle-orm";
-import { lucia } from "../auth/lucia";
+import { eq, InferSelectModel } from "drizzle-orm";
+import { lucia, stateCookieName, verifierCookieName } from "../auth/lucia";
 
-const oauthRouter = Router();
+export function sameOauthState() {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const state = req.query["state"];
 
-const stateCookieName = "state";
-const verifierCookieName = "codeVerifier";
+    const localState = req.cookies[stateCookieName];
 
-oauthRouter.get("/google", async (req, res) => {
-  const state = generateState();
+    if (localState !== state) {
+      return res.status(400).json({ message: "state mismatch" });
+    }
 
-  const codeVerifier = Math.random().toString(36).substring(7);
+    return next();
+  };
+}
 
-  const authURL = await google.createAuthorizationURL(state, codeVerifier, {
-    scopes: [
-      "https://www.googleapis.com/auth/userinfo.email",
-      "https://www.googleapis.com/auth/userinfo.profile",
-    ],
-  });
+async function defaultResponse(
+  user: InferSelectModel<typeof userTable>,
+  res: Response,
+) {
+  const session = await lucia.createSession(user.id, {});
 
-  console.log(authURL.toString());
-
-  res.cookie(stateCookieName, state, {
-    path: "/",
-    maxAge: 3 * 60 * 1000, // 3 minutes
+  res.cookie("session", session.id, {
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
     domain: "cubicdone.com",
-    httpOnly: true,
     sameSite: "lax",
   });
 
-  res.cookie(verifierCookieName, codeVerifier, {
-    path: "/",
-    maxAge: 3 * 60 * 1000, // 3 minutes
-    domain: "cubicdone.com",
-    httpOnly: true,
-    sameSite: "lax",
-  });
+  return res.redirect("https://app.cubicdone.com");
+}
 
-  res.redirect(authURL.toString());
-});
+const oauthRedirectRouter = Router();
 
-oauthRouter.get("/redirect/google", async (req, res) => {
-  const state = req.query["state"];
+oauthRedirectRouter.get("/google", async (req, res) => {
   const code = req.query["code"];
-
-  const localState = req.cookies[stateCookieName];
-
-  if (localState !== state) {
-    return res.status(400).json({ message: "state mismatch" });
-  }
-
   const codeVerifier = req.cookies[verifierCookieName];
 
   const tokens = await google.validateAuthorizationCode(
@@ -78,15 +62,7 @@ oauthRouter.get("/redirect/google", async (req, res) => {
     .execute();
 
   if (existingUser) {
-    const session = await lucia.createSession(existingUser.id, {});
-
-    res.cookie("session", session.id, {
-      maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-      domain: "cubicdone.com",
-      sameSite: "lax",
-    });
-
-    return res.redirect("https://app.cubicdone.com");
+    return defaultResponse(existingUser, res);
   }
 
   const [newUser] = await db
@@ -99,15 +75,22 @@ oauthRouter.get("/redirect/google", async (req, res) => {
     })
     .returning();
 
-  const session = await lucia.createSession(newUser.id, {});
-
-  res.cookie("session", session.id, {
-    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-    domain: "cubicdone.com",
-    sameSite: "lax",
-  });
-
-  return res.redirect("https://app.cubicdone.com");
+  return defaultResponse(newUser, res);
 });
 
-export { oauthRouter };
+oauthRedirectRouter.get("/notion", async (req, res) => {
+  const code = req.query["code"];
+
+  console.log(code);
+  const tokens = await notion.validateAuthorizationCode(code as string);
+  console.log(tokens);
+  const response = await fetch("https://api.notion.com/v1/users/me", {
+    headers: {
+      Authorization: `Bearer ${tokens.accessToken}`,
+    },
+  });
+  const user = await response.json();
+  console.log(user);
+});
+
+export { oauthRedirectRouter };

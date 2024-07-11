@@ -9,9 +9,13 @@ import cookieParser from "cookie-parser";
 
 import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { oauthRouter } from "./webhooks/oauth-redirects";
 import { webcrypto } from "node:crypto";
 import { authRouter } from "./router/auth.router";
+import {
+  oauthRedirectRouter,
+  sameOauthState,
+} from "./webhooks/oauth-redirects";
+import { oauthUrlRouter } from "./webhooks/oauth-url";
 
 globalThis.crypto = webcrypto as Crypto;
 
@@ -37,7 +41,8 @@ app.use(
   }),
 );
 
-app.use("/oauth", oauthRouter);
+app.use("/oauth/redirect", oauthRedirectRouter);
+app.use("/oauth", oauthUrlRouter);
 
 app.use(
   trpcExpress.createExpressMiddleware({ router: appRouter, createContext }),
