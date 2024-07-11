@@ -12,6 +12,7 @@ export async function createContext({ req }: Context) {
 
   try {
     const { user } = await lucia.validateSession(sessionCookie);
+    console.log(user);
 
     return { user };
   } catch (err) {
