@@ -8,13 +8,10 @@ interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 export async function createContext({ req }: Context) {
   const sessionCookie = req.headers["Authorization"];
 
-  const session = lucia.readSessionCookie(sessionCookie);
-  if (!session) return { user: null };
+  if (!sessionCookie) return { user: null };
 
   try {
-    // const payload = await clerkClient.verifyToken(token);
-    // const user = await clerkClient.users.getUser(payload.sub);
-    const { user } = await lucia.validateSession(session);
+    const { user } = await lucia.validateSession(sessionCookie);
 
     return { user };
   } catch (err) {
