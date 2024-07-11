@@ -6,7 +6,6 @@ import { SpeedInsights } from "@vercel/speed-insights/vue";
 import { onMounted, ref } from "vue";
 import hotkeys from "hotkeys-js";
 import { useRouter } from "vue-router";
-import { useUser } from "vue-clerk";
 import { VueSpinnerPuff } from "vue3-spinners";
 import { useIntegrationStore } from "@store/integration.ts";
 import { useTaskStore } from "@store/task.ts";
@@ -74,11 +73,10 @@ onMounted(async () => {
   }
 });
 
-const { isLoaded } = useUser();
 </script>
 
 <template>
-  <div v-if="isLoaded && synced" class="flex h-[100vh] items-start">
+  <div v-if="synced" class="flex h-[100vh] items-start">
     <Sidebar class="h-full"></Sidebar>
     <div class="relative h-full grow overflow-y-auto" data-scroll-container>
       <div class="relative mx-auto h-full max-w-[980px]" data-office-wrapper>

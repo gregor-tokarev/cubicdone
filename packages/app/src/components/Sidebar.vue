@@ -5,7 +5,6 @@ import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { useClerk, useSession, useUser } from "vue-clerk";
 import { useSyncState } from "vue-sync-client";
 
 const navItems = ref([
@@ -71,18 +70,10 @@ async function gotoProfile() {
   openPanel.value = false;
 }
 
-const { session } = useSession();
 async function onSignOut() {
-  if (!session.value) return;
-
-  await signOut({ sessionId: session.value.id });
-
   await router.push("/auth");
   location.reload();
 }
-
-const { user, isLoaded } = useUser();
-const { signOut } = useClerk();
 
 const { syncCount, networkState } = useSyncState();
 
@@ -122,7 +113,7 @@ const showBadge = computed(() => {
         }"
       >
         <div
-          v-if="isLoaded && user"
+          v-if="false"
           ref="userEl"
           @click="openPanel = !openPanel"
           class="!hover:text-white flex max-w-full cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
