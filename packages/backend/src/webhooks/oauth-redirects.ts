@@ -82,6 +82,7 @@ oauthRouter.get("/redirect/google", async (req, res) => {
   if (existingUser) {
     const session = await lucia.createSession(existingUser.id, {});
     console.log(session);
+    console.log(lucia.createSessionCookie(session.id).value);
 
     res.cookie("session", lucia.createSessionCookie(session.id).value, {
       maxAge: 60 * 60,
