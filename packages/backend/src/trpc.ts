@@ -16,6 +16,7 @@ export async function createContext({ req }: Context) {
 
     return { user };
   } catch (err) {
+    console.log(err);
     console.error(err);
   }
 }
