@@ -6,13 +6,12 @@ import { lucia } from "./auth/lucia";
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 
 export async function createContext({ req }: Context) {
-  console.log(req.headers);
   const sessionCookie = req.headers["authorization"];
 
-  console.log(sessionCookie);
   if (!sessionCookie) return { user: null };
 
   try {
+    console.log(sessionCookie);
     const { user } = await lucia.validateSession(sessionCookie);
     console.log(user);
 

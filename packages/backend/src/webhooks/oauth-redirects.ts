@@ -83,7 +83,7 @@ oauthRouter.get("/redirect/google", async (req, res) => {
   if (existingUser) {
     const session = await lucia.createSession(existingUser.id, {});
 
-    res.cookie("session", lucia.createSessionCookie(session.id).value, {
+    res.cookie("session", session.id, {
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
       domain: "cubicdone.com",
       sameSite: "lax",
@@ -99,7 +99,7 @@ oauthRouter.get("/redirect/google", async (req, res) => {
 
   const session = await lucia.createSession(newUser.id, {});
 
-  res.cookie("session", lucia.createSessionCookie(session.id).value, {
+  res.cookie("session", session.id, {
     maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
     domain: "cubicdone.com",
     sameSite: "lax",
