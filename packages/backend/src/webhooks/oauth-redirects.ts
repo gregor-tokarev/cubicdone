@@ -45,6 +45,7 @@ oauthRouter.get("/redirect/google", async (req, res) => {
   const code = req.query["code"];
 
   const localState = req.cookies[stateCookieName];
+  console.log(req.cookies);
   console.log(localState, state);
 
   if (localState !== state) {
