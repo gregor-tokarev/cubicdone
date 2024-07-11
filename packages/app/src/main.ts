@@ -40,9 +40,6 @@ export const trpc = createTRPCClient<AppRouter>({
 
 createApp(App)
   .directive("hint", hint)
-  // .use(clerkPlugin, {
-  //   publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
-  // })
   .use(router)
   .use(pinia)
   .use(vueSyncClientPlugin, {

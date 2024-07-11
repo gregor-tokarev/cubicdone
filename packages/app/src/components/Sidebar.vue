@@ -7,7 +7,6 @@ import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useSyncState } from "vue-sync-client";
 import { useUserStore } from "@store/user.ts";
-import { users } from "@clerk/clerk-sdk-node";
 
 const navItems = ref([
   {

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import AuthButton from "@components/UI/AuthButton.vue";
 import Icon from "../../components/Icon.vue";
-import { OAuthStrategy } from "@clerk/types/dist/strategies";
 
-async function onSignup(strategy: OAuthStrategy) {
-  location.href = "https://api.cubicdone.com/oauth/google";
+async function onSignup(strategy: string) {
+  location.href = `https://api.cubicdone.com/oauth/${strategy}`;
 }
 </script>
 
@@ -14,15 +13,15 @@ async function onSignup(strategy: OAuthStrategy) {
       Sign Up to personal_todo
     </h1>
     <div class="space-y-4">
-      <AuthButton @click="onSignup('oauth_google')">
+      <AuthButton @click="onSignup('google')">
         <Icon :size="24" name="google"></Icon>
         <span>Continue with google</span>
       </AuthButton>
-      <AuthButton @click="onSignup('oauth_notion')">
+      <AuthButton @click="onSignup('notion')">
         <Icon :size="24" name="notion"></Icon>
         <span>Continue with notion</span></AuthButton
       >
-      <AuthButton @click="onSignup('oauth_linear')">
+      <AuthButton @click="onSignup('linear')">
         <Icon :size="24" name="linear"></Icon>
         <span>Continue with linear</span></AuthButton
       >

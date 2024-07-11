@@ -1,6 +1,5 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
-import { clerkClient } from "@clerk/clerk-sdk-node";
 import { lucia } from "./auth/lucia";
 
 interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
