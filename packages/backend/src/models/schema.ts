@@ -95,7 +95,7 @@ export const apikeyTableValidator = z.object({
 });
 
 export const userTable = pgTable("users", {
-  id: uuid("id")
+  id: text("id")
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   email: text("email").unique().notNull(),
@@ -107,7 +107,7 @@ export const userTable = pgTable("users", {
 
 export const sessionTable = pgTable("session", {
   id: text("id").primaryKey(),
-  userId: uuid("user_id")
+  userId: text("user_id")
     .notNull()
     .references(() => userTable.id),
   expiresAt: timestamp("expires_at", {
