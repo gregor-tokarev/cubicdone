@@ -11,6 +11,7 @@
 		"@clerk/clerk-sdk-node": "^4.13.11",
 		"@lucia-auth/adapter-drizzle": "^1.0.7",
 		"arctic": "^1.9.1",
+		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
 		"dayjs": "^1.11.10",
 		"dotenv": "^16.4.5",
@@ -23,6 +24,7 @@
 	},
 	"private": true,
 	"devDependencies": {
+		"@types/cookie-parser": "^1.4.7",
 		"@types/cors": "^2.8.17",
 		"@types/dotenv": "^8.2.0",
 		"@types/express": "^4.17.21",

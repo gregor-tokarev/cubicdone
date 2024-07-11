@@ -5,6 +5,7 @@ import { tasks } from "./router/tasks.router";
 import { projects } from "./router/project.router";
 import { apiKeys } from "./router/apikey.router";
 import { projectStatus } from "./router/project-status.router";
+import cookieParser from "cookie-parser";
 
 import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
@@ -24,6 +25,8 @@ const appRouter = router({
 export type AppRouter = typeof appRouter;
 
 const app = express();
+
+app.use(cookieParser());
 
 app.use(
   cors({

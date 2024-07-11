@@ -44,13 +44,13 @@ oauthRouter.get("/redirect/google", async (req, res) => {
   const state = req.query["state"];
   const code = req.query["code"];
 
-  const localState = req.cookies(stateCookieName);
+  const localState = req.cookies[stateCookieName];
 
   if (localState !== state) {
     return res.status(400).json({ message: "state mismatch" });
   }
 
-  const codeVerifier = req.cookies(verifierCookieName);
+  const codeVerifier = req.cookies[verifierCookieName];
 
   const tokens = await google.validateAuthorizationCode(
     code as string,
