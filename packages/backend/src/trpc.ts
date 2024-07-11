@@ -8,6 +8,7 @@ interface Context extends NodeHTTPCreateContextFnOptions<any, any> {}
 export async function createContext({ req }: Context) {
   const sessionCookie = req.headers["Authorization"];
 
+  console.log(sessionCookie);
   if (!sessionCookie) return { user: null };
 
   try {
