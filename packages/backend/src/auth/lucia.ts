@@ -7,6 +7,9 @@ const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 
 export const lucia = new Lucia(adapter, {
   sessionExpiresIn: new TimeSpan(2, "w"),
+  getUserAttributes: (attributes) => ({
+    ...attributes,
+  }),
 });
 
 declare module "lucia" {

@@ -6,6 +6,8 @@ import hotkeys from "hotkeys-js";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useSyncState } from "vue-sync-client";
+import { useUserStore } from "@store/user.ts";
+import { users } from "@clerk/clerk-sdk-node";
 
 const navItems = ref([
   {
@@ -33,6 +35,7 @@ const navItems = ref([
   },
 ]);
 
+const userStore = useUserStore();
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const router = useRouter();
 
@@ -113,7 +116,7 @@ const showBadge = computed(() => {
         }"
       >
         <div
-          v-if="false"
+          v-if="userStore.user"
           ref="userEl"
           @click="openPanel = !openPanel"
           class="!hover:text-white flex max-w-full cursor-pointer items-center from-[#1A1A1A] to-[#141414] transition-colors hover:bg-gradient-to-r"
@@ -122,15 +125,15 @@ const showBadge = computed(() => {
           }"
         >
           <img
-            :src="user.imageUrl"
-            :alt="user.fullName ?? 'profile image'"
+            :src="userStore.user.avatar"
+            :alt="userStore.user.firstName ?? 'profile image'"
             class="!min-h-[34px] !w-[34px] !min-w-[34px] shrink-0 overflow-hidden rounded-full"
           />
           <p
             v-if="!compact && !showBadge"
             class="overflow-hidden text-ellipsis whitespace-nowrap text-gray-200"
           >
-            {{ user?.fullName }}
+            {{ userStore.user.firstName }} {{ userStore.user.lastName }}
           </p>
         </div>
         <div

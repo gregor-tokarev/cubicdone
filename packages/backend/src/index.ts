@@ -11,6 +11,7 @@ import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { oauthRouter } from "./webhooks/oauth-redirects";
 import { webcrypto } from "node:crypto";
+import { authRouter } from "./router/auth.router";
 
 globalThis.crypto = webcrypto as Crypto;
 
@@ -20,6 +21,7 @@ const appRouter = router({
   project: projects,
   apiKey: apiKeys,
   projectStatus: projectStatus,
+  auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;

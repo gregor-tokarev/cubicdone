@@ -6,12 +6,16 @@ import useVuelidate from "@vuelidate/core";
 import { email, helpers, required, url } from "@vuelidate/validators";
 import { animate } from "motion";
 import UpdateProfile from "@components/UpdateProfile.vue";
+import { useUserStore } from "@store/user.ts";
+
+const userStore = useUserStore();
+const user = computed(() => userStore.user);
 
 const formState = reactive({
-  avatarUrl: "",
-  email: "",
-  firstName: "",
-  lastName: "",
+  avatarUrl: user.value?.avatar ?? "",
+  email: user.value?.email ?? "",
+  firstName: user.value?.firstName ?? "",
+  lastName: user.value?.lastName ?? "",
 });
 
 const v$ = useVuelidate(
@@ -62,10 +66,10 @@ async function onSave() {
   saving.value = true;
 
   try {
-    //await user.value?.update({
-    //  firstName: v$.value.firstName.$model,
-    //  lastName: v$.value.lastName.$model,
-    // });
+    await userStore.update({
+      firstName: v$.value.firstName.$model,
+      lastName: v$.value.lastName.$model,
+    });
   } finally {
     saving.value = false;
   }

@@ -2,19 +2,22 @@
 import { watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import * as cookie from "cookie";
+import { trpc } from "./main.ts";
+import { useUserStore } from "@store/user.ts";
 
 const router = useRouter();
+const userStore = useUserStore();
 
-onMounted(() => {
+onMounted(async () => {
   const c = cookie.parse(document.cookie);
   const session = c["session"];
 
   if (location.pathname.includes("/auth")) return;
 
+  await userStore.fetchUser();
+
   if (!session) {
     router.replace("/auth/signup");
-  } else if (!isSignedIn.value) {
-    router.replace("/auth/signin");
   }
 });
 
