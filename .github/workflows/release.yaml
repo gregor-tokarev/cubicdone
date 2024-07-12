@@ -52,7 +52,7 @@ jobs:
             echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> .env
             echo "NOTION_CLIENT_ID=${{ secrets.NOTION_CLIENT_ID }}" >> .env
             echo "NOTION_SECRET=${{ secrets.NOTION_SECRET }}" >> .env
-            echo "LINEAR_CLINET_ID=${{ secrets.LINEAR_CLINET_ID }}" >> .env
+            echo "LINEAR_CLIENT_ID=${{ secrets.LINEAR_CLIENT_ID }}" >> .env
             echo "LINEAR_SECRET=${{ secrets.LINEAR_SECRET }}" >> .env
 
             docker pull ghcr.io/gregor-tokarev/backend:latest
