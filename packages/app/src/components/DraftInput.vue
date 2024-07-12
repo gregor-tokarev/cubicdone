@@ -26,8 +26,8 @@ const projectStore = useProjectStore();
 const root = ref<HTMLElement | null>(null);
 
 onMounted(() => {
-  if (!partsContainer.value) return;
-  focusOnEditableElement(partsContainer.value.children[0] as HTMLElement);
+  // if (!partsContainer.value) return;
+  // focusOnEditableElement(partsContainer.value.children[0] as HTMLElement);
 });
 
 const partsContainer = ref<HTMLElement | null>(null);
