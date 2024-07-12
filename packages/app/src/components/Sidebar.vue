@@ -7,6 +7,7 @@ import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useSyncState } from "vue-sync-client";
 import { useUserStore } from "@store/user.ts";
+import { trpc } from "../main.ts";
 
 const navItems = ref([
   {
@@ -73,6 +74,8 @@ async function gotoProfile() {
 }
 
 async function onSignOut() {
+  await trpc.auth.logout.mutate();
+
   await router.push("/auth");
   location.reload();
 }

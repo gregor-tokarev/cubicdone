@@ -10,9 +10,9 @@ export async function createContext({ req }: Context) {
   if (!sessionCookie) return { user: null };
 
   try {
-    const { user } = await lucia.validateSession(sessionCookie);
+    const { user, session } = await lucia.validateSession(sessionCookie);
 
-    return { user };
+    return { user, session };
   } catch (err) {
     console.error(err);
   }
@@ -30,6 +30,7 @@ const isAuthorized = t.middleware((opts) => {
   return opts.next({
     ctx: {
       user: opts.ctx.user,
+      session: opts.ctx.session,
     },
   });
 });

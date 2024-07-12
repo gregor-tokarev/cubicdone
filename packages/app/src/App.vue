@@ -13,11 +13,13 @@ onMounted(async () => {
   const session = c["session"];
 
   if (location.pathname.includes("/auth")) return;
+  if (!session) {
+    return router.replace("/auth/signup");
+  }
 
   await userStore.fetchUser();
-
-  if (!session) {
-    router.replace("/auth/signup");
+  if (!userStore.user) {
+    return router.replace("/auth/signin");
   }
 });
 
