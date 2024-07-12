@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { watch, onMounted } from "vue";
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import * as cookie from "cookie";
-import { trpc } from "./main.ts";
 import { useUserStore } from "@store/user.ts";
 
 const router = useRouter();

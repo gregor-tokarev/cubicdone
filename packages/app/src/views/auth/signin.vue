@@ -17,10 +17,10 @@ async function onSignin(strategy: string) {
         <Icon :size="24" name="google"></Icon>
         <span>Continue with google</span>
       </AuthButton>
-      <AuthButton @click="onSignin('notion')">
+      <!-- <AuthButton @click="onSignin('notion')">
         <Icon :size="24" name="notion"></Icon>
         <span>Continue with notion</span></AuthButton
-      >
+	> -->
       <AuthButton @click="onSignin('linear')">
         <Icon :size="24" name="linear"></Icon>
         <span>Continue with linear</span></AuthButton
