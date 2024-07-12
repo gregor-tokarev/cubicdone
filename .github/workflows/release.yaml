@@ -53,7 +53,6 @@ jobs:
             echo "LINEAR_CLINET_ID=${{ secrets.LINEAR_CLINET_ID }}" >> .env &&
             echo "LINEAR_SECRET=${{ secrets.LINEAR_SECRET }}" >> .env &&
 
-
             docker pull ghcr.io/gregor-tokarev/backend:latest &&
             docker stop $(docker ps -aq) &&
             docker rm $(docker ps -aq) &&
