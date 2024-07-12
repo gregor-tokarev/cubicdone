@@ -38,22 +38,24 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           command: |
             mkdir /home/app
-            cd /home/app &&
-            docker container prune -f &&
-            docker image prune -a -f &&
+            cd /home/app
+            docker container prune -f
+            docker image prune -a -f
 
-            rm -f .env &&
-            touch .env &&
+            rm -f .env
+            touch .env
 
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env &&
-            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env &&
-            echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> .env &&
-            echo "NOTION_CLIENT_ID=${{ secrets.NOTION_CLIENT_ID }}" >> .env &&
-            echo "NOTION_SECRET=${{ secrets.NOTION_SECRET }}" >> .env &&
-            echo "LINEAR_CLINET_ID=${{ secrets.LINEAR_CLINET_ID }}" >> .env &&
-            echo "LINEAR_SECRET=${{ secrets.LINEAR_SECRET }}" >> .env &&
+            echo Linear client id: ${{ secrets.LINEAR_CLINET_ID }}
 
-            docker pull ghcr.io/gregor-tokarev/backend:latest &&
-            docker stop $(docker ps -aq) &&
-            docker rm $(docker ps -aq) &&
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+            echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> .env
+            echo "NOTION_CLIENT_ID=${{ secrets.NOTION_CLIENT_ID }}" >> .env
+            echo "NOTION_SECRET=${{ secrets.NOTION_SECRET }}" >> .env
+            echo "LINEAR_CLINET_ID=${{ secrets.LINEAR_CLINET_ID }}" >> .env
+            echo "LINEAR_SECRET=${{ secrets.LINEAR_SECRET }}" >> .env
+
+            docker pull ghcr.io/gregor-tokarev/backend:latest
+            docker stop $(docker ps -aq)
+            docker rm $(docker ps -aq)
             docker run -p 4000:4000 -d --env-file=.env ghcr.io/gregor-tokarev/backend
