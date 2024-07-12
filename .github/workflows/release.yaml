@@ -45,8 +45,6 @@ jobs:
             rm -f .env
             touch .env
 
-            echo Linear client id: ${{ secrets.LINEAR_CLINET_ID }}
-
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> .env
