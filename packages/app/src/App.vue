@@ -11,14 +11,16 @@ onMounted(async () => {
     const c = cookie.parse(document.cookie);
     const session = c["session"];
 
-    if (location.pathname.includes("/auth")) return;
     if (!session) {
         return router.replace("/auth");
     }
 
+    if (location.pathname.includes("/auth")) return;
+
     try {
         await userStore.fetchUser();
     } catch {
+        console.log("Error");
         return router.replace("/auth");
     }
 });

@@ -73,10 +73,16 @@ async function gotoProfile() {
   openPanel.value = false;
 }
 
+function deleteCookie(name: string) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+}
+
 async function onSignOut() {
   await trpc.auth.logout.mutate();
 
+  deleteCookie("session")
   await router.push("/auth");
+
   location.reload();
 }
 
