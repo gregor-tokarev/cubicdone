@@ -31,14 +31,6 @@ export const router = createRouter({
     },
     {
       path: "/auth",
-      redirect: "/auth/signin",
-    },
-    {
-      path: "/auth/signup",
-      component: () => import("../views/auth/signup.vue"),
-    },
-    {
-      path: "/auth/signin",
       component: () => import("../views/auth/signin.vue"),
     },
   ],
