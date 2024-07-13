@@ -7,6 +7,8 @@
   ],
   "packageManager": "npm@9.5.1",
   "dependencies": {
+    "@sentry/vite-plugin": "^2.21.1",
+    "@sentry/vue": "^8.17.0",
     "@trpc/client": "^11.0.0-next-beta.316",
     "@trpc/server": "^11.0.0-next-beta.316",
     "nanoid": "^5.0.1",

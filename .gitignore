@@ -27,3 +27,6 @@ dist-ssr
 .vercel
 
 .turbo
+
+# Sentry Config File
+.env.sentry-build-plugin
