@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import DeleteModal from "@components/DeleteModal.vue"; import ProjectModal from "@components/SelectModals/ProjectModal.vue";
+import DeleteModal from "@components/DeleteModal.vue";
+import ProjectModal from "@components/SelectModals/ProjectModal.vue";
 import Sidebar from "@components/Sidebar.vue";
+import { useDraftsStore } from "@store/drafts.ts";
+import { useIntegrationStore } from "@store/integration.ts";
+import { useProjectStatusStore } from "@store/project-status.ts";
+import { useProjectStore } from "@store/project.ts";
+import { useTaskStore } from "@store/task.ts";
 import { SpeedInsights } from "@vercel/speed-insights/vue";
-import { onMounted, ref } from "vue";
 import hotkeys from "hotkeys-js";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { VueSpinnerPuff } from "vue3-spinners";
-import { useIntegrationStore } from "@store/integration.ts";
-import { useTaskStore } from "@store/task.ts";
-import { useProjectStore } from "@store/project.ts";
-import { useDraftsStore } from "@store/drafts.ts";
-import { useProjectStatusStore } from "@store/project-status.ts";
 
 const router = useRouter();
 
