@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import DeleteModal from "@components/DeleteModal.vue";
-import ProjectModal from "@components/SelectModals/ProjectModal.vue";
+import DeleteModal from "@components/DeleteModal.vue"; import ProjectModal from "@components/SelectModals/ProjectModal.vue";
 import Sidebar from "@components/Sidebar.vue";
 import { SpeedInsights } from "@vercel/speed-insights/vue";
 import { onMounted, ref } from "vue";

@@ -42,7 +42,7 @@ watch(
 );
 
 function onKeydown(evt: KeyboardEvent) {
-  if (evt.key === "ArrowDown" || evt.key === "ArrowUp") onArrow(evt);
+  if (evt.key === "ArrowDown" || evt.key === "ArrowUp" || (evt.ctrlKey && evt.code === "KeyN" || evt.ctrlKey && evt.code === "KeyP")) onArrow(evt);
   else if (evt.key === "Enter") onEnter(evt);
   else if (evt.key === "Escape") emit("update:open", false);
 }
@@ -50,11 +50,11 @@ function onKeydown(evt: KeyboardEvent) {
 function onArrow(evt: KeyboardEvent) {
   evt.preventDefault();
 
-  if (evt.key === "ArrowDown") {
+  if (evt.key === "ArrowDown" || (evt.ctrlKey && evt.code === "KeyN")) {
     if (selectedProjectIdx.value >= props.options.length - 1)
       selectedProjectIdx.value = 0;
     else selectedProjectIdx.value++;
-  } else if (evt.key === "ArrowUp") {
+  } else if (evt.key === "ArrowUp" || (evt.ctrlKey && evt.code === "KeyP")) {
     if (selectedProjectIdx.value < 1)
       selectedProjectIdx.value = props.options.length - 1;
     else selectedProjectIdx.value--;
