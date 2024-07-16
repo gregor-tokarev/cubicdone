@@ -7,6 +7,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
     integrations: [tailwind(), sitemap()],
     output: "static",
+    site: "https://cubicdone.com",
     adapter: vercel({
         webAnalytics: {
             enabled: true
