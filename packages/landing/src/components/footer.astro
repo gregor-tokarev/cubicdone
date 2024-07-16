@@ -24,9 +24,9 @@ const linkSections = [
 ]
 ---
 
-<footer class="bg-black xl:h-[375px] mt-auto pt-10">
-  <div class="grid grid-cols-6 gap-x-5 px-[50px] mx-auto max-w-[1440px]">
-    <div class="max-w-[430px] col-span-2">
+<footer class="bg-black xl:h-[375px] mt-auto pt-10 pb-10">
+  <div class="grid grid-cols-6 gap-x-5 px-5 lg:px-[50px] mx-auto max-w-[1440px]">
+    <div class="max-w-[430px] col-span-full lg:col-span-2">
       <strong class="text-white uppercase text-[24px] font-bold">cubicdone</strong>
       <p class="text-gray-600 mt-2.5">
         TODO List with preconfigured productivity system, that will keep your tasks and mind in shape
@@ -34,9 +34,9 @@ const linkSections = [
     </div>
     {
       linkSections.map((section, index) => (
-        <div class="flex flex-col gap-2.5 col-span-1" class:list={[`col-start-${4 + index}`]}>
-          <h4 class="text-gray-300 font-semibold mb-6">{section.name}</h4>
-          <nav class="flex flex-col gap-2.5">
+        <div class="flex flex-col gap-4 col-span-1 mt-10 lg:mt-0 max-lg:col-span-3" class:list={[`col-start-${4 + index}`]}>
+          <h4 class="text-gray-300 font-semibold">{section.name}</h4>
+          <nav class="flex flex-col gap-1">
             {section.links.map((link) => (
               <a href={link.href} class="transition-colors text-gray-600 text-400 hover:text-white">{link.label}</a>
               ))

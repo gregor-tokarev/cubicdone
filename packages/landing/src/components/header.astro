@@ -3,7 +3,7 @@ import Button from "./button.astro";
 ---
 
 <header class="py-6">
-  <div class="flex justify-between items-center mx-auto px-[50px] max-w-[1440px]">
+  <div class="flex justify-between items-center mx-auto px-5 lg:px-[50px] max-w-[1440px]">
     <div class="flex items-center">
       <a href="/" class="text-gray-900 font-bold uppercase text-[24px] text-bold mr-4">cubicdone</a>
       <div class="text-xs text-white bg-black rounded px-2 py-1 mr-10">Beta</div>
@@ -11,7 +11,7 @@ import Button from "./button.astro";
         <a href="/pricing" class="transition-colors text-gray-800 hover:text-black">Pricing</a>
       </nav>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="hidden lg:flex items-center gap-2">
       <a href="https://app.cubicdone.com/auth/signin">
         <Button color="light">Log in</Button>
       </a>

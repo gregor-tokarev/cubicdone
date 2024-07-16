@@ -9,14 +9,14 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<section class:list={["flex items-start gap-5", className]}>
+<section class:list={["flex flex-col lg:flex-row items-start gap-5", className]}>
   <div class="">
-    <h1 class="text-[48px] text-gray-800 font-medium leading-[1.2]">
+    <h1 class="text-[32px] lg:text-[48px] text-gray-800 font-medium leading-[1.2]">
       Do not spend days to create
       <span class="animated-gradient-text">productivity system</span>, we already do that
     for you
     </h1>
-    <p class="text-gray-700 mt-5 text-[24px] text-400 leading-[1.4]">
+    <p class="text-gray-700 mt-5 text-[16px] lg:text-[24px] leading-[1.4]">
       TODO List with preconfigured productivity system, that will keep your tasks and mind in shape
     </p>
     <Button class="mt-5 block">Get cubicdone</Button>

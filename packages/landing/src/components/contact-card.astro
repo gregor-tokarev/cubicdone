@@ -10,15 +10,15 @@ interface Props {
 const { position, class: className } = Astro.props;
 ---
 
-<div class:list={["flex justify-between items-center py-2.5 px-4 rounded-[20px] border border-gray-400", className]}>
+<div class:list={["flex flex-col lg:flex-row space-y-3 lg:space-y-0 justify-between lg:items-center py-2.5 px-4 rounded-[20px] border border-gray-400", className]}>
   <div class="flex gap-2.5 items-center">
     <Image src="/me.png" alt="founder" width="90" height="90"></Image>
     <div class="space-y-3">
-      <h3 class="text-gray-800 font-normal leading-[1.2] text-[32px]">Gregor Tokarev</h3>
+      <h3 class="text-gray-800 font-normal leading-[1.2] text-[20px] lg:text-[32px]">Gregor Tokarev</h3>
       <p class="text-gray-700 leading-[1.2]">{position}</p>
     </div>
   </div>
-  <a href="https://t.me/gregor_tokarev" target="_blank" rel="noopener noreferrer">
+  <a href="https://t.me/gregor_tokarev" class="w-full lg:w-fit" target="_blank" rel="noopener noreferrer">
     <Button>Ask a question</Button>
   </a>
 </div>

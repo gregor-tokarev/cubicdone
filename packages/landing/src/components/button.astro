@@ -8,7 +8,7 @@ const { color = "primary", class: className } = Astro.props;
 ---
 
 <button
-  class="flex items-center gap-2.5 py-1.5 px-[28px] rounded-xl justify-center transition-colors"
+  class="flex items-center gap-2.5 py-1.5 px-[28px] rounded-xl justify-center transition-colors w-full"
   class:list={[{"bg-black text-white hover:bg-gray-900": color === "primary"}, {"bg-transparent text-black hover:bg-gray-100": color === "light"}, {"bg-white text-black hover:bg-gray-100": color === "white"}, className]}
 >
   <slot />

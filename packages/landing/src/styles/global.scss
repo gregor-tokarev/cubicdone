@@ -1,8 +1,8 @@
 article {
-  @apply max-w-[980px] mx-auto px-[50px] mt-[80px] mb-[120px];
+  @apply max-w-[980px] mx-auto px-5 lg:px-[50px] mt-[80px] mb-[120px];
 
   > h1 {
-    @apply text-[48px] text-gray-800 font-medium leading-[1.2] mb-[80px];
+    @apply text-[48px] text-gray-800 font-medium leading-[1.2] mb-[32px] lg:mb-[60px];
   }
 
   > h2 {
