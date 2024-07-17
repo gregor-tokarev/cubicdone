@@ -41,7 +41,7 @@ app.use(
 
 app.use(cookieParser());
 
-app.use("/oauth/redirect", sameOauthState, oauthRedirectRouter);
+app.use("/oauth/redirect", oauthRedirectRouter);
 app.use("/oauth", oauthUrlRouter);
 
 app.use(
