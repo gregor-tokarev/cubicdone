@@ -27,9 +27,7 @@ async function defaultResponse(
     user: InferSelectModel<typeof userTable>,
     res: Response,
 ) {
-    console.log(user)
     const session = await lucia.createSession(user.id, {});
-    console.log(session)
 
     res.cookie("session", session.id, {
         maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
@@ -43,18 +41,13 @@ async function defaultResponse(
 const oauthRedirectRouter = Router();
 
 oauthRedirectRouter.get("/google", async (req, res) => {
-    console.log("Fire google")
     const code = req.query["code"];
-    console.log(code)
     const codeVerifier = req.cookies[verifierCookieName];
-    console.log(code, codeVerifier)
 
     const tokens = await google.validateAuthorizationCode(
         code as string,
         codeVerifier,
     );
-
-    console.log(tokens);
 
     const response = await fetch(
         "https://openidconnect.googleapis.com/v1/userinfo",
@@ -65,15 +58,12 @@ oauthRedirectRouter.get("/google", async (req, res) => {
         },
     );
     const user = await response.json();
-    console.log(user)
 
     const [existingUser] = await db
         .select()
         .from(userTable)
         .where(eq(userTable.email, user["email"]))
         .execute();
-
-    console.log(existingUser)
 
     if (existingUser) {
         return defaultResponse(existingUser, res);
@@ -92,34 +82,31 @@ oauthRedirectRouter.get("/google", async (req, res) => {
     return defaultResponse(newUser, res);
 });
 
-oauthRedirectRouter.get("/notion", async (req, res) => {
-    const code = req.query["code"];
-
-    const tokens: NotionTokens = await fetch(
-        "https://api.notion.com/v1/oauth/token",
-        {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${process.env.NOTION_SECRET}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                grant_type: "authorization_code",
-                code: code,
-                redirect_url: "http://localhost:4000/oauth/redirect/notion",
-            }),
-        },
-    ).then((res) => res.json());
-
-    console.log(tokens);
-
-    const user = await fetch("https://api.notion.com/v1/users/me", {
-        headers: {
-            Authorization: `Bearer ${tokens.accessToken}`,
-        },
-    }).then((res) => res.json());
-    console.log(user);
-});
+// oauthRedirectRouter.get("/notion", async (req, res) => {
+//     const code = req.query["code"];
+//
+//     const tokens: NotionTokens = await fetch(
+//         "https://api.notion.com/v1/oauth/token",
+//         {
+//             method: "POST",
+//             headers: {
+//                 Authorization: `Bearer ${process.env.NOTION_SECRET}`,
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//                 grant_type: "authorization_code",
+//                 code: code,
+//                 redirect_url: "http://localhost:4000/oauth/redirect/notion",
+//             }),
+//         },
+//     ).then((res) => res.json());
+//
+//     const user = await fetch("https://api.notion.com/v1/users/me", {
+//         headers: {
+//             Authorization: `Bearer ${tokens.accessToken}`,
+//         },
+//     }).then((res) => res.json());
+// });
 
 oauthRedirectRouter.get("/linear", async (req, res) => {
     const code = req.query["code"];
