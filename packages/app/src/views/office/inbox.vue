@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import DraftInput from "@components/DraftInput.vue";
-import { onMounted, ref, watch } from "vue";
-import { useDraftsStore } from "@store/drafts.ts";
 import DraftRow from "@components/cards/DraftRow.vue";
-import { VueDraggableNext } from "vue-draggable-next";
-import { nanoid } from "nanoid";
-import { InputGenericPart } from "@models/input-part.model.ts";
+import CommandPalette from "@components/CommandPalette.vue";
 import ContextMenu from "@components/ContextMenu.vue";
+import DraftInput from "@components/DraftInput.vue";
+import { InputGenericPart } from "@models/input-part.model.ts";
+import { useDeleteModalStore } from "@store/delete-modal.ts";
+import { useDraftsStore } from "@store/drafts.ts";
+import { useProjectStore } from "@store/project.ts";
+import { useProjectModalStore } from "@store/select-modal.ts";
 import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
-import { useProjectModalStore } from "@store/select-modal.ts";
-import CommandPalette from "@components/CommandPalette.vue";
-import { useDeleteModalStore } from "@store/delete-modal.ts";
 import { animate } from "motion";
-import { useProjectStore } from "@store/project.ts";
+import { nanoid } from "nanoid";
+import { onMounted, ref, watch } from "vue";
+import { VueDraggableNext } from "vue-draggable-next";
 
 const draftStore = useDraftsStore();
 const projectStore = useProjectStore();
+
+const draftInput = ref<InstanceType<typeof DraftInput> | null>(null)
 
 const prompt = ref<InputGenericPart[]>([
   { type: "text", content: "", id: nanoid(3) },
@@ -39,6 +41,11 @@ onMounted(async () => {
       selectedDraftIds.value = [];
     }
   });
+
+  hotkeys("i", (evt) => {
+    evt.preventDefault()
+    draftInput.value && draftInput.value.focusOnCurrentNode()
+  })
 });
 
 function onCreateDraft() {
@@ -237,9 +244,11 @@ function onListLeave() {
 <template>
   <div class="pt-8">
     <DraftInput
+      ref="draftInput"
       placeholder="todo text"
       v-model="prompt"
       @enter="onCreateDraft()"
+      v-hint="'I'"
     ></DraftInput>
     <!--  drafts list-->
     <VueDraggableNext
