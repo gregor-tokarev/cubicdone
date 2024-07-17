@@ -43,7 +43,9 @@ async function defaultResponse(
 const oauthRedirectRouter = Router();
 
 oauthRedirectRouter.get("/google", async (req, res) => {
+    console.log("Fire google")
     const code = req.query["code"];
+    console.log(code)
     const codeVerifier = req.cookies[verifierCookieName];
     console.log(code, codeVerifier)
 
