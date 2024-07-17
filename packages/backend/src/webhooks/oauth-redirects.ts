@@ -51,6 +51,8 @@ oauthRedirectRouter.get("/google", async (req, res) => {
         codeVerifier,
     );
 
+    console.log(tokens);
+
     const response = await fetch(
         "https://openidconnect.googleapis.com/v1/userinfo",
         {
@@ -60,12 +62,15 @@ oauthRedirectRouter.get("/google", async (req, res) => {
         },
     );
     const user = await response.json();
+    console.log(user)
 
     const [existingUser] = await db
         .select()
         .from(userTable)
         .where(eq(userTable.email, user["email"]))
         .execute();
+
+    console.log(existingUser)
 
     if (existingUser) {
         return defaultResponse(existingUser, res);
