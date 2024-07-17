@@ -97,6 +97,10 @@ onMounted(async () => {
   hotkeys(",", () => {
     onIndexArrows("decr");
   });
+
+  hotkeys("t", () => {
+    onToday()
+  })
 });
 
 onUnmounted(() => {
@@ -186,6 +190,7 @@ function onUpdate(_1: unknown, _2: unknown, _3: unknown, currIdx: number) {
       <div
         @click="onToday()"
         class="flex h-6 cursor-pointer items-center rounded bg-gray-100 px-2.5 text-[12px]"
+        v-hint="'T'"
       >
         Today
       </div>
