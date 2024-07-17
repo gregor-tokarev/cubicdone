@@ -45,6 +45,7 @@ const oauthRedirectRouter = Router();
 oauthRedirectRouter.get("/google", async (req, res) => {
     const code = req.query["code"];
     const codeVerifier = req.cookies[verifierCookieName];
+    console.log(code, codeVerifier)
 
     const tokens = await google.validateAuthorizationCode(
         code as string,
