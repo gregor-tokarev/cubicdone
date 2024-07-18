@@ -1,24 +1,25 @@
 article {
-  @apply max-w-[980px] mx-auto px-5 lg:px-[50px] mt-[80px] mb-[120px];
+  @apply mx-auto mb-[120px] mt-[80px] max-w-[980px] px-5 lg:px-[50px];
 
   > h1 {
-    @apply text-[48px] text-gray-800 font-medium leading-[1.2] mb-[32px] lg:mb-[60px];
+    @apply mb-[32px] text-[48px] font-medium leading-[1.2] text-gray-800 lg:mb-[60px];
   }
 
   > h2 {
-    @apply text-[32px] text-gray-800 font-medium leading-[1.2] mt-[80px] mb-[30px];
+    @apply mb-[30px] mt-[80px] text-[32px] font-medium leading-[1.2] text-gray-800;
   }
 
   > h3 {
-    @apply text-[24px] text-gray-800 font-medium leading-[1.2] mt-[40px] mb-[20px];
+    @apply mb-[20px] mt-[40px] text-[24px] font-medium leading-[1.2] text-gray-800;
   }
 
   > h4 {
-    @apply text-[24px] text-gray-800 font-medium leading-[1.2] mt-[20px] mb-[10px];
+    @apply mb-[10px] mt-[20px] text-[24px] font-medium leading-[1.2] text-gray-800;
   }
 
-  > p, > ul {
-    @apply text-gray-700 mt-5 text-[24px] font-normal leading-[1.4];
+  > p,
+  > ul {
+    @apply mt-5 text-[24px] font-normal leading-[1.4] text-gray-700;
   }
 
   > ul {

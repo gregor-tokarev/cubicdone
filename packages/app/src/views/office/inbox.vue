@@ -18,7 +18,7 @@ import { VueDraggableNext } from "vue-draggable-next";
 const draftStore = useDraftsStore();
 const projectStore = useProjectStore();
 
-const draftInput = ref<InstanceType<typeof DraftInput> | null>(null)
+const draftInput = ref<InstanceType<typeof DraftInput> | null>(null);
 
 const prompt = ref<InputGenericPart[]>([
   { type: "text", content: "", id: nanoid(3) },
@@ -43,9 +43,9 @@ onMounted(async () => {
   });
 
   hotkeys("i", (evt) => {
-    evt.preventDefault()
-    draftInput.value && draftInput.value.focusOnCurrentNode()
-  })
+    evt.preventDefault();
+    draftInput.value && draftInput.value.focusOnCurrentNode();
+  });
 });
 
 function onCreateDraft() {

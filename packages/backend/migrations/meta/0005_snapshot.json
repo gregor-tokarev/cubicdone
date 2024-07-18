@@ -172,12 +172,8 @@
           "name": "project_status_id_project_status_id_fk",
           "tableFrom": "project",
           "tableTo": "project_status",
-          "columnsFrom": [
-            "status_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["status_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

@@ -3,7 +3,7 @@ import { config } from "dotenv";
 
 config({ path: ".env.local" });
 
-console.log(process.env.NODE_ENV === "development")
+console.log(process.env.NODE_ENV === "development");
 
 export const google = new Google(
   process.env.GOOGLE_CLIENT_ID ?? "",

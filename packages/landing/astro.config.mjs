@@ -5,12 +5,12 @@ import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-    integrations: [tailwind(), sitemap()],
-    output: "static",
-    site: "https://cubicdone.com",
-    adapter: vercel({
-        webAnalytics: {
-            enabled: true
-        }
-    })
+  integrations: [tailwind(), sitemap()],
+  output: "static",
+  site: "https://cubicdone.com",
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
 });

@@ -99,8 +99,8 @@ onMounted(async () => {
   });
 
   hotkeys("t", () => {
-    onToday()
-  })
+    onToday();
+  });
 });
 
 onUnmounted(() => {

@@ -72,7 +72,6 @@ onMounted(async () => {
     console.log(e);
   }
 });
-
 </script>
 
 <template>

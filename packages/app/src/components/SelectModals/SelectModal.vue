@@ -42,7 +42,13 @@ watch(
 );
 
 function onKeydown(evt: KeyboardEvent) {
-  if (evt.key === "ArrowDown" || evt.key === "ArrowUp" || (evt.ctrlKey && evt.code === "KeyN" || evt.ctrlKey && evt.code === "KeyP")) onArrow(evt);
+  if (
+    evt.key === "ArrowDown" ||
+    evt.key === "ArrowUp" ||
+    (evt.ctrlKey && evt.code === "KeyN") ||
+    (evt.ctrlKey && evt.code === "KeyP")
+  )
+    onArrow(evt);
   else if (evt.key === "Enter") onEnter(evt);
   else if (evt.key === "Escape") emit("update:open", false);
 }

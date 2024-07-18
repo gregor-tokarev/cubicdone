@@ -7,19 +7,24 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), createSVGSpritePlugin({
-    svgFolder: "./src/assets/svg",
-    transformIndexHtmlTag: {
-      injectTo: "body",
-    },
-  }), VitePWA({
-    registerType: "autoUpdate",
-    injectRegister: "auto",
-    workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
-  }), sentryVitePlugin({
-    org: "me-sgp",
-    project: "cubicdone"
-  })],
+  plugins: [
+    vue(),
+    createSVGSpritePlugin({
+      svgFolder: "./src/assets/svg",
+      transformIndexHtmlTag: {
+        injectTo: "body",
+      },
+    }),
+    VitePWA({
+      registerType: "autoUpdate",
+      injectRegister: "auto",
+      workbox: { globPatterns: ["**/*.{js,css,html,ico,png,svg}"] },
+    }),
+    sentryVitePlugin({
+      org: "me-sgp",
+      project: "cubicdone",
+    }),
+  ],
   resolve: {
     alias: [
       {
@@ -35,6 +40,6 @@ export default defineConfig({
 
   build: {
     target: "esnext",
-    sourcemap: true
+    sourcemap: true,
   },
 });
