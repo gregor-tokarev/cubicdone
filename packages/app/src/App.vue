@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@store/user.ts";
 import * as cookie from "cookie";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -24,7 +24,7 @@ const isMobile = computed(() => {
 
 })
 onMounted(async () => {
-    if (isMobile) return
+    if (isMobile.value) return
 
     const c = cookie.parse(document.cookie);
     const session = c["session"];
