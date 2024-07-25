@@ -50,6 +50,8 @@ Sentry.init({
             colorScheme: "system",
             isEmailRequired: true,
         }),
+        Sentry.replayIntegration(),
+        Sentry.browserTracingIntegration()
     ],
     // Performance Monitoring
     tracesSampleRate: 1.0, //  Capture 100% of the transactions
