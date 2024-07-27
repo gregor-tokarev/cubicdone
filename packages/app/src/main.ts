@@ -5,6 +5,7 @@ import { projectStatusStore } from "@models/projectStauts.model.ts";
 import { taskStore } from "@models/task.model.ts";
 import { inject } from "@vercel/analytics"
 import * as Sentry from "@sentry/vue";
+import { createI18n } from "vue-i18n"
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
 import * as cookie from "cookie";
@@ -111,5 +112,15 @@ app
     .use(router);
 
 
-inject()
+
+
+inject() // injecting analytics
+
+const i18n = createI18n({
+    locale: "ru",
+    fallbackLocale: "en",
+    legacy: false,
+})
+app.use(i18n)
+
 app.mount("#app");
