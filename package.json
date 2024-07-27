@@ -11,7 +11,6 @@
     "@sentry/vue": "^8.17.0",
     "@trpc/client": "^11.0.0-next-beta.316",
     "@trpc/server": "^11.0.0-next-beta.316",
-    "@vercel/analytics": "^1.3.1",
     "nanoid": "^5.0.1",
     "zod": "^3.22.4"
   },
