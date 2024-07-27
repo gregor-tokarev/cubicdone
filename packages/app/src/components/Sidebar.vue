@@ -8,28 +8,52 @@ import { useRouter } from "vue-router";
 import { useSyncState } from "vue-sync-client";
 import { useUserStore } from "@store/user.ts";
 import { trpc } from "../main.ts";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n({
+    messages: {
+        ru: {
+            plan: "План",
+            inbox: "Входящие",
+            projects: "Проекты",
+            integrations: "Интеграции",
+            logout: "Выйти",
+            profile: "Профиль",
+            syncing: "Синхронизация"
+        },
+        en: {
+            plan: "Plan",
+            inbox: "Inbox",
+            projects: "Projects",
+            integrations: "Integrations",
+            logout: "Logout",
+            profile: "Open profile",
+            syncing: "Syncing"
+        }
+    }
+})
 
 const navItems = ref([
     {
-        title: "Plan",
+        title: t("plan"),
         icon: "plan",
         link: "/",
         hint: "⌘ + G",
     },
     {
-        title: "Inbox",
+        title: t("inbox"),
         icon: "inbox",
         link: "/inbox",
         hint: "⌘ + I",
     },
     {
-        title: "Projects",
+        title: t("projects"),
         icon: "folder",
         link: "/projects",
         hint: "⌘ + P",
     },
     {
-        title: "Integrations",
+        title: t("integrations"),
         icon: "integrations",
         link: "/integrations",
     },
@@ -139,7 +163,7 @@ const showBadge = computed(() => {
                     </template>
                     <template v-else>
                         <Icon name="sync" class="animate-spin text-gray-300"></Icon>
-                        <span class="text-gray-300">syncing...</span>
+                        <span class="text-gray-300">{{ t("syncing") }}...</span>
                     </template>
                 </div>
             </div>
@@ -151,12 +175,12 @@ const showBadge = computed(() => {
                 v-if="openPanel">
                 <button @click="gotoProfile"
                     class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-gray-200 transition-colors hover:bg-black hover:text-gray-50">
-                    <span class="">Open profile</span>
+                    <span class="">{{ t("profile") }}</span>
                     <span>⌘ + O</span>
                 </button>
                 <button @click="onSignOut"
                     class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-red-400 transition-colors hover:bg-black">
-                    <span class="">Sign out</span>
+                    <span class="">{{ t("logout") }}</span>
                     <Icon name="exit" class="!h-4 !w-4"></Icon>
                 </button>
             </div>
@@ -179,7 +203,7 @@ const showBadge = computed(() => {
                 <span v-if="!compact">{{ item.title }}</span>
             </router-link>
         </nav>
-        <teleport to="body">
+        <!-- <teleport to="body">
             <div class="absolute pt-1" @mouseenter="offlineHovered = true" @mouseleave="offlineHovered = false"
                 v-if="offlineBadgeBound && offlineHovered" :style="{
                     top: `${offlineBadgeBound.top + offlineBadgeBound.height}px`,
@@ -194,7 +218,7 @@ const showBadge = computed(() => {
                     changes from other devices
                 </p>
             </div>
-        </teleport>
+        </teleport> -->
     </div>
 </template>
 
