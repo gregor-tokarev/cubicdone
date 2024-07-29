@@ -111,27 +111,18 @@ app
     })
     .use(router);
 
-
-
-
 inject() // injecting analytics
 
-function customRule(choice: number, choicesLength: number) {
-    if (choice === 0) {
-        return 0
-    }
+function customRule(choice: number, _choicesLength: number) {
+    const calcValue = Math.abs(choice) % 100;
+    const num = calcValue % 10;
 
-    const teen = choice > 10 && choice < 20
-    const endsWithOne = choice % 10 === 1
-    if (!teen && endsWithOne) {
-        return 1
-    }
-    if (!teen && choice % 10 >= 2 && choice % 10 <= 4) {
-        return 2
-    }
-
-    return choicesLength < 4 ? 2 : 3
+    if (calcValue > 10 && calcValue < 20) return 3;
+    if (num > 1 && num < 5) return 2;
+    if (num === 1) return 1;
+    return 3;
 }
+
 const i18n = createI18n({
     locale: "ru",
     fallbackLocale: "en",
