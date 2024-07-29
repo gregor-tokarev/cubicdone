@@ -1,24 +1,29 @@
 ---
+import { getLangFromUrl, useTranslations } from "../i18n/utils"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+
 const linkSections = [
   {
     name: "Legal",
     links: [
-      {label: "Privacy", href: "/privacy"},
-      {label: "Terms of Service", href: "/terms"},
+    {label: "Privacy", href: `/${lang}/privacy`},
+    {label: "Terms of Service", href: `/${lang}/terms`},
     ]
   },
   {
     name: "Company",
     links: [
-      {label: "About us", href: "/about"},
+    {label: "About us", href: `/${lang}/about`},
       {label: "Sitemap", href: "/sitemap-index.xml"},
     ]
   },
   {
     name: "Support",
     links: [
-      {label: "FAQ", href: "/faq"},
-      {label: "Contact", href: "/contact"},
+    {label: "FAQ", href: `/${lang}/faq`},
+    {label: "Contact", href: `/${lang}/contact`},
     ]
   }
 ]
@@ -29,7 +34,7 @@ const linkSections = [
     <div class="max-w-[430px] col-span-full lg:col-span-2">
       <strong class="text-white uppercase text-[24px] font-bold">cubicdone</strong>
       <p class="text-gray-600 mt-2.5">
-        TODO List with preconfigured productivity system, that will keep your tasks and mind in shape
+        {t("footer.subtitle")}
       </p>
     </div>
     {

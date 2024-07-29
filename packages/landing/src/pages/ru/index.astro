@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Hero from "../../components/hero.astro";
+import {Image} from "astro:assets";
+---
+
+<Layout title="Cubicdone">
+  <main class="max-w-[1440px] mx-auto px-5 lg:px-[50px] mt-[30px]">
+    <Hero class="mb-[180px]" />
+    <div class="flex flex-col lg:flex-row items-start mb-[40px] lg:mb-[100px]">
+      <h2 class="lg:sticky top-5 mb-4 text-[20px] lg:text-[28px] font-medium leading-[1.2] lg:w-[430px] text-gray-800">Входящие и планирование</h2>
+      <div class="space-y-8">
+        <p class="leading-[1.4] text-gray-700 text-[16px] lg:text-[24px] max-w-[660px]">
+            В отличие от других списков задач, вы не можете просто ввести задачу и немедленно выполнить ее. Сначала вам нужно добавить его в свой inbox
+        </p>
+        <Image src="/screenshots/inbox-crud.gif" alt="inbox" width="880" height="680" />
+        <p class="leading-[1.4] text-gray-700 text-[16px] lg:text-[24px] max-w-[660px]">
+          Только после того, как вы спланируете входящую задачу на вкладке «План», вы сможете пометить ее как выполненную.
+        </p>
+        <Image src="/screenshots/inbox-planning.gif" alt="inbox" width="880" height="680" />
+      </div>
+    </div>
+    <div class="flex flex-col lg:flex-row items-start mb-[40px] lg:mb-[100px]">
+      <h2 class="lg:sticky top-5 mb-4 text-[20px] lg:text-[28px] font-medium leading-[1.2] lg:w-[430px] text-gray-800">Нет лейблов и приоритетов</h2>
+      <div class="space-y-8">
+        <p class="leading-[1.4] text-gray-700 text-[16px] lg:text-[24px] max-w-[660px]">
+          Приоритеты добавляют дополнительный уровень к вашей мысленной модели управления задачами. Вместо этого мы предлагаем просто использовать порядок
+        </p>
+        <Image src="/screenshots/inbox-crud.gif" alt="inbox" width="880" height="680" />
+      </div>
+    </div>
+    <div class="flex flex-col lg:flex-row items-start mb-[40px] lg:mb-[100px]">
+      <h2 class="lg:sticky top-5 mb-4 text-[20px] lg:text-[28px] font-medium leading-[1.2] lg:w-[430px] text-gray-800">Умопомрочительно быстрые обновления интерфейса</h2>
+      <div class="space-y-8">
+        <p class="leading-[1.4] text-gray-700 text-[16px] lg:text-[24px] max-w-[660px]">
+          После того, как вы что-то сделали, мы сохраняем это действие локально, и они синхронизируют его с сервером. Если вы вышли из приложения после внесения какого-либо обновления, а синхронизация не произошла: не волнуйтесь, мы синхронизируем это обновление при следующем открытии приложения.
+        </p>
+        <Image src="/screenshots/blazingly.gif" alt="inbox" width="880" height="680" />
+      </div>
+    </div>
+    <div class="flex flex-col lg:flex-row items-start mb-[40px] lg:mb-[100px]">
+      <h2 class="lg:sticky top-5 mb-4 text-[20px] lg:text-[28px] font-medium leading-[1.2] lg:w-[430px] text-gray-800">Импортируйте ваши задачи из рабочих инструментов</h2>
+      <div class="space-y-8">
+        <p class="leading-[1.4] text-gray-700 text-[16px] lg:text-[24px] max-w-[660px]">
+            Если вы работаете в компании, которая использует инструмент управления проектами, вы можете импортировать свои задачи из этого инструмента в свой inbox.
+        </p>
+        <Image src="/screenshots/linear-integration.gif" alt="inbox" width="880" height="680" />
+      </div>
+    </div>
+  </main>
+</Layout>

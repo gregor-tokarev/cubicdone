@@ -1,0 +1,17 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ContactCard from "../../components/contact-card.astro";
+
+const contacts = [{position: "FAQ manager"}, {position: "CEO"}, {position: "Head of sales"}];
+---
+
+<Layout title="Contact">
+  <main class="lg:w-[980px] mx-auto pt-[80px] pb-[120px]">
+    <h1 class="text-[48px] leading-[1.2] text-gray-800 font-medium mb-[50px]">Contact</h1>
+    <div class="space-y-5">{
+      contacts.map((contact) => (
+        <ContactCard position={contact.position}></ContactCard>
+      ))
+    }</div>
+  </main>
+</Layout>
