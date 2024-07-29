@@ -109,7 +109,6 @@ app
         else if (sync.action.actionName === "delete")
           await trpc.project.delete.mutate(sync.action.id as string);
       }
-
       resolveFn();
     },
   })

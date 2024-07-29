@@ -29,7 +29,7 @@ const isMobile = computed(() => {
     /BlackBerry/i,
     /Windows Phone/i,
   ];
-
+  
   return toMatch.some((toMatchItem) => {
     return navigator.userAgent.match(toMatchItem);
   });
@@ -39,7 +39,6 @@ onMounted(async () => {
 
   const c = cookie.parse(document.cookie);
   const session = c["session"];
-  console.log(session);
 
   if (!session) {
     return router.replace("/auth");
