@@ -15,6 +15,9 @@ import { vueSyncClientPlugin } from "vue-sync-client";
 import App from "./App.vue";
 import { hint } from "./directives/hint.ts";
 import { router } from "./router";
+import dayjs from "dayjs";
+import 'dayjs/locale/ru'
+
 import "./style.css";
 
 const pinia = createPinia();
@@ -40,6 +43,8 @@ export const trpc = createTRPCClient<AppRouter>({
         }),
     ],
 });
+
+dayjs.locale("ru")
 
 const app = createApp(App);
 
