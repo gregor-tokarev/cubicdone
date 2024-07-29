@@ -3,7 +3,6 @@ import { draftStore } from "@models/draft.model.ts";
 import { projectStore } from "@models/project.model.ts";
 import { projectStatusStore } from "@models/projectStauts.model.ts";
 import { taskStore } from "@models/task.model.ts";
-import { inject } from "@vercel/analytics";
 import * as Sentry from "@sentry/vue";
 import { createI18n } from "vue-i18n";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
