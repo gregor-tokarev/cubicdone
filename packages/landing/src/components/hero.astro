@@ -1,30 +1,30 @@
 ---
 import { Image } from "astro:assets";
 import Button from "./button.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
 interface Props {
   class?: string;
 }
 
 const { class: className } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <section class:list={["flex flex-col lg:flex-row items-start gap-5", className]}>
   <div class="">
-    <h1 class="text-[32px] lg:text-[48px] text-gray-800 font-medium leading-[1.2]">
-      Do not spend days to create
-      <span class="animated-gradient-text">productivity system</span>, we already do that
-    for you
-    </h1>
+    <h1 class="text-[32px] lg:text-[48px] text-gray-800 font-medium leading-[1.2]" set:html={t("hero.title")}></h1>
     <p class="text-gray-700 mt-5 text-[16px] lg:text-[24px] leading-[1.4]">
-      TODO List with preconfigured productivity system, that will keep your tasks and mind in shape
+        {t("hero.subtitle")}
     </p>
-    <a class="block mt-5 w-fit" href="https://app.cubicdone.com/auth"><Button>Get cubicdone</Button></a>
+    <a class="block mt-5 w-fit" href="https://app.cubicdone.com/auth"><Button>{t("hero.action")}</Button></a>
   </div>
   <Image src="/screenshots/hero.png" alt="hero" width="660" height="321" />
 </section>
 
-<style>
+<style is:global>
     @keyframes gradient-animation {
         0% {
             background-position: 0 50%;

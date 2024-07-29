@@ -1,0 +1,35 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Button from "../../components/button.astro";
+---
+
+<Layout title="pricing">
+  <main class="lg:w-[980px] mx-auto px-5 lg:px-[50px] pt-[80px] pb-[120px]">
+    <div class="relative flex flex-col lg:flex-row gap-x-5 items-start">
+      <div class="absolute -inset-2 flex items-center justify-center backdrop-blur-sm bg-white/70 text-2xl">
+        Полностьюе бесплатно на период <span class="px-2 mx-2 rounded bg-black text-white"> Beta</span> тестирования
+      </div>
+      <div class="py-6 px-4 bg-black lg:w-1/2 rounded-[20px]">
+        <p class="text-[24px] text-gray-150 mb-5">14 days trial</p>
+        <p class=" text-gray-150 mb-10">
+          We giving you 30 days to test our product. By the end of this period your could decide wether it’s worthy to pay 5$ or not.
+        </p>
+        <a><Button color="white">Start trial</Button></a>
+      </div>
+      <div class="py-6 px-4 border border-black lg:w-1/2 rounded-[20px]">
+        <p class="text-[24px] text-gray-800 mb-5">Full Access</p>
+        <ul class="text-gray-800 mb-10 list-disc list-inside">
+          <li>Drafts</li>
+          <li>Planning</li>
+          <li>Linear integration</li>
+          <li>Mobile App</li>
+        </ul>
+        <div class="flex justify-between items-center">
+          <p class="text-[28px] font-medium text-gray-800 leading-[1.2]">5$ / month</p>
+          <a>
+          <Button>Buy</Button>
+        </a></div>
+      </div>
+    </div>
+  </main>
+</Layout>
