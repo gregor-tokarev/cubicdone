@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import Icon from "../Icon.vue";
 import { Integration } from "@models/integration.model.ts";
 
@@ -16,6 +17,19 @@ function onClickAction() {
   if (props.integration.apiKeys.length) emit("disconnect");
   else emit("connect");
 }
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      connect: "Connect",
+      manage: "Manage",
+    },
+    ru: {
+      connect: "Подключить",
+      manage: "Настроить",
+    },
+  },
+});
 </script>
 
 <template>
@@ -57,9 +71,9 @@ function onClickAction() {
     >
       <template v-if="!integration.apiKeys.length">
         <Icon name="integrations"></Icon>
-        <span>Connect</span>
+        <span>{{ t("connect") }}</span>
       </template>
-      <span v-else class="text-red-400">Manage</span>
+      <span v-else class="text-red-400">{{ t("manage") }}</span>
     </div>
   </div>
 </template>

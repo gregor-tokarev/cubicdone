@@ -6,11 +6,27 @@ import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import Checkbox from "@components/UI/Checkbox.vue";
 import { useProjectStatusStore } from "@store/project-status.ts";
 import Icon from "@components/Icon.vue";
+import { useI18n } from "vue-i18n";
 
 const projectStore = useProjectStore();
 const projectStatusStore = useProjectStatusStore();
 
 const attrs = useAttrs();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      "not started": "not started",
+      "in progress": "in progress",
+      finished: "finished",
+    },
+    ru: {
+      "not started": "Не начат",
+      "in progress": "В прогрессе",
+      finished: "Завершен",
+    },
+  },
+});
 
 const props = defineProps<{
   project: Project;
@@ -101,7 +117,7 @@ function onEnter(event: Event) {
     >
       <template v-if="projectStatus">
         <Icon :name="projectStatus?.icon" :size="14"></Icon>
-        <span>{{ projectStatus?.title }}</span>
+        <span>{{ t(projectStatus?.title) }}</span>
       </template>
       <template v-else>
         <span>Set status</span>

@@ -13,9 +13,35 @@ import { useRouter } from "vue-router";
 import ErrorMessage from "@components/ErrorMessage.vue";
 import ApiKeyCard from "@components/ApiKeyCard.vue";
 import hotkeys from "hotkeys-js";
+import { useI18n } from "vue-i18n";
 
 const integrationStore = useIntegrationStore();
 const router = useRouter();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      title: "Integrations",
+      required: "is required",
+      modal: {
+        label: "Label",
+        connect: "Connect",
+        cancel: "Cancel",
+        error: "Error! your api key is wrong, try to regenerate it",
+      },
+    },
+    ru: {
+      title: "Интеграции",
+      required: "обязательно",
+      modal: {
+        label: "Название",
+        connect: "Подключить",
+        cancel: "Отменить",
+        error: "Ошибка! ваш apiKey не работает. Попробуйте сделать новый",
+      },
+    },
+  },
+});
 
 const openIntegrationId = ref<null | string>(null);
 const openIntegration = computed<Integration | undefined>(() => {
@@ -45,8 +71,8 @@ const formState = reactive({
 
 const v$ = useVuelidate(
   {
-    label: { required: helpers.withMessage("is required", required) },
-    key: { required: helpers.withMessage("is required", required) },
+    label: { required: helpers.withMessage(t("required"), required) },
+    key: { required: helpers.withMessage(t("required"), required) },
   },
   formState,
 );
@@ -97,7 +123,7 @@ function onRevoke(apiKeyId: string) {
 <template>
   <div class="pt-8">
     <div class="mb-10 flex items-center justify-between">
-      <h1 class="text-xl">Integrations</h1>
+      <h1 class="text-xl">{{ t("title") }}</h1>
     </div>
     <div class="grid grid-cols-2 gap-5">
       <IntegrationCard
@@ -135,7 +161,9 @@ function onRevoke(apiKeyId: string) {
         <div class="mb-5 space-y-3">
           <div class="space-y-0.5">
             <div class="flex items-center space-x-1">
-              <p class="text-xs capitalize text-gray-500">Label</p>
+              <p class="text-xs capitalize text-gray-500">
+                {{ t("modal.label") }}
+              </p>
               <p v-if="v$.label.$errors[0]" class="text-xs text-red-400">
                 {{ v$.label.$errors[0].$message }}
               </p>
@@ -165,21 +193,24 @@ function onRevoke(apiKeyId: string) {
               :error="v$.key.$error"
               @blur="v$.key.$touch"
               placeholder="lin_api_k7Yk0QrBjjdTyzBAAHiW1SyTR23ycZoZHu3eHfGU"
-            ></BaseInput>
+            >
+            </BaseInput>
           </div>
           <ErrorMessage v-if="showError">
-            Ahtung! your api key is wrong, try to regenerate it
+            {{ t("modal.error") }}
           </ErrorMessage>
         </div>
         <div class="flex space-x-2">
           <BaseButton @click="onSubmit" :loading="loading">
             <div class="flex items-center space-x-1">
-              <span>Connect</span>
+              <span>
+                {{ t("modal.connect") }}
+              </span>
               <Icon name="arrow" class="h-5 w-5 rotate-90"></Icon>
             </div>
           </BaseButton>
           <BaseButton color="gray" @click="openIntegrationId = ''">
-            Cancel
+            {{ t("modal.cancel") }}
           </BaseButton>
         </div>
       </div>

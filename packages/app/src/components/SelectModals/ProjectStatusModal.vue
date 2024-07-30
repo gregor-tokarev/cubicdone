@@ -3,11 +3,27 @@ import { useProjectStatusModalStore } from "@store/select-modal.ts";
 import { useProjectStatusStore } from "@store/project-status.ts";
 import { computed, ref } from "vue";
 import SelectModal from "./SelectModal.vue";
+import { useI18n } from "vue-i18n";
 
 const projectStatusModalStore = useProjectStatusModalStore();
 const projectStatusStore = useProjectStatusStore();
 
 const query = ref("");
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      "not started": "not started",
+      "in progress": "in progress",
+      finished: "finished",
+    },
+    ru: {
+      "not started": "Не начат",
+      "in progress": "В прогрессе",
+      finished: "Завершен",
+    },
+  },
+});
 
 const projectOptions = computed(() => {
   const searchIndex = projectStatusStore.getIndex;
@@ -19,7 +35,7 @@ const projectOptions = computed(() => {
 
   return result.map((project) => ({
     id: project.id,
-    text: project.title,
+    text: t(project.title),
     icon: project.icon,
   }));
 });

@@ -4,6 +4,7 @@ import { projectStore } from "@models/project.model.ts";
 import { projectStatusStore } from "@models/projectStauts.model.ts";
 import { taskStore } from "@models/task.model.ts";
 import * as Sentry from "@sentry/vue";
+import { createI18n } from "vue-i18n";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
 import * as cookie from "cookie";
@@ -13,6 +14,10 @@ import { vueSyncClientPlugin } from "vue-sync-client";
 import App from "./App.vue";
 import { hint } from "./directives/hint.ts";
 import { router } from "./router";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+import "dayjs/locale/en";
+
 import "./style.css";
 
 const pinia = createPinia();
@@ -103,10 +108,33 @@ app
         else if (sync.action.actionName === "delete")
           await trpc.project.delete.mutate(sync.action.id as string);
       }
-
       resolveFn();
     },
   })
   .use(router);
+
+function customRule(choice: number, _choicesLength: number) {
+  const calcValue = Math.abs(choice) % 100;
+  const num = calcValue % 10;
+
+  if (calcValue > 10 && calcValue < 20) return 3;
+  if (num > 1 && num < 5) return 2;
+  if (num === 1) return 1;
+  return 3;
+}
+
+export const i18n = createI18n({
+  locale: "ru",
+  fallbackLocale: "en",
+  legacy: false,
+  pluralizationRules: {
+    ru: customRule,
+  },
+});
+app.use(i18n);
+
+const locale = localStorage.getItem("chosen_locale") ?? "ru";
+dayjs.locale(locale);
+i18n.global.locale.value = locale;
 
 app.mount("#app");

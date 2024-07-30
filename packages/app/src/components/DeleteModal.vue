@@ -4,6 +4,7 @@ import { setScrolling } from "@utils/setScrolling.ts";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
 import BaseButton from "@components/UI/BaseButton.vue";
 import hotkeys from "hotkeys-js";
+import { useI18n } from "vue-i18n";
 
 const deleteModalStore = useDeleteModalStore();
 
@@ -47,6 +48,19 @@ function onButtonClick(value: boolean) {
 
   deleteModalStore.close();
 }
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      cancel: "Cancel",
+      delete: "Delete",
+    },
+    ru: {
+      cancel: "Отмена",
+      delete: "Удалить",
+    },
+  },
+});
 </script>
 
 <template>
@@ -66,13 +80,14 @@ function onButtonClick(value: boolean) {
           ref="cancelButton"
           @click="onButtonClick(false)"
           color="gray"
-          >Cancel</BaseButton
+          >{{ t("cancel") }}</BaseButton
         >
         <BaseButton
           class="shadow-gray-900 focus:shadow-2xl"
           ref="submitButton"
           @click="onButtonClick(true)"
-          >Delete</BaseButton
+        >
+          {{ t("delete") }}</BaseButton
         >
       </div>
     </div>

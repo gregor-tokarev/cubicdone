@@ -14,9 +14,44 @@ import { animate } from "motion";
 import { nanoid } from "nanoid";
 import { onMounted, ref, watch } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import { useI18n } from "vue-i18n";
 
 const draftStore = useDraftsStore();
 const projectStore = useProjectStore();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      delete: "Delete",
+      setProject: "Set project",
+      deleteModal: {
+        multipleDelete: `Are you sure you want to delete {length} drafts?`,
+        warning: "Delete would be permanent, you can’t restore issues later.",
+        spesificDelete: `Are you sure you want to delete “{title}”?`,
+      },
+      emptyPlaceholder: `
+Write everything on your mind. <br />
+            Clear it, to achieve better performance. <br />
+            Press Enter after you wrote it.
+            `,
+    },
+    ru: {
+      delete: "Удалить",
+      setProject: "Выбрать проект",
+      deleteModal: {
+        multipleDelete: `Вы уверенны, что хотите удалить 0 драфтов? | Вы уверенны, что хотите удалить {length} драфт? | Вы уверенны, что хотите удалить {length} драфта? | Вы уверенны, что хотите удалить {length} драфтов?`,
+        warning:
+          "Удаление будет пермонентным, вы не сможете восстановить драфты",
+        spesificDelete: `Вы уверены, что хотети удалить “{title}”?`,
+      },
+      emptyPlaceholder: `
+Пишите все дела, что у вас не уме <br />
+            Очистив ум вы освободите его для важного <br />
+            Просто нажмите Enter после того как вы все написали.
+            `,
+    },
+  },
+});
 
 const draftInput = ref<InstanceType<typeof DraftInput> | null>(null);
 
@@ -179,9 +214,12 @@ const deleteModalStore = useDeleteModalStore();
 async function removeDraft() {
   if (selectedDraftIds.value.length) {
     const res = await deleteModalStore.use({
-      titleText: `Are you sure you want to delete ${selectedDraftIds.value.length} drafts?`,
-      descriptionText:
-        "Delete would be permanent, you can’t restore issues later.",
+      titleText: t(
+        "deleteModal.multipleDelete",
+        { length: selectedDraftIds.value.length },
+        selectedDraftIds.value.length,
+      ),
+      descriptionText: t("deleteModal.warning"),
     });
     if (!res) return;
 
@@ -197,9 +235,10 @@ async function removeDraft() {
   if (!draft) return;
 
   const res = await deleteModalStore.use({
-    titleText: `Are you sure you want to delete “${draft.title}”?`,
-    descriptionText:
-      "Delete would be permanent, you can’t restore issues later.",
+    titleText: t("deleteModal.spesificDelete", {
+      title: selectedDraftIds.value.length,
+    }),
+    descriptionText: t("deleteModal.warning"),
   });
 
   res && draftStore.remove(draft.id);
@@ -249,7 +288,8 @@ function onListLeave() {
       v-model="prompt"
       @enter="onCreateDraft()"
       v-hint="'I'"
-    ></DraftInput>
+    >
+    </DraftInput>
     <!--  drafts list-->
     <VueDraggableNext
       v-if="draftStore.sortedDrafts.length"
@@ -271,19 +311,19 @@ function onListLeave() {
         @update:selected="onUpdateSelect(d.id)"
       ></DraftRow>
     </VueDraggableNext>
-    <p class="mt-10 text-center text-gray-600" v-else>
-      Write everything on your mind. <br />
-      Clear it, to achieve better performance. <br />
-      Press Enter after you wrote it.
-    </p>
+    <p
+      class="mt-10 text-center text-gray-600"
+      v-else
+      v-html="t('emptyPlaceholder')"
+    ></p>
   </div>
   <teleport to="body">
     <ContextMenu
       ref="contextMenuEl"
       v-model:show="contextMenuOpen"
       :options="[
-        { id: nanoid(3), label: 'Delete', kbd: '⌘ ⌫', value: 'del' },
-        { id: nanoid(3), label: 'Project', kbd: '⇧ P', value: 'proj' },
+        { id: nanoid(3), label: t('delete'), kbd: '⌘ ⌫', value: 'del' },
+        { id: nanoid(3), label: t('setProject'), kbd: '⇧ P', value: 'proj' },
       ]"
       class="absolute"
       :style="{
@@ -297,8 +337,8 @@ function onListLeave() {
     ref="inboxCommandEl"
     class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full"
     :commands="[
-      { name: 'Set Project', icon: 'hashtag', emitName: 'setProject' },
-      { name: 'Remove', icon: 'basket', emitName: 'remove' },
+      { name: t('setProject'), icon: 'hashtag', emitName: 'setProject' },
+      { name: t('delete'), icon: 'basket', emitName: 'remove' },
     ]"
     @discard="selectedDraftIds = []"
     @setProject="selectProject"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import Icon from "../components/Icon.vue";
 import { getCurrentInstance } from "vue";
 
@@ -11,6 +12,17 @@ const { emit: $emit } = getCurrentInstance();
 const emit = defineEmits<{
   (e: "discard", value: void): void;
 }>();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      selected: "selected",
+    },
+    ru: {
+      selected: "выбрано",
+    },
+  },
+});
 </script>
 
 <template>
@@ -21,7 +33,7 @@ const emit = defineEmits<{
       class="flex h-[30px] cursor-pointer border border-dashed border-gray-700"
       @click="emit('discard')"
     >
-      <span class="self-center px-[15px]">3 selected</span>
+      <span class="self-center px-[15px]">3 {{ t("selected") }}</span>
       <div
         class="flex w-[30px] items-center justify-center border-l border-dashed border-gray-700"
       >

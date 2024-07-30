@@ -10,6 +10,7 @@ import { VueSpinner } from "vue3-spinners";
 import { RecycleScroller } from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import hotkeys from "hotkeys-js";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   integrationDrafts: Draft[];
@@ -175,32 +176,36 @@ const currentIdx = ref(0);
 function onUpdate(_1: unknown, _2: unknown, _3: unknown, currIdx: number) {
   currentIdx.value = currIdx;
 }
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      today: "Today",
+    },
+    ru: {
+      today: "Сегодня",
+    },
+  },
+});
 </script>
 
 <template>
   <div class="space-y-3">
     <div class="flex space-x-1.5">
-      <div
-        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
-        @click="onIndexArrows('decr')"
-        v-hint="','"
-      >
-        <
-      </div>
+      <!-- <div class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
+                @click="onIndexArrows('decr')" v-hint="','">
+            < </div> -->
       <div
         @click="onToday()"
         class="flex h-6 cursor-pointer items-center rounded bg-gray-100 px-2.5 text-[12px]"
         v-hint="'T'"
       >
-        Today
+        {{ t("today") }}
       </div>
-      <div
-        class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
-        @click="onIndexArrows('incr')"
-        v-hint="'.'"
-      >
-        >
-      </div>
+      <!-- <div class="flex h-6 w-6 cursor-pointer items-center justify-center rounded bg-gray-100"
+                @click="onIndexArrows('incr')" v-hint="'.'">
+                >
+            </div> -->
     </div>
     <RecycleScroller
       class="h-full"
@@ -227,7 +232,8 @@ function onUpdate(_1: unknown, _2: unknown, _3: unknown, currIdx: number) {
           :date="item"
           @move="onMove"
           class="h-full w-[310px] pr-2.5"
-        ></PlanColumn>
+        >
+        </PlanColumn>
       </template>
     </RecycleScroller>
   </div>

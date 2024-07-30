@@ -2,6 +2,7 @@
 import ProjectOption from "@components/SelectModalOption.vue";
 import { ref, watch, watchEffect } from "vue";
 import { setScrolling } from "@utils/setScrolling.ts";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   options: { id: string; icon?: string; color?: string; text: string }[];
@@ -84,42 +85,49 @@ function onInput(event: Event) {
 
   emit("update:query", target.value);
 }
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      placeholder: "Change project...",
+    },
+    ru: {
+      placeholder: "Поменять проект...",
+    },
+  },
+});
 </script>
 
 <template>
-  <teleport to="[data-scroll-container]">
-    <div
-      v-if="open"
-      class="fixed left-1/2 top-[100px] z-10 w-[600px] -translate-x-1/2 rounded-md bg-gray-100 pb-4 pt-1.5 shadow-xl"
-    >
-      <div class="mx-2 mb-2 inline-block rounded bg-gray-300 px-2 text-xs">
-        {{ hintText }}
-      </div>
-      <input
-        type="text"
-        ref="searchEl"
-        :value="query"
-        @input="onInput"
-        @keydown="onKeydown"
-        class="border-gray-150 w-full border-b bg-transparent p-2 placeholder-gray-500 outline-0"
-        placeholder="Change project..."
-      />
-      <div v-if="options" class="">
-        <ProjectOption
-          v-for="(p, idx) in options"
-          :option="p"
-          :check="idx === checkedIndex"
-          :active="selectedProjectIdx === idx"
-          @click="onClick(p.id)"
-        ></ProjectOption>
-      </div>
+  <div
+    v-if="open"
+    class="fixed left-1/2 top-[100px] z-10 w-[600px] -translate-x-1/2 rounded-md bg-gray-100 pb-4 pt-1.5 shadow-xl"
+  >
+    <div class="mx-2 mb-2 inline-block rounded bg-gray-300 px-2 text-xs">
+      {{ hintText }}
     </div>
-  </teleport>
-  <teleport to="body">
-    <div
-      v-if="open"
-      @click="emit('update:open', false)"
-      class="fixed inset-0"
-    ></div>
-  </teleport>
+    <input
+      type="text"
+      ref="searchEl"
+      :value="query"
+      @input="onInput"
+      @keydown="onKeydown"
+      class="border-gray-150 w-full border-b bg-transparent p-2 placeholder-gray-500 outline-0"
+      :placeholder="t('placeholder')"
+    />
+    <div v-if="options" class="">
+      <ProjectOption
+        v-for="(p, idx) in options"
+        :option="p"
+        :check="idx === checkedIndex"
+        :active="selectedProjectIdx === idx"
+        @click="onClick(p.id)"
+      ></ProjectOption>
+    </div>
+  </div>
+  <div
+    v-if="open"
+    @click="emit('update:open', false)"
+    class="fixed inset-0"
+  ></div>
 </template>

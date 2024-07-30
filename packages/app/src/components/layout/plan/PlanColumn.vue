@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import dayjs, { Dayjs } from "dayjs";
 import TaskCard from "@components/cards/TaskCard.vue";
-import { VueDraggableNext } from "vue-draggable-next";
 import { useTaskStore } from "@store/task.ts";
 import { Task } from "contract-models";
+import dayjs, { Dayjs } from "dayjs";
 import { computed } from "vue";
+import { VueDraggableNext } from "vue-draggable-next";
+import { useI18n } from "vue-i18n";
+import "dayjs/locale/ru";
 
 const props = defineProps<{
   date: Dayjs;
@@ -20,19 +22,52 @@ async function onUpdateStatus(id: string, status: Task["status"]) {
   taskStore.update(id, { status });
 }
 
+const { t } = useI18n({
+  messages: {
+    en: {
+      today: "Today",
+      tomorrow: "Tomorrow",
+      yesterday: "Yesterday",
+      weekday: {
+        sunday: "Sunday",
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday",
+      },
+    },
+    ru: {
+      today: "Сегодня",
+      tomorrow: "Завтра",
+      yesterday: "Вчера",
+      weekday: {
+        sunday: "Воскресенье",
+        monday: "Понедельник",
+        tuesday: "Вторник",
+        wednesday: "Среда",
+        thursday: "Четверг",
+        friday: "Пятница",
+        saturday: "Суббота",
+      },
+    },
+  },
+});
+
 const dateDescription = computed(() => {
-  if (dayjs().isSame(props.date, "d")) return "Today";
-  else if (dayjs().add(1, "d").isSame(props.date, "d")) return "Tomorrow";
-  else if (dayjs().add(-1, "d").isSame(props.date, "d")) return "Yesterday";
+  if (dayjs().isSame(props.date, "d")) return t("today");
+  else if (dayjs().add(1, "d").isSame(props.date, "d")) return t("tomorrow");
+  else if (dayjs().add(-1, "d").isSame(props.date, "d")) return t("yesterday");
   else
     return [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
+      t("weekday.sunday"),
+      t("weekday.monday"),
+      t("weekday.tuesday"),
+      t("weekday.wednesday"),
+      t("weekday.thursday"),
+      t("weekday.friday"),
+      t("weekday.saturday"),
     ][props.date.day()];
 });
 </script>

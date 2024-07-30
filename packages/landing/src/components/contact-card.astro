@@ -1,6 +1,7 @@
 ---
 import {Image} from "astro:assets";
 import Button from "./button.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
 interface Props {
   position: string;
@@ -8,6 +9,9 @@ interface Props {
 }
 
 const { position, class: className } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <div class:list={["flex flex-col lg:flex-row space-y-3 lg:space-y-0 justify-between lg:items-center py-2.5 px-4 rounded-[20px] border border-gray-400", className]}>
@@ -19,6 +23,6 @@ const { position, class: className } = Astro.props;
     </div>
   </div>
   <a href="https://t.me/gregor_tokarev" class="w-full lg:w-fit" target="_blank" rel="noopener noreferrer">
-    <Button>Ask a question</Button>
+      <Button>{t("askquestion")}</Button>
   </a>
 </div>

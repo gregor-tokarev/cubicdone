@@ -1,10 +1,10 @@
+import { Issue, ProjectConnection } from "@linear/sdk";
+import { ApiKey } from "@models/api-key.model.ts";
 import {
   Integration,
   IntegrationProject,
   IntegrationTask,
 } from "@models/integration.model.ts";
-import { Issue, ProjectConnection } from "@linear/sdk";
-import { ApiKey } from "@models/api-key.model.ts";
 
 export class LinearIntegration implements Integration {
   name = "linear";

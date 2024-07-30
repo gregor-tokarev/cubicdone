@@ -60,4 +60,3 @@ const checkedIndex = computed(() => {
 </template>
 
 <style scoped></style>
-@store/select-modal

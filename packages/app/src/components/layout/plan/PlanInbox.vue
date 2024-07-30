@@ -10,6 +10,7 @@ import { useTaskStore } from "@store/task.ts";
 import { Draft } from "contract-models";
 import Icon from "@components/Icon.vue";
 import { Integration } from "@models/integration.model.ts";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   integrationDrafts: Draft[];
@@ -101,6 +102,23 @@ async function onChangeDraft(evt: any) {
     }
   }
 }
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      title: "Inbox",
+      loading: "Loading...",
+      emptyDrafts: "You plan all your Inbox Tasks. Start working or",
+      createNewDrafts: "create new drafts",
+    },
+    ru: {
+      title: "Входящие",
+      loading: "Загрузка...",
+      emptyDrafts: "Вы распланировали все свои задачи, начинайте работать или",
+      createNewDrafts: "создайте новые драфты",
+    },
+  },
+});
 </script>
 
 <template>
@@ -108,14 +126,14 @@ async function onChangeDraft(evt: any) {
     <div class="flex items-center space-x-5">
       <div class="flex items-center space-x-2 text-base text-black">
         <Icon name="inbox" :size="24"></Icon>
-        <span>Inbox</span>
+        <span>{{ t("title") }}</span>
       </div>
       <div
         v-if="loadingDrafts"
         class="flex items-center space-x-1.5 text-gray-600"
       >
         <VueSpinner size="16px"></VueSpinner>
-        <span>Loading...</span>
+        <span>{{ t("loading") }}</span>
       </div>
     </div>
     <VueDraggableNext
@@ -142,9 +160,9 @@ async function onChangeDraft(evt: any) {
         class="scrollbar-none flex h-full grow items-center justify-center text-sm text-gray-600"
       >
         <span>
-          You plan all your Inbox Tasks. Start working or
+          {{ t("emptyDrafts") }}
           <router-link tag="span" class="text-black underline" to="/inbox">
-            create new drafts
+            {{ t("createNewDrafts") }}
           </router-link>
         </span>
       </div>

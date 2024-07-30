@@ -11,9 +11,56 @@ import hotkeys from "hotkeys-js";
 import { useDeleteModalStore } from "@store/delete-modal";
 import { nanoid } from "nanoid";
 import { onMounted, onUnmounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const projectStore = useProjectStore();
 const projectStatusModalStore = useProjectStatusModalStore();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      title: "Projects",
+      create: "New project",
+      updateStatus: "Update {length} projects?",
+      column: {
+        title: "Title",
+        status: "Status",
+      },
+      deleteModal: {
+        multipleDelete: `Are you sure you want to delete {length} projects?`,
+        warning: "Delete would be permanent, you can’t restore issues later.",
+        spesificDelete: `Are you sure you want to delete “{title}”?`,
+      },
+
+      contextAction: {
+        delete: "Delete",
+        setStatus: "Set status",
+      },
+    },
+
+    ru: {
+      title: "Проекты",
+      create: "Новый проект",
+      updateStatus:
+        "Обновить {length} проект? | Обновить {length} проекта? | Обновить {length} проектов?",
+      column: {
+        title: "Название",
+        status: "Статус",
+      },
+      deleteModal: {
+        multipleDelete: `Вы уверенны, что хотите удалить {length} проект? | Вы уверенны, что хотите удалить {length} проекта? | Вы уверенны, что хотите удалить {length} проектов?`,
+        warning:
+          "Удаление будет пермонентным, вы не сможете восстановить проекты",
+        spesificDelete: `Вы уверены, что хотети удалить “{title}”?`,
+      },
+
+      contextAction: {
+        delete: "Удалить",
+        setStatus: "Установить статус",
+      },
+    },
+  },
+});
 
 const rowsContainer = ref<HTMLElement | null>(null);
 
@@ -81,7 +128,6 @@ function updateSelection(projectId: string) {
 
   selectedProjectsIds.value.push(projectId);
 }
-
 async function onSetStatus() {
   if (selectedProjectsIds.value.length <= 0) {
     if (!hoveredProjectId.value) return;
@@ -102,7 +148,11 @@ async function onSetStatus() {
   }
 
   const statusId = await projectStatusModalStore.use({
-    hintText: `Update ${selectedProjectsIds.value.length} projects`,
+    hintText: t(
+      "updateStatus",
+      { length: selectedProjectsIds.value.length },
+      selectedProjectsIds.value.length,
+    ),
     statusId: null,
   });
 
@@ -117,9 +167,12 @@ const deleteModalStore = useDeleteModalStore();
 async function removeProject() {
   if (selectedProjectsIds.value.length) {
     const res = await deleteModalStore.use({
-      titleText: `Are you sure you want to delete ${selectedProjectsIds.value.length} drafts?`,
-      descriptionText:
-        "Delete would be permanent, you can’t restore projects later.",
+      titleText: t(
+        "deleteModal.multipleDelete",
+        { length: selectedProjectsIds.value.length },
+        selectedProjectsIds.value.length,
+      ),
+      descriptionText: t("deleteModal.warning"),
     });
     if (!res) return;
 
@@ -135,9 +188,8 @@ async function removeProject() {
   if (!draft) return;
 
   const res = await deleteModalStore.use({
-    titleText: `Are you sure you want to delete “${draft.title}”?`,
-    descriptionText:
-      "Delete would be permanent, you can’t restore project later.",
+    titleText: t("deleteModal.spesificDelete", { title: draft.title }),
+    descriptionText: t("deleteModal.warning"),
   });
 
   res && projectStore.remove(draft.id);
@@ -178,13 +230,13 @@ function onSelectOption(action: string) {
 <template>
   <div class="pt-8">
     <div class="mb-6 flex items-center space-x-5">
-      <h1 class="text-xl">Projects</h1>
+      <h1 class="text-xl">{{ t("title") }}</h1>
       <div
         v-hint="'C'"
         @click="onCreateProject()"
         class="cursor-pointer rounded-lg px-1.5 py-[3px] text-gray-600 transition-colors hover:bg-gray-400"
       >
-        New project +
+        {{ t("create") }} +
       </div>
     </div>
     <div
@@ -192,10 +244,10 @@ function onSelectOption(action: string) {
       class="flex items-center space-x-0.5"
     >
       <div class="flex w-[59%] items-center pl-[2.4%] text-xs text-gray-600">
-        <span> Title </span>
+        <span> {{ t("column.title") }} </span>
       </div>
       <div class="flex items-center text-xs text-gray-600">
-        <span> Status </span>
+        <span> {{ t("column.status") }} </span>
       </div>
     </div>
     <div
@@ -222,8 +274,18 @@ function onSelectOption(action: string) {
       ref="contextMenuEl"
       v-model:show="contextMenuOpen"
       :options="[
-        { id: nanoid(3), label: 'Delete', kbd: '⌘ ⌫', value: 'del' },
-        { id: nanoid(3), label: 'Set status', kbd: 'S', value: 'stat' },
+        {
+          id: nanoid(3),
+          label: t('contextAction.delete'),
+          kbd: '⌘ ⌫',
+          value: 'del',
+        },
+        {
+          id: nanoid(3),
+          label: t('contextAction.setStatus'),
+          kbd: 'S',
+          value: 'stat',
+        },
       ]"
       class="absolute"
       :style="{
@@ -235,4 +297,3 @@ function onSelectOption(action: string) {
   </teleport>
   <ProjectStatusModal></ProjectStatusModal>
 </template>
-@store/select-modal

@@ -7,9 +7,33 @@ import { email, helpers, required, url } from "@vuelidate/validators";
 import { animate } from "motion";
 import UpdateProfile from "@components/UpdateProfile.vue";
 import { useUserStore } from "@store/user.ts";
+import { useI18n } from "vue-i18n";
 
 const userStore = useUserStore();
 const user = computed(() => userStore.user);
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      title: "Account Settings",
+      label: {
+        avatar: "Avatar",
+        email: "Email",
+        firstName: "First Name",
+        lastName: "Last Name",
+      },
+    },
+    ru: {
+      title: "Настройки аккаунта",
+      label: {
+        avatar: "Аватарка",
+        email: "Email",
+        firstName: "Имя",
+        lastName: "Фамилия",
+      },
+    },
+  },
+});
 
 const formState = reactive({
   avatarUrl: user.value?.avatar ?? "",
@@ -78,18 +102,18 @@ async function onSave() {
 
 <template>
   <div ref="root" class="pt-[90px]">
-    <h1 class="text-[32px]">Account Settings</h1>
+    <h1 class="text-[32px]">{{ t("title") }}</h1>
     <div class="space-y-10">
       <div
         class="border-gray-150 flex items-center justify-between border-b py-5"
       >
-        <p class="text-[20px] text-gray-700">Avatar</p>
+        <p class="text-[20px] text-gray-700">{{ t("label.avatar") }}</p>
         <AvatarInput disabled v-model="v$.avatarUrl.$model"></AvatarInput>
       </div>
       <div
         class="border-gray-150 flex items-center justify-between border-b py-5"
       >
-        <p class="text-[20px] text-gray-700">Email</p>
+        <p class="text-[20px] text-gray-700">{{ t("label.email") }}</p>
         <BaseInput
           disabled
           class="min-w-[260px]"
@@ -99,7 +123,7 @@ async function onSave() {
       <div
         class="border-gray-150 flex items-center justify-between border-b py-5"
       >
-        <p class="text-[20px] text-gray-700">First Name</p>
+        <p class="text-[20px] text-gray-700">{{ t("label.firstName") }}</p>
         <BaseInput
           class="min-w-[260px]"
           :disabled="saving"
@@ -109,7 +133,7 @@ async function onSave() {
       <div
         class="border-gray-150 flex items-center justify-between border-b py-5"
       >
-        <p class="text-[20px] text-gray-700">Last Name</p>
+        <p class="text-[20px] text-gray-700">{{ t("label.lastName") }}</p>
         <BaseInput
           class="min-w-[260px]"
           :disabled="saving"

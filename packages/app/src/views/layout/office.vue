@@ -7,7 +7,6 @@ import { useIntegrationStore } from "@store/integration.ts";
 import { useProjectStatusStore } from "@store/project-status.ts";
 import { useProjectStore } from "@store/project.ts";
 import { useTaskStore } from "@store/task.ts";
-import { SpeedInsights } from "@vercel/speed-insights/vue";
 import hotkeys from "hotkeys-js";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -88,7 +87,6 @@ onMounted(async () => {
   </div>
   <ProjectModal></ProjectModal>
   <DeleteModal></DeleteModal>
-  <SpeedInsights></SpeedInsights>
 </template>
 
 <style scoped></style>

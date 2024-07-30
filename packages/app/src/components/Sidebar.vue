@@ -3,33 +3,77 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import Icon from "@components/Icon.vue";
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core/index.cjs";
 import hotkeys from "hotkeys-js";
-import { onClickOutside } from "@vueuse/core";
+import Fuse from "fuse.js";
+import SelectModal from "./SelectModals/SelectModal.vue";
+import { onClickOutside, useLocalStorage } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useSyncState } from "vue-sync-client";
 import { useUserStore } from "@store/user.ts";
-import { trpc } from "../main.ts";
+import { i18n, trpc } from "../main.ts";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n({
+  messages: {
+    ru: {
+      plan: "План",
+      inbox: "Входящие",
+      projects: "Проекты",
+      integrations: "Интеграции",
+      logout: "Выйти",
+      profile: "Профиль",
+      syncing: "Синхронизация",
+
+      syncNote: `Ваши {syncCount} несохраненные изменения будут загружены когда вы вернетесь в онлайн
+                    <br />
+                    <br />
+                    <span class="text-gray-300">Кстати:</span> они перезапушут ваши изменения с других устройств
+      `,
+
+      chooseLang: "Выбрать язык",
+    },
+    en: {
+      plan: "Plan",
+      inbox: "Inbox",
+      projects: "Projects",
+      integrations: "Integrations",
+      logout: "Logout",
+      profile: "Open profile",
+      syncing: "Syncing",
+      syncNote: `Your {syncCount} unsaved changes will be loaded when you regain
+                    connectivity
+                    <br />
+                    <br />
+                    <span class="text-gray-300">Note:</span> it will overwrite your
+                    changes from other devices
+
+      `,
+
+      chooseLang: "Choose language",
+    },
+  },
+});
 
 const navItems = ref([
   {
-    title: "Plan",
+    title: t("plan"),
     icon: "plan",
     link: "/",
     hint: "⌘ + G",
   },
   {
-    title: "Inbox",
+    title: t("inbox"),
     icon: "inbox",
     link: "/inbox",
     hint: "⌘ + I",
   },
   {
-    title: "Projects",
+    title: t("projects"),
     icon: "folder",
     link: "/projects",
     hint: "⌘ + P",
   },
   {
-    title: "Integrations",
+    title: t("integrations"),
     icon: "integrations",
     link: "/integrations",
   },
@@ -107,6 +151,36 @@ const syncing = computed(() => {
 const showBadge = computed(() => {
   return networkState.value === "offline" || syncing.value;
 });
+
+// locale modal
+const localeQuery = ref("");
+const locale = useLocalStorage("chosen_locale", i18n.global.locale.value);
+
+const localeOptions = [
+  { text: "Русский", id: "ru", icon: "🇷🇺" },
+  { text: "English", id: "en", icon: "🇺🇸" },
+];
+const currentLocale = computed(() => {
+  return localeOptions.find((l) => l.id === locale.value);
+});
+
+const localeOpen = ref(false);
+
+const fuse = new Fuse(localeOptions, { keys: ["text", "id"] });
+const filteredOptions = computed(() => {
+  return localeQuery.value
+    ? fuse.search(localeQuery.value).map((r) => r.item)
+    : localeOptions;
+});
+
+const checkedIndex = computed(() => {
+  return localeOptions.findIndex((l) => l.id === locale.value);
+});
+
+function onLocaleSelect(id: (typeof localeOptions)[0]["id"]) {
+  locale.value = id;
+  location.reload(); // app will take locale on boot
+}
 </script>
 
 <template>
@@ -133,8 +207,8 @@ const showBadge = computed(() => {
           }"
         >
           <img
-            :src="userStore.user.avatar"
-            :alt="userStore.user.firstName ?? 'profile image'"
+            :src="userStore.user?.avatar ?? ''"
+            :alt="userStore?.user?.firstName ?? 'profile image'"
             class="!min-h-[34px] !w-[34px] !min-w-[34px] shrink-0 overflow-hidden rounded-full"
           />
           <p
@@ -157,7 +231,7 @@ const showBadge = computed(() => {
           </template>
           <template v-else>
             <Icon name="sync" class="animate-spin text-gray-300"></Icon>
-            <span class="text-gray-300">syncing...</span>
+            <span class="text-gray-300">{{ t("syncing") }}...</span>
           </template>
         </div>
       </div>
@@ -178,14 +252,14 @@ const showBadge = computed(() => {
           @click="gotoProfile"
           class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-gray-200 transition-colors hover:bg-black hover:text-gray-50"
         >
-          <span class="">Open profile</span>
+          <span class="">{{ t("profile") }}</span>
           <span>⌘ + O</span>
         </button>
         <button
           @click="onSignOut"
           class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-red-400 transition-colors hover:bg-black"
         >
-          <span class="">Sign out</span>
+          <span class="">{{ t("logout") }}</span>
           <Icon name="exit" class="!h-4 !w-4"></Icon>
         </button>
       </div>
@@ -218,6 +292,17 @@ const showBadge = computed(() => {
         <span v-if="!compact">{{ item.title }}</span>
       </router-link>
     </nav>
+    <div
+      class="mt-auto flex cursor-pointer items-center space-x-2 rounded from-[#1A1A1A] to-[#141414] px-1.5 py-2 text-base text-gray-200 transition-colors hover:bg-gradient-to-r hover:text-white"
+      :class="{
+        'h-unset w-full': !compact,
+        'h-[32px] w-[32px] justify-center': compact,
+      }"
+      @click="localeOpen = !localeOpen"
+    >
+      <span>{{ currentLocale?.icon }}</span>
+      <span v-if="!compact">{{ currentLocale?.text }}</span>
+    </div>
     <teleport to="body">
       <div
         class="absolute pt-1"
@@ -231,16 +316,20 @@ const showBadge = computed(() => {
       >
         <p
           class="w-[215px] rounded-md bg-gray-900 px-2.5 pb-4 pt-2 text-[12px] text-gray-500"
-        >
-          Your {{ syncCount }} unsaved changes will be loaded when you regain
-          connectivity
-          <br />
-          <br />
-          <span class="text-gray-300">Note:</span> it will overwrite your
-          changes from other devices
-        </p>
+          v-html="t('syncNote', { syncCount: syncCount })"
+        ></p>
       </div>
     </teleport>
+    <SelectModal
+      v-if="filteredOptions"
+      :hint-text="t('chooseLang')"
+      :checked-index="checkedIndex"
+      :options="filteredOptions"
+      v-model:open="localeOpen"
+      v-model:query="localeQuery"
+      @submit="onLocaleSelect"
+    >
+    </SelectModal>
   </div>
 </template>
 
