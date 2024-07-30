@@ -165,9 +165,9 @@ const currentLocale = computed(() => {
 });
 
 const localeOpen = ref(false);
-const filteredOptions = computed(() => {
-  const fuse = new Fuse(localeOptions, { keys: ["label", "locale"] });
 
+const fuse = new Fuse(localeOptions, { keys: ["text", "id"] });
+const filteredOptions = computed(() => {
   return localeQuery.value
     ? fuse.search(localeQuery.value).map((r) => r.item)
     : localeOptions;
