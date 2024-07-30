@@ -219,7 +219,7 @@ function onLocaleSelect(id: (typeof localeOptions)[0]["id"]) {
                 @click="compact = !compact">
             </Icon>
             <div ref="panelEl"
-                class="absolute bottom-0 left-0 w-[200px] translate-y-[calc(100%+4px)] space-y-2 rounded-md border border-gray-900 bg-gradient-to-r from-[#1A1A1A] to-[#141414] px-2 py-1.5"
+                class="absolute bottom-0 left-0 w-[200px] translate-y-[calc(100%+4px)] space-y-2 rounded-md border border-gray-900 bg-gradient-to-r from-[#1A1A1A] to-[#141414] px-2 py-1.5 z-10"
                 v-if="openPanel">
                 <button @click="gotoProfile"
                     class="flex w-full cursor-pointer items-center justify-between rounded px-2 py-1.5 text-[14px] text-gray-200 transition-colors hover:bg-black hover:text-gray-50">
@@ -276,4 +276,3 @@ function onLocaleSelect(id: (typeof localeOptions)[0]["id"]) {
 </template>
 
 <style scoped></style>
-
