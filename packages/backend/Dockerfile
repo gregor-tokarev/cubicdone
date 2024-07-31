@@ -8,7 +8,7 @@ RUN npm i -g turbo@^1.12.5
 # Prune the monorepo for the specific app
 WORKDIR /app
 COPY . .
-RUN turbo prune backend --docker
+RUN npx turbo prune backend --docker
 
 # Install dependencies
 FROM node:18-alpine AS installer
