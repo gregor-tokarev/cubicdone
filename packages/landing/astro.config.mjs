@@ -7,4 +7,9 @@ export default defineConfig({
   integrations: [tailwind(), sitemap()],
   output: "static",
   site: "https://cubicdone.com",
+
+  server: {
+    port: 3000,
+    host: true,
+  },
 });
