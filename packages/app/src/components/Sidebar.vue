@@ -233,14 +233,14 @@ function onLocaleSelect(id: (typeof localeOptions)[0]["id"]) {
           </template>
         </div>
       </div>
-      <Icon
+      <!-- <Icon
         v-if="!compact"
         v-hint="'['"
         name="sidebar-left"
         class="cursor-pointer text-gray-200"
         @click="compact = !compact"
       >
-      </Icon>
+      </Icon> -->
       <div
         ref="panelEl"
         class="absolute bottom-0 left-0 z-10 w-[200px] translate-y-[calc(100%+4px)] space-y-2 rounded-md border border-gray-900 bg-gradient-to-r from-[#1A1A1A] to-[#141414] px-2 py-1.5"
