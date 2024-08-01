@@ -34,7 +34,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://app.cubicdone.com"],
+    origin: ["http://localhost:4000", "https://app.cubicdone.com"],
     credentials: true,
   }),
 );
