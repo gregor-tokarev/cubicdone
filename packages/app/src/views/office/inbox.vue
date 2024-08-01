@@ -12,7 +12,7 @@ import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
 import { animate } from "motion";
 import { nanoid } from "nanoid";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { useI18n } from "vue-i18n";
 
@@ -59,28 +59,39 @@ const prompt = ref<InputGenericPart[]>([
   { type: "text", content: "", id: nanoid(3) },
 ]);
 
+const HOTKEYS_SCOPE = "inbox";
+
 onMounted(async () => {
   await Promise.all([draftStore.loadDrafts(), projectStore.loadProjects()]);
 
-  hotkeys("cmd+backspace", () => {
+  hotkeys.setScope(HOTKEYS_SCOPE);
+
+  hotkeys("cmd+backspace", HOTKEYS_SCOPE, () => {
     removeDraft();
   });
-  hotkeys("shift+p", () => {
+  hotkeys("shift+p", HOTKEYS_SCOPE, () => {
     selectProject();
   });
-  hotkeys("x,shift+x", () => {
+  hotkeys("x,shift+x", HOTKEYS_SCOPE, () => {
     hoveredDraftId.value && onUpdateSelect(hoveredDraftId.value);
   });
-  hotkeys("esc", () => {
+  hotkeys("esc", HOTKEYS_SCOPE, () => {
     if (selectedDraftIds.value.length) {
       selectedDraftIds.value = [];
     }
   });
 
-  hotkeys("i", (evt) => {
+  hotkeys("i", HOTKEYS_SCOPE, (evt) => {
+    const sentryEl = document.querySelector("#sentry-feedback");
+    if (document.activeElement === sentryEl) return;
+
     evt.preventDefault();
     draftInput.value && draftInput.value.focusOnCurrentNode();
   });
+});
+
+onUnmounted(() => {
+  hotkeys.setScope("all");
 });
 
 function onCreateDraft() {
