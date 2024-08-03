@@ -22,7 +22,7 @@ export const github = new GitHub(
     process.env.OAUTH_GITHUB_CLIENT_ID ?? "",
     process.env.OAUTH_GITHUB_SECRET ?? "",
     {
-        redirectURI: process.env.NODE_ENV === "development" ? "http://localhost:4000/oauth/github/redirect" : "https://api.cubicdone.com/oauth/github/redirect",
+        redirectURI: process.env.NODE_ENV === "development" ? "http://localhost:4000/oauth/redirect/github" : "https://api.cubicdone.com/oauth/redirect/github",
     }
 )
 
