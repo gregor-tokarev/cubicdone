@@ -12,7 +12,7 @@ import { setScrolling } from "@utils/setScrolling.ts";
 import hotkeys from "hotkeys-js";
 import { animate } from "motion";
 import { nanoid } from "nanoid";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
 import { useI18n } from "vue-i18n";
 
@@ -20,181 +20,184 @@ const draftStore = useDraftsStore();
 const projectStore = useProjectStore();
 
 const { t } = useI18n({
-  messages: {
-    en: {
-      delete: "Delete",
-      setProject: "Set project",
-      deleteModal: {
-        multipleDelete: `Are you sure you want to delete {length} drafts?`,
-        warning: "Delete would be permanent, you can’t restore issues later.",
-        spesificDelete: `Are you sure you want to delete “{title}”?`,
-      },
-      emptyPlaceholder: `
+    messages: {
+        en: {
+            delete: "Delete",
+            setProject: "Set project",
+            deleteModal: {
+                multipleDelete: `Are you sure you want to delete {length} drafts?`,
+                warning: "Delete would be permanent, you can’t restore issues later.",
+                spesificDelete: `Are you sure you want to delete “{title}”?`,
+            },
+            emptyPlaceholder: `
 Write everything on your mind. <br />
             Clear it, to achieve better performance. <br />
             Press Enter after you wrote it.
             `,
-    },
-    ru: {
-      delete: "Удалить",
-      setProject: "Выбрать проект",
-      deleteModal: {
-        multipleDelete: `Вы уверенны, что хотите удалить 0 драфтов? | Вы уверенны, что хотите удалить {length} драфт? | Вы уверенны, что хотите удалить {length} драфта? | Вы уверенны, что хотите удалить {length} драфтов?`,
-        warning:
-          "Удаление будет пермонентным, вы не сможете восстановить драфты",
-        spesificDelete: `Вы уверены, что хотети удалить “{title}”?`,
-      },
-      emptyPlaceholder: `
+        },
+        ru: {
+            delete: "Удалить",
+            setProject: "Выбрать проект",
+            deleteModal: {
+                multipleDelete: `Вы уверенны, что хотите удалить 0 драфтов? | Вы уверенны, что хотите удалить {length} драфт? | Вы уверенны, что хотите удалить {length} драфта? | Вы уверенны, что хотите удалить {length} драфтов?`,
+                warning:
+                    "Удаление будет пермонентным, вы не сможете восстановить драфты",
+                spesificDelete: `Вы уверены, что хотети удалить “{title}”?`,
+            },
+            emptyPlaceholder: `
 Пишите все дела, что у вас не уме <br />
             Очистив ум вы освободите его для важного <br />
             Просто нажмите Enter после того как вы все написали.
             `,
+        },
     },
-  },
 });
 
 const draftInput = ref<InstanceType<typeof DraftInput> | null>(null);
 
 const prompt = ref<InputGenericPart[]>([
-  { type: "text", content: "", id: nanoid(3) },
+    { type: "text", content: "", id: nanoid(3) },
 ]);
 
 onMounted(async () => {
-  await Promise.all([draftStore.loadDrafts(), projectStore.loadProjects()]);
+    await Promise.all([draftStore.loadDrafts(), projectStore.loadProjects()]);
 
-  hotkeys("cmd+backspace", () => {
-    removeDraft();
-  });
-  hotkeys("shift+p", () => {
-    selectProject();
-  });
-  hotkeys("x,shift+x", () => {
-    hoveredDraftId.value && onUpdateSelect(hoveredDraftId.value);
-  });
-  hotkeys("esc", () => {
-    if (selectedDraftIds.value.length) {
-      selectedDraftIds.value = [];
-    }
-  });
+    hotkeys("cmd+backspace", () => {
+        removeDraft();
+    });
+    hotkeys("shift+p", () => {
+        selectProject();
+    });
+    hotkeys("x,shift+x", () => {
+        hoveredDraftId.value && onUpdateSelect(hoveredDraftId.value);
+    });
+    hotkeys("esc", () => {
+        if (selectedDraftIds.value.length) {
+            selectedDraftIds.value = [];
+        }
+    });
 
-  hotkeys("i", (evt) => {
-    const sentryEl = document.querySelector("#sentry-feedback");
-    if (document.activeElement === sentryEl) return;
+    hotkeys("i", (evt) => {
+        const sentryEl = document.querySelector("#sentry-feedback");
+        if (document.activeElement === sentryEl) return;
 
-    evt.preventDefault();
-    draftInput.value && draftInput.value.focusOnCurrentNode();
-  });
+        evt.preventDefault();
+        draftInput.value && draftInput.value.focusOnCurrentNode();
+    });
 });
 
 function onCreateDraft() {
-  if (!prompt.value) return;
+    if (!prompt.value || textLength.value > maxPossibleLength) return;
 
-  const text = prompt.value.reduce((acc, p) => {
-    if (p.type === "text") {
-      acc += p.content;
-    }
+    const text = prompt.value.reduce((acc, p) => {
+        if (p.type === "text") {
+            acc += p.content;
+        }
 
-    return acc;
-  }, "");
+        return acc;
+    }, "");
 
-  const projectPart = prompt.value.find((p) => p.type === "project");
+    const projectPart = prompt.value.find((p) => p.type === "project");
 
-  draftStore.create(
-    text,
-    projectPart && "projectId" in projectPart ? projectPart?.projectId : null,
-  );
+    prompt.value = [{ type: "text", content: "", id: nanoid() }]
+
+    draftStore.create(
+        text,
+        projectPart && "projectId" in projectPart ? projectPart?.projectId : null,
+    );
+
 }
 
 function onEditDraft(id: string, newTitle: string) {
-  draftStore.edit(id, newTitle);
+    draftStore.edit(id, newTitle);
 }
 
 function onChangeOrder(evt: any) {
-  if (evt["moved"]) {
-    const item = evt["moved"].element;
-    const oldIdx = evt["moved"].oldIndex;
-    const newIdx = evt["moved"].newIndex;
+    if (evt["moved"]) {
+        const item = evt["moved"].element;
+        const oldIdx = evt["moved"].oldIndex;
+        const newIdx = evt["moved"].newIndex;
 
-    draftStore.changeOrder(item.id, oldIdx, newIdx);
-  }
+        draftStore.changeOrder(item.id, oldIdx, newIdx);
+    }
 }
 
 const inboxCommandEl = ref<InstanceType<typeof CommandPalette> | null>(null);
 const selectedDraftIds = ref<string[]>([]);
 watch(
-  selectedDraftIds,
-  (ids) => {
-    if (!inboxCommandEl.value) return;
+    selectedDraftIds,
+    (ids) => {
+        if (!inboxCommandEl.value) return;
 
-    if (ids.length > 0) {
-      animate(inboxCommandEl.value.$el, {
-        transform: "translateY(-50%) translateX(-50%)",
-      });
-    } else {
-      animate(inboxCommandEl.value.$el, {
-        transform: "translateY(100%) translateX(-50%)",
-      });
-    }
-  },
-  { deep: true },
+        if (ids.length > 0) {
+            animate(inboxCommandEl.value.$el, {
+                transform: "translateY(-50%) translateX(-50%)",
+            });
+        } else {
+            animate(inboxCommandEl.value.$el, {
+                transform: "translateY(100%) translateX(-50%)",
+            });
+        }
+    },
+    { deep: true },
 );
 
 function onUpdateSelect(draftId: string) {
-  if (hotkeys.isPressed("shift") && selectedDraftIds.value.length > 0) {
-    const draft = draftStore.getOne(draftId);
-    if (!draft) return;
+    if (hotkeys.isPressed("shift") && selectedDraftIds.value.length > 0) {
+        const draft = draftStore.getOne(draftId);
+        if (!draft) return;
 
-    const selectedDrafts = selectedDraftIds.value.map(
-      (d) => draftStore.getOne(d)!,
-    );
-    const selectedOrders = selectedDrafts.map((d) => d.order);
+        const selectedDrafts = selectedDraftIds.value.map(
+            (d) => draftStore.getOne(d)!,
+        );
+        const selectedOrders = selectedDrafts.map((d) => d.order);
 
-    const minSelectedOrder = Math.min(...selectedOrders);
-    const maxSelectedOrder = Math.max(...selectedOrders);
+        const minSelectedOrder = Math.min(...selectedOrders);
+        const maxSelectedOrder = Math.max(...selectedOrders);
 
-    if (draft.order > maxSelectedOrder) {
-      const draftsToAdd = draftStore.drafts.filter(
-        (d) => d.order < draft.order && d.order > maxSelectedOrder,
-      );
+        if (draft.order > maxSelectedOrder) {
+            const draftsToAdd = draftStore.drafts.filter(
+                (d) => d.order < draft.order && d.order > maxSelectedOrder,
+            );
 
-      selectedDraftIds.value = selectedDraftIds.value.concat(
-        draftsToAdd.map((d) => d.id),
-      );
-    } else if (draft.order < minSelectedOrder) {
-      const draftsToAdd = draftStore.drafts.filter(
-        (d) => d.order > draft.order && d.order < minSelectedOrder,
-      );
+            selectedDraftIds.value = selectedDraftIds.value.concat(
+                draftsToAdd.map((d) => d.id),
+            );
+        } else if (draft.order < minSelectedOrder) {
+            const draftsToAdd = draftStore.drafts.filter(
+                (d) => d.order > draft.order && d.order < minSelectedOrder,
+            );
 
-      selectedDraftIds.value = selectedDraftIds.value.concat(
-        draftsToAdd.map((d) => d.id),
-      );
+            selectedDraftIds.value = selectedDraftIds.value.concat(
+                draftsToAdd.map((d) => d.id),
+            );
+        }
     }
-  }
 
-  if (selectedDraftIds.value.includes(draftId)) {
-    const idx = selectedDraftIds.value.findIndex((did) => did === draftId);
-    selectedDraftIds.value.splice(idx, 1);
-  } else {
-    selectedDraftIds.value.push(draftId);
-  }
+    if (selectedDraftIds.value.includes(draftId)) {
+        const idx = selectedDraftIds.value.findIndex((did) => did === draftId);
+        selectedDraftIds.value.splice(idx, 1);
+    } else {
+        selectedDraftIds.value.push(draftId);
+    }
 }
 
 const contextMenuOpen = ref(false);
 watch(contextMenuOpen, (value) => {
-  if (!value) {
-    hoveredDraftId.value = null;
-    setScrolling(true);
-  }
+    if (!value) {
+        hoveredDraftId.value = null;
+        setScrolling(true);
+    }
 });
 const contextMenuEl = ref<HTMLElement | null>(null);
 const listEl = ref<HTMLElement | null>(null);
 
 function onToggleContextMenu(evt: MouseEvent) {
-  clickX.value = evt.clientX;
-  clickY.value = evt.clientY;
+    clickX.value = evt.clientX;
+    clickY.value = evt.clientY;
 
-  contextMenuOpen.value = true;
-  setScrolling(false);
+    contextMenuOpen.value = true;
+    setScrolling(false);
 }
 
 const clickX = ref(0);
@@ -204,149 +207,128 @@ const hoveredDraftId = ref<string | null>(null);
 
 const projectModalStore = useProjectModalStore();
 async function onSelectContextMenu(action: string) {
-  if (action === "del") {
-    removeDraft();
-  } else if (action === "proj") {
-    selectProject();
-  }
+    if (action === "del") {
+        removeDraft();
+    } else if (action === "proj") {
+        selectProject();
+    }
 
-  contextMenuOpen.value = false;
+    contextMenuOpen.value = false;
 }
 
 const deleteModalStore = useDeleteModalStore();
 async function removeDraft() {
-  if (selectedDraftIds.value.length) {
+    if (selectedDraftIds.value.length) {
+        const res = await deleteModalStore.use({
+            titleText: t(
+                "deleteModal.multipleDelete",
+                { length: selectedDraftIds.value.length },
+                selectedDraftIds.value.length,
+            ),
+            descriptionText: t("deleteModal.warning"),
+        });
+        if (!res) return;
+
+        draftStore.remove(selectedDraftIds.value);
+        selectedDraftIds.value = [];
+
+        return;
+    }
+
+    const draft = hoveredDraftId.value
+        ? draftStore.getOne(hoveredDraftId.value)
+        : null;
+    if (!draft) return;
+
     const res = await deleteModalStore.use({
-      titleText: t(
-        "deleteModal.multipleDelete",
-        { length: selectedDraftIds.value.length },
-        selectedDraftIds.value.length,
-      ),
-      descriptionText: t("deleteModal.warning"),
+        titleText: t("deleteModal.spesificDelete", {
+            title: selectedDraftIds.value.length,
+        }),
+        descriptionText: t("deleteModal.warning"),
     });
-    if (!res) return;
 
-    draftStore.remove(selectedDraftIds.value);
-    selectedDraftIds.value = [];
-
-    return;
-  }
-
-  const draft = hoveredDraftId.value
-    ? draftStore.getOne(hoveredDraftId.value)
-    : null;
-  if (!draft) return;
-
-  const res = await deleteModalStore.use({
-    titleText: t("deleteModal.spesificDelete", {
-      title: selectedDraftIds.value.length,
-    }),
-    descriptionText: t("deleteModal.warning"),
-  });
-
-  res && draftStore.remove(draft.id);
+    res && draftStore.remove(draft.id);
 }
 
 function selectProject() {
-  if (selectedDraftIds.value.length > 0) {
+    if (selectedDraftIds.value.length > 0) {
+        projectModalStore
+            .use({
+                hintText: `${selectedDraftIds.value.length} drafts`,
+            })
+            .then((projectId) => {
+                draftStore.setProject(selectedDraftIds.value, projectId);
+
+                selectedDraftIds.value = [];
+            });
+
+        return;
+    }
+
+    if (!hoveredDraftId.value) return;
+    const draft = draftStore.getOne(hoveredDraftId.value);
+    if (!draft) return;
+
     projectModalStore
-      .use({
-        hintText: `${selectedDraftIds.value.length} drafts`,
-      })
-      .then((projectId) => {
-        draftStore.setProject(selectedDraftIds.value, projectId);
-
-        selectedDraftIds.value = [];
-      });
-
-    return;
-  }
-
-  if (!hoveredDraftId.value) return;
-  const draft = draftStore.getOne(hoveredDraftId.value);
-  if (!draft) return;
-
-  projectModalStore
-    .use({
-      draft,
-      hintText: draft.title,
-    })
-    .then((projectId) => {
-      draftStore.setProject(draft.id, projectId);
-    });
+        .use({
+            draft,
+            hintText: draft.title,
+        })
+        .then((projectId) => {
+            draftStore.setProject(draft.id, projectId);
+        });
 }
 
 function onListLeave() {
-  if (!contextMenuOpen.value) {
-    hoveredDraftId.value = null;
-  }
+    if (!contextMenuOpen.value) {
+        hoveredDraftId.value = null;
+    }
 }
+
+// Symbol counting
+const textLength = computed(() => {
+    return prompt.value.reduce((acc, itm) => {
+        if (itm.type === "text") {
+            return acc += itm.content.length
+        }
+
+        return acc
+    }, 0)
+})
+const maxPossibleLength = 100
 </script>
 
 <template>
-  <div class="pt-8">
-    <DraftInput
-      ref="draftInput"
-      placeholder="todo text"
-      v-model="prompt"
-      @enter="onCreateDraft()"
-      v-hint="'I'"
-    >
-    </DraftInput>
-    <!--  drafts list-->
-    <VueDraggableNext
-      v-if="draftStore.sortedDrafts.length"
-      ref="listEl"
-      class="mt-5"
-      :list="draftStore.sortedDrafts"
-      @change="onChangeOrder"
-      @mouseleave="onListLeave"
-      @contextmenu.prevent="onToggleContextMenu"
-    >
-      <DraftRow
-        :draft="d"
-        v-for="(d, idx) in draftStore.sortedDrafts"
-        :key="idx"
-        :class="{ 'bg-gray-50': hoveredDraftId === d.id }"
-        :selected="selectedDraftIds.includes(d.id)"
-        @mouseenter="hoveredDraftId = d.id"
-        @update:title="onEditDraft(d.id, $event)"
-        @update:selected="onUpdateSelect(d.id)"
-      ></DraftRow>
-    </VueDraggableNext>
-    <p
-      class="mt-10 text-center text-gray-600"
-      v-else
-      v-html="t('emptyPlaceholder')"
-    ></p>
-  </div>
-  <teleport to="body">
-    <ContextMenu
-      ref="contextMenuEl"
-      v-model:show="contextMenuOpen"
-      :options="[
-        { id: nanoid(3), label: t('delete'), kbd: '⌘ ⌫', value: 'del' },
-        { id: nanoid(3), label: t('setProject'), kbd: '⇧ P', value: 'proj' },
-      ]"
-      class="absolute"
-      :style="{
-        top: `${clickY}px`,
-        left: `${clickX}px`,
-      }"
-      @option="onSelectContextMenu($event)"
-    ></ContextMenu>
-  </teleport>
-  <CommandPalette
-    ref="inboxCommandEl"
-    class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full"
-    :commands="[
-      { name: t('setProject'), icon: 'hashtag', emitName: 'setProject' },
-      { name: t('delete'), icon: 'basket', emitName: 'remove' },
-    ]"
-    @discard="selectedDraftIds = []"
-    @setProject="selectProject"
-    @remove="removeDraft"
-  ></CommandPalette>
+    <div class="pt-8">
+        <DraftInput ref="draftInput" placeholder="todo text" v-model="prompt" @enter="onCreateDraft()" v-hint="'I'">
+        </DraftInput>
+        <div class="text-xs text-gray-400 text-right pt-1" :class="{ 'text-red-400': textLength > maxPossibleLength }">
+            {{ textLength }}/{{ maxPossibleLength }}
+        </div>
+        <!--  drafts list-->
+        <VueDraggableNext v-if="draftStore.sortedDrafts.length" ref="listEl" class="mt-5"
+            :list="draftStore.sortedDrafts" @change="onChangeOrder" @mouseleave="onListLeave"
+            @contextmenu.prevent="onToggleContextMenu">
+            <DraftRow :draft="d" v-for="(d, idx) in draftStore.sortedDrafts" :key="idx"
+                :class="{ 'bg-gray-50': hoveredDraftId === d.id }" :selected="selectedDraftIds.includes(d.id)"
+                @mouseenter="hoveredDraftId = d.id" @update:title="onEditDraft(d.id, $event)"
+                @update:selected="onUpdateSelect(d.id)"></DraftRow>
+        </VueDraggableNext>
+        <p class="mt-10 text-center text-gray-600" v-else v-html="t('emptyPlaceholder')"></p>
+    </div>
+    <teleport to="body">
+        <ContextMenu ref="contextMenuEl" v-model:show="contextMenuOpen" :options="[
+            { id: nanoid(3), label: t('delete'), kbd: '⌘ ⌫', value: 'del' },
+            { id: nanoid(3), label: t('setProject'), kbd: '⇧ P', value: 'proj' },
+        ]" class="absolute" :style="{
+            top: `${clickY}px`,
+            left: `${clickX}px`,
+        }" @option="onSelectContextMenu($event)"></ContextMenu>
+    </teleport>
+    <CommandPalette ref="inboxCommandEl" class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full" :commands="[
+        { name: t('setProject'), icon: 'hashtag', emitName: 'setProject' },
+        { name: t('delete'), icon: 'basket', emitName: 'remove' },
+    ]" @discard="selectedDraftIds = []" @setProject="selectProject" @remove="removeDraft"></CommandPalette>
 </template>
 
 <style scoped></style>

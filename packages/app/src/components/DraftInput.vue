@@ -6,9 +6,8 @@ import { useProjectStore } from "@store/project.ts";
 import { focusOnEditableElement, setCursorPosition } from "@utils/focus.ts";
 import { replaceAt } from "@utils/replaceAt.ts";
 import Fuse from "fuse.js";
-import hotkeys from "hotkeys-js";
 import { nanoid } from "nanoid";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import Contenteditable from "./Contenteditable.vue";
 import Icon from "./Icon.vue";
 import FuseResult = Fuse.FuseResult;
@@ -25,11 +24,6 @@ const emit = defineEmits<{
 
 const projectStore = useProjectStore();
 const root = ref<HTMLElement | null>(null);
-
-onMounted(() => {
-    // if (!partsContainer.value) return;
-    // focusOnEditableElement(partsContainer.value.children[0] as HTMLElement);
-});
 
 const partsContainer = ref<HTMLElement | null>(null);
 const currentPartIdx = ref(0);
@@ -181,9 +175,6 @@ function handleTextEnter(evt: KeyboardEvent) {
     if (totalStr === "") return;
     setTimeout(() => {
         emit("enter");
-
-        emit("update:modelValue", [{ type: "text", content: "", id: nanoid(3) }]);
-        currentPartIdx.value = 0;
 
         setTimeout(() => {
             if (!partsContainer.value) return;
