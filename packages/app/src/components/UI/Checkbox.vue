@@ -14,7 +14,6 @@ const emit = defineEmits<{
   <div class="relative">
     <div
       class="peer absolute -inset-2 cursor-pointer"
-      v-hint.bottom="'x'"
       @click="emit('update:modelValue', !modelValue)"
     ></div>
     <div

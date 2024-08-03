@@ -8,6 +8,7 @@ import { setCursorPosition } from "@utils/focus.ts";
 import { replaceAt } from "@utils/replaceAt.ts";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import Checkbox from "@components/UI/Checkbox.vue";
+import { string } from "sync-client";
 
 const props = defineProps<{
   draft: Draft;
@@ -17,6 +18,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:title", value: string): void;
   (e: "update:selected", value: boolean): void;
+  (e: "remove", value: Draft["id"]): void;
 }>();
 
 const editEl = ref<HTMLElement | null>(null);
@@ -60,13 +62,27 @@ function onKeydown(evt: KeyboardEvent) {
 
       setCursorPosition(editEl.value, offset + 1);
     });
+  } else if (evt.key === "Backspace") {
+    if (editEl.value?.textContent?.length === 0) {
+      evt.preventDefault();
+      emit("remove", props.draft.id);
+    }
+  } else if (evt.key === "Enter") {
+    evt.preventDefault();
+
+    if (editEl.value?.textContent?.length === 0) {
+      emit("remove", props.draft.id);
+      return;
+    }
+
+    editDraft(evt);
+    editEl.value?.blur();
   }
 }
 </script>
 
 <template>
   <div
-    ref="rootEl"
     class="flex cursor-grab items-center border-b border-gray-400 p-2.5 transition-colors duration-75 hover:bg-gray-50 active:cursor-grabbing"
     :class="{ '!border-black bg-gray-50': selected }"
   >

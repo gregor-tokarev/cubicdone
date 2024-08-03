@@ -9,6 +9,7 @@ import { useDraftsStore } from "@store/drafts.ts";
 import { useProjectStore } from "@store/project.ts";
 import { useProjectModalStore } from "@store/select-modal.ts";
 import { setScrolling } from "@utils/setScrolling.ts";
+import { Draft } from "contract-models";
 import hotkeys from "hotkeys-js";
 import { animate } from "motion";
 import { nanoid } from "nanoid";
@@ -69,7 +70,7 @@ onMounted(async () => {
     selectProject();
   });
   hotkeys("x,shift+x", () => {
-    hoveredDraftId.value && onUpdateSelect(hoveredDraftId.value);
+    hoveredDraftId.value && onUpdateSelection(hoveredDraftId.value);
   });
   hotkeys("esc", () => {
     if (selectedDraftIds.value.length) {
@@ -141,7 +142,7 @@ watch(
   { deep: true },
 );
 
-function onUpdateSelect(draftId: string) {
+function onUpdateSelection(draftId: string) {
   if (hotkeys.isPressed("shift") && selectedDraftIds.value.length > 0) {
     const draft = draftStore.getOne(draftId);
     if (!draft) return;
@@ -284,6 +285,12 @@ function onListLeave() {
   }
 }
 
+// TODO: focus on previous draft after deleting
+const draftEls = ref<InstanceType<typeof DraftRow>[]>([]);
+function onRemove(id: Draft["id"]) {
+  draftStore.remove(id);
+}
+
 // Symbol counting
 const textLength = computed(() => {
   return prompt.value.reduce((acc, itm) => {
@@ -327,11 +334,13 @@ const maxPossibleLength = 100;
         :draft="d"
         v-for="(d, idx) in draftStore.sortedDrafts"
         :key="idx"
+        ref="draftEls"
         :class="{ 'bg-gray-50': hoveredDraftId === d.id }"
         :selected="selectedDraftIds.includes(d.id)"
         @mouseenter="hoveredDraftId = d.id"
         @update:title="onEditDraft(d.id, $event)"
-        @update:selected="onUpdateSelect(d.id)"
+        @update:selected="onUpdateSelection(d.id)"
+        @remove="onRemove($event)"
       ></DraftRow>
     </VueDraggableNext>
     <p
