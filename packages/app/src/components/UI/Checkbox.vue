@@ -2,21 +2,21 @@
 import Icon from "@components/Icon.vue";
 
 defineProps<{
-  modelValue: boolean;
+    modelValue: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void;
+    (e: "update:modelValue", value: boolean): void;
 }>();
 </script>
 
 <template>
-  <div
-    class="mr-1.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded border border-transparent hover:border-black"
-    :class="{ 'bg-black': modelValue }"
-    v-hint.bottom="'x'"
-    @click="emit('update:modelValue', !modelValue)"
-  >
-    <Icon v-show="modelValue" class="text-white" name="check"></Icon>
-  </div>
+    <div class="relative">
+        <div class="absolute -inset-2 cursor-pointer peer" v-hint.bottom="'x'"
+            @click="emit('update:modelValue', !modelValue)"></div>
+        <div class="flex h-4 w-4 items-center justify-center rounded border border-transparent peer-hover:border-black"
+            :class="{ 'bg-black': modelValue }">
+            <Icon v-show="modelValue" class="text-white" name="check"></Icon>
+        </div>
+    </div>
 </template>
