@@ -52,6 +52,9 @@ jobs:
             echo "NOTION_SECRET=${{ secrets.NOTION_SECRET }}" >> .env
             echo "LINEAR_CLIENT_ID=${{ secrets.LINEAR_CLIENT_ID }}" >> .env
             echo "LINEAR_SECRET=${{ secrets.LINEAR_SECRET }}" >> .env
+            echo "OAUTH_GITHUB_CLIENT_ID=${{ secrets.OAUTH_GITHUB_CLIENT_ID }}" >> .env
+            echo "OAUTH_GITHUB_SECRET=${{ secrets.OAUTH_GITHUB_SECRET }}" >> .env
+
 
             docker pull ghcr.io/gregor-tokarev/backend:latest
             docker stop $(docker ps -aq)
