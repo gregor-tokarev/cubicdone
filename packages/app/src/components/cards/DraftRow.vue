@@ -115,11 +115,6 @@ function onKeydown(evt: KeyboardEvent) {
         {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
       </div>
     </div>
-    <ProjectTag
-      class="ml-auto"
-      v-if="draft.projectId"
-      :project-id="draft.projectId"
-    ></ProjectTag>
   </div>
 </template>
 
