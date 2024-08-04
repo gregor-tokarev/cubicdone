@@ -130,7 +130,11 @@ oauthRedirectRouter.get("/github", async (req, res) => {
 
   const user = userData;
   console.log(user);
-  const [firstName, lastName] = user["name"].split(" ");
+
+  const name = user["name"];
+  if (!name) return res.status(400).json({ message: "Bad request" });
+
+  const [firstName, lastName] = name.split(" ");
 
   const [existingUser] = await db
     .select()
