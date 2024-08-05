@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Draft } from "contract-models";
-import dayjs from "dayjs";
-import ProjectTag from "../UI/ProjectTag.vue";
-import { ref, watch } from "vue";
 import Markdown from "@components/Markdown.vue";
+import Checkbox from "@components/UI/Checkbox.vue";
 import { setCursorPosition } from "@utils/focus.ts";
 import { replaceAt } from "@utils/replaceAt.ts";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
-import Checkbox from "@components/UI/Checkbox.vue";
-import { string } from "sync-client";
+import { Draft } from "contract-models";
+import dayjs from "dayjs";
+import { ref, watch } from "vue";
+import ProjectTag from "../UI/ProjectTag.vue";
 
 const props = defineProps<{
   draft: Draft;
@@ -115,12 +114,6 @@ function onKeydown(evt: KeyboardEvent) {
         {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
       </div>
     </div>
-    <ProjectTag
-      class="ml-auto"
-      v-if="draft.projectId"
-      :project-id="draft.projectId"
-    ></ProjectTag>
-  </div>
 </template>
 
 <style scoped></style>
