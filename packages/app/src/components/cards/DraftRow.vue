@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Markdown from "@components/Markdown.vue";
 import Checkbox from "@components/UI/Checkbox.vue";
+import ProjectTag from "@components/UI/ProjectTag.vue";
 import { setCursorPosition } from "@utils/focus.ts";
 import { replaceAt } from "@utils/replaceAt.ts";
 import { onClickOutside, useDebounceFn } from "@vueuse/core";
 import { Draft } from "contract-models";
 import dayjs from "dayjs";
 import { ref, watch } from "vue";
-import ProjectTag from "../UI/ProjectTag.vue";
 
 const props = defineProps<{
   draft: Draft;
@@ -114,6 +114,11 @@ function onKeydown(evt: KeyboardEvent) {
         {{ dayjs(draft.dateCreated).format("D MMM, HH:mm") }}
       </div>
     </div>
+    <ProjectTag
+      v-if="draft.projectId"
+      class="ml-auto"
+      :project-id="draft.projectId"
+    ></ProjectTag>
   </div>
 </template>
 
