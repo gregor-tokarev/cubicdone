@@ -311,9 +311,6 @@ const maxPossibleLength = 100;
             <DraftInput id="draftinput" ref="draftInput" placeholder="todo text" v-model="prompt"
                 @enter="onCreateDraft()" v-hint="'I'">
             </DraftInput>
-            <Icon name="help"
-                class="absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full cursor-pointer text-gray-600"
-                v-hint="'Get help'"></Icon>
         </div>
         <div class="pt-1 text-right text-xs text-gray-400" :class="{ 'text-red-400': textLength > maxPossibleLength }">
             {{ textLength }}/{{ maxPossibleLength }}
@@ -334,9 +331,9 @@ const maxPossibleLength = 100;
             { id: nanoid(3), label: t('delete'), kbd: '⌘ ⌫', value: 'del' },
             { id: nanoid(3), label: t('setProject'), kbd: '⇧ P', value: 'proj' },
         ]" class="absolute" :style="{
-        top: `${clickY}px`,
-        left: `${clickX}px`,
-    }" @option="onSelectContextMenu($event)"></ContextMenu>
+            top: `${clickY}px`,
+            left: `${clickX}px`,
+        }" @option="onSelectContextMenu($event)"></ContextMenu>
     </teleport>
     <CommandPalette ref="inboxCommandEl" class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full" #inboxCommand
         :commands="[
