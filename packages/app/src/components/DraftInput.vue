@@ -425,7 +425,7 @@ defineExpose({
 </script>
 
 <template>
-    <div class="relative" ref="root" @click="focusOnCurrentNode" #draftinput>
+    <div class="relative" ref="root" @click="focusOnCurrentNode" id="draftinput">
         <!--    Input box-->
         <div class="flex items-center rounded-lg bg-gray-100 px-2.5 py-1">
             <Icon name="plus" :size="24" class="mr-1.5 text-gray-600"></Icon>
