@@ -4,20 +4,19 @@ import { projectStore } from "@models/project.model.ts";
 import { projectStatusStore } from "@models/projectStauts.model.ts";
 import { taskStore } from "@models/task.model.ts";
 import * as Sentry from "@sentry/vue";
-import { createI18n } from "vue-i18n";
-import * as flows from "@flows/js";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
 import * as cookie from "cookie";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
+import "dayjs/locale/ru";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
+import { createI18n } from "vue-i18n";
 import { vueSyncClientPlugin } from "vue-sync-client";
 import App from "./App.vue";
 import { hint } from "./directives/hint.ts";
 import { router } from "./router";
-import dayjs from "dayjs";
-import "dayjs/locale/ru";
-import "dayjs/locale/en";
 
 import "./style.css";
 
@@ -113,8 +112,6 @@ app
     },
   })
   .use(router);
-
-flows.init({ projectId: "25afae2c-fee0-4023-af9e-9e1c62d96b0c" });
 
 function customRule(choice: number, _choicesLength: number) {
   const calcValue = Math.abs(choice) % 100;
