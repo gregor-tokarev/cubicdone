@@ -19,6 +19,7 @@ export const hint: Directive = {
 
     document.body.appendChild(tooltip);
     tooltip.style.opacity = "0";
+    tooltip.style.zIndex = "-999";
 
     el.addEventListener("mouseenter", () => {
       const rect = el.getBoundingClientRect();
@@ -28,10 +29,12 @@ export const hint: Directive = {
         rect.top - tooltip.offsetHeight / 2 + rect.height / 2 + "px";
 
       tooltip.style.opacity = "1";
+      tooltip.style.zIndex = "999";
     });
 
     el.addEventListener("mouseleave", () => {
       tooltip.style.opacity = "0";
+      tooltip.style.zIndex = "-999";
     });
 
     // Cleanup on unmount

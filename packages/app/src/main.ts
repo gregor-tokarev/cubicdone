@@ -5,6 +5,7 @@ import { projectStatusStore } from "@models/projectStauts.model.ts";
 import { taskStore } from "@models/task.model.ts";
 import * as Sentry from "@sentry/vue";
 import { createI18n } from "vue-i18n";
+import * as flows from "@flows/js";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "backend";
 import * as cookie from "cookie";
@@ -112,6 +113,8 @@ app
     },
   })
   .use(router);
+
+flows.init({ projectId: "25afae2c-fee0-4023-af9e-9e1c62d96b0c" });
 
 function customRule(choice: number, _choicesLength: number) {
   const calcValue = Math.abs(choice) % 100;

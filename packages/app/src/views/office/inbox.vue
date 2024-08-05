@@ -2,6 +2,7 @@
 import DraftRow from "@components/cards/DraftRow.vue";
 import CommandPalette from "@components/CommandPalette.vue";
 import ContextMenu from "@components/ContextMenu.vue";
+import Icon from "@components/Icon.vue";
 import DraftInput from "@components/DraftInput.vue";
 import { InputGenericPart } from "@models/input-part.model.ts";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
@@ -306,14 +307,21 @@ const maxPossibleLength = 100;
 
 <template>
   <div class="pt-8">
-    <DraftInput
-      ref="draftInput"
-      placeholder="todo text"
-      v-model="prompt"
-      @enter="onCreateDraft()"
-      v-hint="'I'"
-    >
-    </DraftInput>
+    <div class="relative">
+      <DraftInput
+        ref="draftInput"
+        placeholder="todo text"
+        v-model="prompt"
+        @enter="onCreateDraft()"
+        v-hint="'I'"
+      >
+      </DraftInput>
+      <Icon
+        name="help"
+        class="absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full cursor-pointer text-gray-600"
+        v-hint="'Get help'"
+      ></Icon>
+    </div>
     <div
       class="pt-1 text-right text-xs text-gray-400"
       :class="{ 'text-red-400': textLength > maxPossibleLength }"
