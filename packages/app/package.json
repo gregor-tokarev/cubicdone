@@ -16,6 +16,7 @@
   },
   "private": true,
   "dependencies": {
+    "@flows/js": "^0.3.2",
     "@linear/sdk": "^9.0.1",
     "@vercel/speed-insights": "^1.0.8",
     "@vuelidate/core": "^2.0.3",
