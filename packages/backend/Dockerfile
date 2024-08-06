@@ -8,6 +8,7 @@ RUN npm i -g turbo@^1.12.5
 # Prune the monorepo for the specific app
 WORKDIR /app
 COPY . .
+RUN ls -a
 RUN npx turbo prune backend --docker
 
 # Install dependencies
@@ -20,7 +21,7 @@ RUN npm ci
 COPY --from=base /app/out/full/ .
 
 
-FROM node:18-alpine as migrator
+FROM node:18-alpine AS migrator
 
 RUN npm i -g turbo@^1.12.5
 
@@ -39,4 +40,4 @@ COPY --from=migrator /app .
 EXPOSE 4000
 
 # Command to start your application
-CMD  cd packages/backend && ../../node_modules/.bin/drizzle-kit push && npm start
+CMD cd packages/backend && ../../node_modules/.bin/drizzle-kit push && npm start
