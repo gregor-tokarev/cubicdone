@@ -13,16 +13,17 @@ import { webcrypto } from "node:crypto";
 import { authRouter } from "./router/auth.router";
 import { oauthRedirectRouter } from "./webhooks/oauth-redirects";
 import { oauthUrlRouter } from "./webhooks/oauth-url";
+import morgan from "morgan";
 
 globalThis.crypto = webcrypto as Crypto;
 
 const appRouter = router({
-  draft: drafts,
-  task: tasks,
-  project: projects,
-  apiKey: apiKeys,
-  projectStatus: projectStatus,
-  auth: authRouter,
+    draft: drafts,
+    task: tasks,
+    project: projects,
+    apiKey: apiKeys,
+    projectStatus: projectStatus,
+    auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;
@@ -30,10 +31,10 @@ export type AppRouter = typeof appRouter;
 const app = express();
 
 app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://app.cubicdone.com"],
-    credentials: true,
-  }),
+    cors({
+        origin: ["http://localhost:3000", "https://app.cubicdone.com"],
+        credentials: true,
+    }),
 );
 
 app.use(cookieParser());
@@ -42,7 +43,9 @@ app.use("/oauth", oauthUrlRouter);
 app.use("/oauth/redirect", oauthRedirectRouter);
 
 app.use(
-  trpcExpress.createExpressMiddleware({ router: appRouter, createContext }),
+    trpcExpress.createExpressMiddleware({ router: appRouter, createContext }),
 );
+
+app.use(morgan('common', { skip: (_req, res) => res.statusCode > 400 }))
 
 app.listen(4000);
