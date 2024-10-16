@@ -336,7 +336,7 @@ const maxPossibleLength = 100;
         }" @option="onSelectContextMenu($event)"></ContextMenu>
     </teleport>
     <CommandPalette ref="inboxCommandEl" class="fixed bottom-0 left-1/2 -translate-x-1/2 translate-y-full" #inboxCommand
-        :commands="[
+        :selected-count="selectedDraftIds.length" :commands="[
             { name: t('setProject'), icon: 'hashtag', emitName: 'setProject' },
             { name: t('delete'), icon: 'basket', emitName: 'remove' },
         ]" @discard="selectedDraftIds = []" @setProject="selectProject" @remove="removeDraft"></CommandPalette>
