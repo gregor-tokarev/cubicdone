@@ -10,10 +10,12 @@ import "dayjs/locale/ru";
 
 const props = defineProps<{
   date: Dayjs;
+  hoveredTask: string | null
 }>();
 
 const emit = defineEmits<{
   (e: "move", value: [Dayjs, any]): void;
+  (e: "hoverTask", value: string): void;
 }>();
 
 const taskStore = useTaskStore();
@@ -92,6 +94,8 @@ const dateDescription = computed(() => {
         v-for="t in taskStore.getByDate(date.toString())"
         :key="t.id"
         :task="t"
+        :hovered="t.id === hoveredTask"
+        @mouseenter="emit('hoverTask', t.id)"
         data-drag
         :data-id="t.id"
         @update:status="onUpdateStatus(t.id, $event)"

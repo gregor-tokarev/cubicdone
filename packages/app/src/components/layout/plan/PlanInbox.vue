@@ -124,6 +124,8 @@ const { t } = useI18n({
     },
 });
 
+const hoveredDraftId = ref<string | null>(null)
+
 const contextMenuOpen = ref(false)
 watchEffect(() => {
     if (!contextMenuOpen.value) hoveredDraftId.value = null
@@ -143,7 +145,6 @@ onMounted(() => {
 })
 
 function onContexMenuOpen(evt: PointerEvent) {
-    console.log(evt)
     clickX.value = evt.clientX
     clickY.value = evt.clientY
 
@@ -156,8 +157,6 @@ function onContextMenuSelect(action: string) {
 
     contextMenuOpen.value = false
 }
-
-const hoveredDraftId = ref<string | null>(null)
 
 function onListLeave() {
     if (!contextMenuOpen.value) {
