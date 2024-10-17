@@ -114,12 +114,19 @@ const { t } = useI18n({
             loading: "Loading...",
             emptyDrafts: "You plan all your Inbox Tasks. Start working or",
             createNewDrafts: "create new drafts",
+
+            delete: "Delete",
+            setProject: "Set project"
         },
         ru: {
             title: "Входящие",
             loading: "Загрузка...",
             emptyDrafts: "Вы распланировали все свои задачи, начинайте работать или",
             createNewDrafts: "создайте новые драфты",
+
+            delete: "Удалить",
+            setProject: "Поменять проект"
+
         },
     },
 });
@@ -175,7 +182,7 @@ async function onSetProject() {
         const draft = draftStore.getOne(hoveredDraftId.value)
         if (!draft) return;
 
-        const projectId = await projectModalStore.use({ draft, hintText: draft.title })
+        const projectId = await projectModalStore.use({ item: draft, hintText: draft.title })
 
         draftStore.setProject(draft.id, projectId)
     }

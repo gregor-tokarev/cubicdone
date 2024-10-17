@@ -2,7 +2,6 @@
 import DraftRow from "@components/cards/DraftRow.vue";
 import CommandPalette from "@components/CommandPalette.vue";
 import ContextMenu from "@components/ContextMenu.vue";
-import Icon from "@components/Icon.vue";
 import DraftInput from "@components/DraftInput.vue";
 import { InputGenericPart } from "@models/input-part.model.ts";
 import { useDeleteModalStore } from "@store/delete-modal.ts";
@@ -272,7 +271,7 @@ function selectProject() {
 
     projectModalStore
         .use({
-            draft,
+            item: draft,
             hintText: draft.title,
         })
         .then((projectId) => {

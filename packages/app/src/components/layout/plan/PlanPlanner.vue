@@ -184,9 +184,13 @@ const { t } = useI18n({
     messages: {
         en: {
             today: "Today",
+            delete: "Delete",
+            setProject: "Set project"
         },
         ru: {
             today: "Сегодня",
+            delete: "Удалить",
+            setProject: "Поменять проект"
         },
     },
 });
