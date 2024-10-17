@@ -10,7 +10,7 @@ import "dayjs/locale/ru";
 
 const props = defineProps<{
   date: Dayjs;
-  hoveredTask: string | null
+  hoveredTask: string | null;
 }>();
 
 const emit = defineEmits<{
