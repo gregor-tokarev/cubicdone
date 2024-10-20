@@ -8,3 +8,12 @@ export const draftStore = defineSchema("draft", {
   order: integer("order"),
   projectId: string("projectId"),
 });
+
+export type Draft = {
+  id: string;
+  title: string;
+  dateCreated: string;
+  dateUpdated: string;
+  order: number;
+  projectId: string | null;
+};

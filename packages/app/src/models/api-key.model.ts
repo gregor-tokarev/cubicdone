@@ -6,3 +6,10 @@ export const apiKeyStore = defineSchema("apikeys", {
   key: string("key"),
   integrationId: string("integrationId"),
 });
+
+export type ApiKey = {
+  id: string;
+  label: string;
+  key: string;
+  integrationId: string;
+};
