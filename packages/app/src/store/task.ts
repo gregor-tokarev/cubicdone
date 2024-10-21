@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 import { Draft } from "@models/draft.model.ts";
 import { trpc } from "../main.ts";
 import { useIdbxConnectionManager } from "vue-sync-client";
+import { tasks } from "backend/src/router/tasks.router.ts";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -267,19 +268,34 @@ export const useTaskStore = defineStore("task", {
 
       if (typeof id === "string") {
         const taskIdx = this.tasks.findIndex((t) => t.id === id);
-        // this.descOrders(id);
+        this.descOrders(id);
 
         this.tasks.splice(taskIdx, 1);
       } else if (Array.isArray(id)) {
         this.tasks = this.tasks.filter((d) => {
           if (id.includes(d.id)) {
-            // this.descOrders(d.id);
+            this.descOrders(d.id);
             return false;
           }
 
           return true;
         });
       }
+    },
+
+    async descOrders(id: Task["id"]) {
+      const task = this.getOne(id);
+      if (!task) return;
+
+      const sameDateTasks = this.getByDate(task.dateTodo).filter(
+        (t) => t.id !== id,
+      );
+
+      const promises = sameDateTasks.map((t) =>
+        this.update(t.id, { ...t, order: t.order - 1 }),
+      );
+
+      return Promise.all(promises);
     },
   },
   getters: {
