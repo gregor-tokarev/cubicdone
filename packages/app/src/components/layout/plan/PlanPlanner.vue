@@ -192,11 +192,13 @@ const { t } = useI18n({
       today: "Today",
       delete: "Delete",
       setProject: "Set project",
+      select: "Select",
     },
     ru: {
       today: "Сегодня",
       delete: "Удалить",
       setProject: "Поменять проект",
+      select: "Выбрать",
     },
   },
 });
