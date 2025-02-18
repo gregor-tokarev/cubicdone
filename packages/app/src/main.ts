@@ -22,6 +22,7 @@ import "./style.css";
 
 const pinia = createPinia();
 
+
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
