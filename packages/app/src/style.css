@@ -68,3 +68,7 @@ body {
   position: relative;
   overflow-y: hidden;
 }
+
+p:focus {
+  outline: 0px none transparent;
+}
