@@ -51,7 +51,7 @@ async function onSignin(strategy: "google" | "linear" | "github") {
         <Icon v-else :size="24" name="linear"></Icon>
         <span>{{ t("buttonText", { provider: "linear" }) }}</span>
       </AuthButton>
-      <AuthButton @click="onSignin('github')" :disabled="opening">
+      <!-- <AuthButton @click="onSignin('github')" :disabled="opening">
         <Icon
           v-if="opening"
           name="sync"
@@ -59,7 +59,7 @@ async function onSignin(strategy: "google" | "linear" | "github") {
         ></Icon>
         <Icon v-else :size="24" name="github"></Icon>
         <span>{{ t("buttonText", { provider: "github" }) }}</span>
-      </AuthButton>
+      </AuthButton> -->
     </div>
   </div>
 </template>
